@@ -40,7 +40,7 @@ graph TD
     User((User)) -->|Provides Input Text| PreCritic[Pre-Critic Gate]
 
     PreCritic -->|Burstiness >= 4.0| Output[Final Output Early Exit]
-    PreCritic -->|Burstiness < 4.0| Profiler[PAS Profiler Agent]
+    PreCritic -->|Burstiness < 4.0| Writer[WAS Writer Agent]
 
     User -->|Optional Writing Samples| Profiler
 
