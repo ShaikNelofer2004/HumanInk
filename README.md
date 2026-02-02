@@ -47,7 +47,7 @@ graph TD
     Tools -->|Burstiness Score| Critic
     
     Critic -->|Feedback| Decision{Is Human?}
-    Decision -->|No: "Variance too low"| Writer
+    Decision -->|No - Variance too low| Writer
     Decision -->|Yes| Output[Final Output]
 ```
 
@@ -85,16 +85,13 @@ graph TD
     pip install -r requirements.txt
     ```
 
-3.  **Set up Environment Variables:**
-    Create a `.env` file in `backend/`:
-    ```env
     GOOGLE_API_KEY=your_gemini_key_here
     GROQ_API_KEY=your_groq_key_here
+    OPENROUTER_API_KEY=your_openrouter_key_here
     ```
 
 4.  **Run the Profiler Test:**
-    ```bash
-    python backend/test_profiler.py
+    
     ```
 
 ## 🤝 Contributing
@@ -107,9 +104,4 @@ We welcome contributions! Please follow these steps:
 4.  Push to the branch: `git push origin feature/your-feature-name`.
 5.  Submit a pull request.
 
-## 🗺️ Roadmap
 
-*   [x] **Core Agents:** Writer, Critic, Profiler implemented.
-*   [x] **Math Tools:** Burstiness/Perplexity calculators.
-*   [ ] **API:** FastAPI endpoints for Frontend integration.
-*   [ ] **Frontend:** Next.js UI with Real-time Streaming.
