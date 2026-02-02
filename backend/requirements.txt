@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+textstat
+nltk
+langchain
+langchain-google-genai
+langchain-groq
+langchain-openai
+python-dotenv
+numpy
+diff-match-patch
