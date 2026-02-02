@@ -7,7 +7,7 @@
 ![AI](https://img.shields.io/badge/AI-Gemini_Flash-orange)
 ![Architecture](https://img.shields.io/badge/Architecture-GAN_Loop-purple)
 
-**HumanInk** is a next-generation AI writing tool designed to bypass AI detection and improve readability by mimicking authentic human writing patterns. Unlike generic rewriters that simply synonym-swap, HumanInk uses a **Tool-Augmented Generative Adversarial Network (GAN)** to mathematically guarantee "human-like" variance.
+**HumanInk** is a personalized AI writing assistant that rewrites and refines text to match a specific human writing style, improving clarity, natural flow, and stylistic consistency while preserving the original meaning. Unlike generic rewriters that simply synonym-swap, HumanInk uses a **Tool-Augmented Generative Adversarial Network (GAN)** to mathematically guarantee "human-like" variance.
 
 ---
 
