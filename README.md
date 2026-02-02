@@ -4,7 +4,7 @@
 
 ![Status](https://img.shields.io/badge/Status-In_Development-blue)
 ![Python](https://img.shields.io/badge/Backend-FastAPI-green)
-![AI](https://img.shields.io/badge/AI-Gemini_1.5_Pro-orange)
+![AI](https://img.shields.io/badge/AI-Gemini_Flash-orange)
 ![Architecture](https://img.shields.io/badge/Architecture-GAN_Loop-purple)
 
 **HumanInk** is a next-generation AI writing tool designed to bypass AI detection and improve readability by mimicking authentic human writing patterns. Unlike generic rewriters that simply synonym-swap, HumanInk uses a **Tool-Augmented Generative Adversarial Network (GAN)** to mathematically guarantee "human-like" variance.
@@ -58,8 +58,8 @@ graph TD
 *   **Backend:** Python (FastAPI)
 *   **Orchestration:** LangGraph (Cyclic flow control)
 *   **AI Models:**
-    *   **Writer/Profiler:** Gemini 1.5 Pro (High Creativity/Reasoning)
-    *   **Critic:** Gemini 1.5 Flash (Low Latency) + Llama 3 (Groq)
+    *   **Writer/Profiler:** Gemini Flash Preview (High Speed/Creativity)
+    *   **Critic:** Llama 3 70B (via Groq) + Python Analysis Tools
 *   **Analysis Tools:** `nltk`, `textstat`, `numpy`
 
 ---
@@ -69,6 +69,7 @@ graph TD
 ### Prerequisites
 *   Python 3.10+
 *   Gemini API Key (Google AI Studio)
+*   Groq API Key (for Llama 3)
 
 ### Installation
 
@@ -88,13 +89,23 @@ graph TD
     Create a `.env` file in `backend/`:
     ```env
     GOOGLE_API_KEY=your_gemini_key_here
-    GROQ_API_KEY=your_groq_key_here  # Optional for Llama 3 Critic
+    GROQ_API_KEY=your_groq_key_here
     ```
 
 4.  **Run the Profiler Test:**
     ```bash
     python backend/test_profiler.py
     ```
+
+## 🤝 Contributing
+
+We welcome contributions! Please follow these steps:
+
+1.  Fork the repository.
+2.  Create a new branch: `git checkout -b feature/your-feature-name`.
+3.  Make your changes and commit them: `git commit -m 'Add some feature'`.
+4.  Push to the branch: `git push origin feature/your-feature-name`.
+5.  Submit a pull request.
 
 ## 🗺️ Roadmap
 
