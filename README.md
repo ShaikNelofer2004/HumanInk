@@ -1,4 +1,7 @@
-# HumanInk 🖋️
+<div align="center">
+  <img src="assets/humanink.png" alt="HumanInk Logo" width="200"/>
+  <h1>HumanInk 🖋️</h1>
+</div>
 
 > **The AI Text Humanizer that doesn't just "rewrite" — it clones your style.**
 
