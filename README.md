@@ -85,13 +85,17 @@ graph TD
     pip install -r requirements.txt
     ```
 
+3.  **Set up Environment Variables:**
+    Create a `.env` file in `backend/`:
+    ```env
     GOOGLE_API_KEY=your_gemini_key_here
     GROQ_API_KEY=your_groq_key_here
-    OPENROUTER_API_KEY=your_openrouter_key_here
+    
     ```
 
 4.  **Run the Profiler Test:**
-    
+    ```bash
+    python backend/test_profiler.py
     ```
 
 ## 🤝 Contributing
