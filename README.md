@@ -36,20 +36,30 @@ We don't just output the first draft. We simulate an editor-writer fight:
 
 ```mermaid
 graph TD
-    User((User)) -->|Uploads Samples| Profiler[PAS: Profiler Agent]
-    Profiler -->|Extracts JSON| Style[Style Fingerprint]
-    
-    User -->|Input Text| Writer[WAS: Writer Agent]
-    Style -->|Injects Style| Writer
-    
-    Writer -->|Draft 1| Critic[CAS: Critic Agent]
-    
-    Critic -->|Runs Python Tools| Tools(NLTK / TextStat)
+
+    User((User)) -->|Provides Input Text| PreCritic[Pre-Critic Gate]
+
+    PreCritic -->|Burstiness ≥ 4.0| Output[Final Output (Early Exit)]
+    PreCritic -->|Burstiness < 4.0| Profiler[PAS: Profiler Agent]
+
+    User -->|Optional Writing Samples| Profiler
+
+    Profiler -->|Creates Style Profile JSON| Style[Style Fingerprint]
+
+    Style -->|Inject Style| Writer[WAS: Writer Agent]
+
+    Writer -->|Draft| Critic[CAS: Critic Agent]
+
+    Critic -->|Mathematician Brain| Tools[Python Tools<br/>(NLTK / TextStat)]
     Tools -->|Burstiness Score| Critic
-    
-    Critic -->|Feedback| Decision{Is Human?}
-    Decision -->|No - Variance too low| Writer
-    Decision -->|Yes| Output[Final Output]
+
+    Critic -->|Editor Brain| SemanticCheck[LLM Coherence Check]
+
+    Critic --> Decision{Human Quality Met?}
+
+    Decision -->|No (Burstiness < 5.0)| Writer
+    Decision -->|Yes| Output
+
 ```
 
 ---
