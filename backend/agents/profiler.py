@@ -1,5 +1,6 @@
 import json
-from langchain_google_genai import ChatGoogleGenerativeAI
+import os
+from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from dotenv import load_dotenv
 
@@ -8,8 +9,13 @@ load_dotenv()
 class ProfilerAgent:
     def __init__(self):
         # Brain 3: The Profiler (Deep Analysis)
-        # Uses Gemini 1.5 Pro because style extraction requires high reasoning capabilities.
-        self.llm = ChatGoogleGenerativeAI(model="gemini-3-flash-preview", temperature=0.5)
+        # Using OpenRouter with a high-quality model (Llama 3.3 70B) for style extraction
+        self.llm = ChatOpenAI(
+            model="meta-llama/llama-3.3-70b-instruct", 
+            temperature=0.5,
+            base_url="https://openrouter.ai/api/v1",
+            api_key=os.getenv("OPENROUTER_API_KEY")
+        )
 
     def extract_style(self, samples: list[str]) -> dict:
         combined_text = "\n\n---\n\n".join(samples)
@@ -33,12 +39,20 @@ class ProfilerAgent:
 
         chain = prompt | self.llm
         try:
+            import re
             response = chain.invoke({"text": combined_text})
-            # Clean possible markdown
-            content = response.content.replace("```json", "").replace("```", "").strip()
-            return json.loads(content)
+            content = response.content.strip()
+            # Try to find JSON block
+            json_match = re.search(r"\{.*\}", content, re.DOTALL)
+            if json_match:
+                json_str = json_match.group(0)
+                return json.loads(json_str)
+            else:
+                # If no brackets found, try raw (rare)
+                return json.loads(content)
         except Exception as e:
-            print(f"Profiler Error: {e}")
+            print(f"Profiler JSON Error: {e}")
+            print(f"Raw Output: {response.content}") # Debugging
             # Fallback profile
             return {
                 "Sentence_Length_Variance": "Medium",

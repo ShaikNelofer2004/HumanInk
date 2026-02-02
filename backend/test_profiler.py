@@ -7,9 +7,9 @@ def test_profiler():
     
     # Sample text: Mimicking a specific style (e.g., fast-paced, tech-bro)
     samples = [
-        "Look, we just need to ship it. Speed is everything. If we break things, fine. We fix them later.",
-        "The market moves fast. You blink, you lose. I don't care about clean code right now, I care about user acquisition.",
-        "It's simple math. Growth hacking is just finding the leverage point. So let's find it, pull it, and see what happens."
+         "I’ve learned that progress doesn’t always come from big breakthroughs. Sometimes it’s just about showing up every day and making small improvements where you can.",
+         "Technology moves quickly, but people don’t always move at the same pace. That’s why it’s important to build tools that actually help, not just impress.",
+         "Good work takes patience. You test, you fail, you adjust, and you try again. Over time, those small efforts start adding up in ways you didn’t expect."
     ]
     
     print(f"--- analyzing {len(samples)} samples ---")
