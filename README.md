@@ -111,7 +111,11 @@ graph TD
 4.  **Run the Profiler Test:**
     ```bash
     python backend/test_profiler.py
-    ```
+
+5.  **Run the Graph Test:**
+    ```bash
+    python backend/test_graph.py
+    ```    ```
 
 ## 🤝 Contributing
 
