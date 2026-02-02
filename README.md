@@ -7,7 +7,8 @@
 ![AI](https://img.shields.io/badge/AI-Gemini_Flash-orange)
 ![Architecture](https://img.shields.io/badge/Architecture-GAN_Loop-purple)
 
-**HumanInk** is a personalized AI writing assistant that rewrites and refines text to match a specific human writing style, improving clarity, natural flow, and stylistic consistency while preserving the original meaning. Unlike generic rewriters that simply synonym-swap, HumanInk uses a **Tool-Augmented Generative Adversarial Network (GAN)** to mathematically guarantee "human-like" variance.
+**HumanInk** is a personalized AI writing assistant that rewrites and refines text to match a specific human writing style, improving clarity, natural flow, and stylistic consistency while preserving the original meaning. Unlike generic rewriters that simply synonym-swap, HumanInk uses a **Reflexion Loop** — an iterative Draft → Critique → Refine pipeline — where a Writer agent generates text and a Critic agent evaluates it using quantitative linguistic metrics and semantic checks. The system repeats this loop until the output meets human-like quality thresholds or exits early when input is already sufficient.
+
 
 ---
 
