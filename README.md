@@ -39,26 +39,27 @@ graph TD
 
     User((User)) -->|Provides Input Text| PreCritic[Pre-Critic Gate]
 
-    PreCritic -->|Burstiness ≥ 4.0| Output[Final Output (Early Exit)]
-    PreCritic -->|Burstiness < 4.0| Profiler[PAS: Profiler Agent]
+    PreCritic -->|Burstiness >= 4.0| Output[Final Output Early Exit]
+    PreCritic -->|Burstiness < 4.0| Profiler[PAS Profiler Agent]
 
     User -->|Optional Writing Samples| Profiler
 
     Profiler -->|Creates Style Profile JSON| Style[Style Fingerprint]
 
-    Style -->|Inject Style| Writer[WAS: Writer Agent]
+    Style -->|Inject Style| Writer[WAS Writer Agent]
 
-    Writer -->|Draft| Critic[CAS: Critic Agent]
+    Writer -->|Draft| Critic[CAS Critic Agent]
 
-    Critic -->|Mathematician Brain| Tools[Python Tools<br/>(NLTK / TextStat)]
+    Critic -->|Mathematician Brain| Tools[Python Tools NLTK TextStat]
     Tools -->|Burstiness Score| Critic
 
     Critic -->|Editor Brain| SemanticCheck[LLM Coherence Check]
 
-    Critic --> Decision{Human Quality Met?}
+    Critic --> Decision{Human Quality Met}
 
-    Decision -->|No (Burstiness < 5.0)| Writer
+    Decision -->|No Burstiness < 5.0| Writer
     Decision -->|Yes| Output
+
 
 ```
 
