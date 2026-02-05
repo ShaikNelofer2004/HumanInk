@@ -48,9 +48,9 @@ graph TD
 
     User((User)) -->|Provides Input Text| PreCritic[Pre-Critic Gate]
 
-    PreCritic -->|Checks Semantics & Density| DecisionGate{Safe?}
-    DecisionGate -->|Yes (Burstiness > 4 or > 7 for Dense)| Output[Final Output Early Exit]
-    DecisionGate -->|No (AI Detected)| Writer[WAS Writer Agent]
+    PreCritic -->|Checks Semantics Density| DecisionGate{Safe?}
+    DecisionGate -->|Yes - High Burstiness| Output[Final Output Early Exit]
+    DecisionGate -->|No - AI Detected| Writer[WAS Writer Agent]
 
     User -->|Optional Writing Samples| Profiler
 
