@@ -3,17 +3,16 @@ from graph import app
 print("--- Starting AI Humanizer Loop Test ---")
 
 # Sample "Robotic" input input
-input_text = (
-"In the rapidly evolving landscape of digital education, it is imperative to underscore the significance of personalized learning methodologies. Furthermore, the integration of adaptive technologies has revolutionized the pedagogical framework, allowing educators to tailor instruction to the unique needs of each student. Moreover, this paradigm shift not only enhances academic engagement but also fosters a culture of inclusivity within the classroom environment. Additionally, it is crucial to recognize that while technology serves as a powerful tool, the role of the teacher remains paramount in guiding the educational journey. In conclusion, the synergy between human mentorship and technological innovation creates a robust foundation for future learning endeavors")
+input_text = ("""
+I’m a Computer Science and Engineering undergraduate at SRM University AP with a strong focus on Artificial Intelligence and Machine Learning. I enjoy building real-world systems that combine AI with full-stack development, especially in areas like autonomous agents, fraud detection, and intelligent web applications.
+ I’ve led an international collaboration project developing multi-agent AI systems inspired by Manus AI, where I worked on agent orchestration, reasoning pipelines, and system integration. I’ve also completed an AIML internship where I built an Online Fraud Detection System using XGBoost and deployed it as a Streamlit web app for real-time predictions.
+ My technical stack includes Python, Java, C++, Flask, React, TensorFlow, PyTorch, LangChain, and databases like MySQL and MongoDB. I enjoy solving problems using DSA concepts and building scalable AI-driven applications. With a current GPA of 9.05, I’m highly motivated to learn, collaborate, and contribute meaningfully as an intern while gaining hands-on industry experience.
+ """)
 inputs = {
     "input_text": input_text,
     "max_iterations": 3,
     "is_robotic": True, # Init state
-    "style_samples": [
-         "I’ve learned that progress doesn’t always come from big breakthroughs. Sometimes it’s just about showing up every day and making small improvements where you can.",
-         "Technology moves quickly, but people don’t always move at the same pace. That’s why it’s important to build tools that actually help, not just impress.",
-         "Good work takes patience. You test, you fail, you adjust, and you try again. Over time, those small efforts start adding up in ways you didn’t expect."
-    ]
+    "style_samples": []
 }
 
 # Run the graph

@@ -8,13 +8,18 @@ load_dotenv()
 class WriterAgent:
     def __init__(self):
         # Using Gemini 1.5 Pro for high creativity
-        self.llm = ChatGoogleGenerativeAI(model="gemini-3-flash-preview", temperature=0.9)
+        self.llm = ChatGoogleGenerativeAI(model="gemini-2.5-pro", temperature=0.9)
 
     def write_draft(self, input_text: str, style_profile: dict = None, feedback: str = None) -> str:
         
         system_instruction = (
             "You are a professional ghostwriter. Your goal is to rewrite the input text to sound completely human. "
-            "You MUST avoid robotic patterns, repetitive sentence structures, and 'AI watermark' words (like 'delve', 'moreover')."
+            "You MUST avoid robotic patterns, repetitive sentence structures, and 'AI watermark' words (like 'delve', 'moreover').\n\n"
+            "**STRATEGY: Chain-of-Thought (CoT)**\n"
+            "1. **ANALYZE:** First, identify 3 specific robotic patterns in the input (e.g., passive voice, uniform sentence length).\n"
+            "2. **PLAN:** List 3 specific changes you will make to fix them (e.g., 'Break sentence 2 into two fragments').\n"
+            "3. **EXECUTE:** Write the final draft.\n\n"
+            "Output ONLY the final draft, but strictly follow your plan."
         )
 
         # Use a placeholder for style profile to avoid brace escaping hell

@@ -29,6 +29,14 @@ def pre_critic_node(state: AgentState):
     burstiness = calculate_burstiness(state["input_text"])
     print(f"    Input Burstiness: {burstiness:.2f}")
     
+    # Semantic Guardrail: Check for AI Watermarks
+    from utils import detect_ai_watermarks
+    watermarks = detect_ai_watermarks(state["input_text"])
+    
+    if watermarks:
+        print(f"    !! Detected AI Watermarks: {watermarks}. Forcing rewrite.")
+        return {"skip_rewriting": False}
+
     if burstiness >= 4.0:
         print("    >> Text is sufficiently human. Skipping rewrite.")
         return {
