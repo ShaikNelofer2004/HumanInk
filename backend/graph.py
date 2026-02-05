@@ -29,6 +29,15 @@ def pre_critic_node(state: AgentState):
     burstiness = calculate_burstiness(state["input_text"])
     print(f"    Input Burstiness: {burstiness:.2f}")
     
+    import numpy as np
+    from nltk.tokenize import sent_tokenize, word_tokenize
+    
+    sentences = sent_tokenize(state["input_text"])
+    lengths = [len(word_tokenize(s)) for s in sentences]
+    avg_length = np.mean(lengths) if lengths else 0
+    
+    print(f"    Avg Sentence Length: {avg_length:.2f}")
+
     # Semantic Guardrail: Check for AI Watermarks
     from utils import detect_ai_watermarks
     watermarks = detect_ai_watermarks(state["input_text"])
@@ -37,8 +46,12 @@ def pre_critic_node(state: AgentState):
         print(f"    !! Detected AI Watermarks: {watermarks}. Forcing rewrite.")
         return {"skip_rewriting": False}
 
-    if burstiness >= 4.0:
-        print("    >> Text is sufficiently human. Skipping rewrite.")
+    # Intelligent Thresholding
+    # If text is "Dense/Academic" (Avg Length > 20), require higher burstiness to pass.
+    required_burstiness = 7.0 if avg_length > 20 else 4.0
+
+    if burstiness >= required_burstiness:
+        print(f"    >> Text is legitimate (Burstiness {burstiness:.2f} > {required_burstiness}). Skipping rewrite.")
         return {
             "skip_rewriting": True, 
             "current_draft": state["input_text"], 
@@ -46,7 +59,7 @@ def pre_critic_node(state: AgentState):
             "style_profile": {} # Not needed
         }
     
-    print("    >> Text needs humanization. Proceeding to Profiler.")
+    print(f"    >> Text needs humanization (Burstiness {burstiness:.2f} < {required_burstiness}). Proceeding to Profiler.")
     return {"skip_rewriting": False}
 
 def profiler_node(state: AgentState):

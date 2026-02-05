@@ -8,7 +8,7 @@ load_dotenv()
 class WriterAgent:
     def __init__(self):
         # Using Gemini 1.5 Pro for high creativity
-        self.llm = ChatGoogleGenerativeAI(model="gemini-2.5-pro", temperature=0.9)
+        self.llm = ChatGoogleGenerativeAI(model="gemini-3-flash-preview", temperature=0.9)
 
     def write_draft(self, input_text: str, style_profile: dict = None, feedback: str = None) -> str:
         
@@ -16,10 +16,15 @@ class WriterAgent:
             "You are a professional ghostwriter. Your goal is to rewrite the input text to sound completely human. "
             "You MUST avoid robotic patterns, repetitive sentence structures, and 'AI watermark' words (like 'delve', 'moreover').\n\n"
             "**STRATEGY: Chain-of-Thought (CoT)**\n"
-            "1. **ANALYZE:** First, identify 3 specific robotic patterns in the input (e.g., passive voice, uniform sentence length).\n"
-            "2. **PLAN:** List 3 specific changes you will make to fix them (e.g., 'Break sentence 2 into two fragments').\n"
+            "1. **ANALYZE:** First, identify 3 specific robotic patterns in the input.\n"
+            "2. **PLAN:** List 3 specific changes you will make to match the style.\n"
             "3. **EXECUTE:** Write the final draft.\n\n"
-            "Output ONLY the final draft, but strictly follow your plan."
+            "**FORMAT:**\n"
+            "You must output your response in two clearly separated sections:\n"
+            "---THOUGHTS---\n"
+            "(Your analysis and plan here)\n"
+            "---DRAFT---\n"
+            "(Your final rewriten text here)"
         )
 
         # Use a placeholder for style profile to avoid brace escaping hell
@@ -45,6 +50,17 @@ class WriterAgent:
         result = chain.invoke(chain_inputs)
         content = result.content
         if isinstance(content, list):
-            # Handle Gemini's list of content blocks
-            return " ".join([block['text'] for block in content if 'text' in block])
-        return str(content)
+            content = " ".join([block['text'] for block in content if 'text' in block])
+        
+        content = str(content)
+
+        # Parse Logic: Separate Thoughts from Draft
+        final_draft = content
+        if "---DRAFT---" in content:
+            parts = content.split("---DRAFT---")
+            thoughts = parts[0].replace("---THOUGHTS---", "").strip()
+            final_draft = parts[1].strip()
+            
+            print(f"\n[Writer CoT]\n{thoughts}\n")
+        
+        return final_draft

@@ -33,6 +33,12 @@ We don't just output the first draft. We simulate an editor-writer fight:
     *   **Perplexity:** The unpredictability of vocabulary.
 *   **The Loop:** If the Critic says "Too robotic (Variance < 3.0)", the Writer **rewrites it** until it passes.
 
+### 3. Smart Thresholds (The Semantic Gate) 🧠
+We don't just rely on one number. The **Pre-Critic Gate** intelligently adapts its strictness:
+*   **Normal Text:** Requires Burstiness > **4.0**.
+*   **Dense/Academic Text:** If sentences are long (Avg > 20 words), we insist on higher variance (Burstiness > **7.0**) to prevent "pseudo-intellectual" AI patterns from slipping through.
+*   **AI Watermarks:** If words like "delve" or "landscape" appear, we **force a rewrite** regardless of the score.
+
 ---
 
 ## 🏗️ Architecture
@@ -42,8 +48,9 @@ graph TD
 
     User((User)) -->|Provides Input Text| PreCritic[Pre-Critic Gate]
 
-    PreCritic -->|Burstiness >= 4.0| Output[Final Output Early Exit]
-    PreCritic -->|Burstiness < 4.0| Writer[WAS Writer Agent]
+    PreCritic -->|Checks Semantics & Density| DecisionGate{Safe?}
+    DecisionGate -->|Yes (Burstiness > 4 or > 7 for Dense)| Output[Final Output Early Exit]
+    DecisionGate -->|No (AI Detected)| Writer[WAS Writer Agent]
 
     User -->|Optional Writing Samples| Profiler
 
@@ -105,6 +112,7 @@ graph TD
     ```env
     GOOGLE_API_KEY=your_gemini_key_here
     GROQ_API_KEY=your_groq_key_here
+    OPENROUTER_API_KEY=your_openrouter_key_here
     
     ```
 
