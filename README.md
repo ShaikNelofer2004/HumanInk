@@ -28,9 +28,7 @@ Before writing a single word, our **Profiler Agent** analyzes your past writing 
 ### 2. The Adversarial Loop (Writer vs. Critic) ⚔️
 We don't just output the first draft. We simulate an editor-writer fight:
 *   **The Writer (Agent A):** Drafts content using your *Style Fingerprint*. Now uses **Chain-of-Thought (CoT)** reasoning to "Plan" edits before writing, ensuring higher quality.
-*   **The Critic (Agent B):** An aggressive "Detective" agent equipped with **Python Tools** (NLTK, TextStat). It calculates:
-    *   **Burstiness:** The standard deviation of sentence lengths.
-    *   **Perplexity:** The unpredictability of vocabulary.
+*   **The Critic (Agent B):** An aggressive "Detective" agent that uses **Weighted Scoring** to evaluate text quality (Burstiness + Vocabulary + Coherence).
 *   **The Loop:** If the Critic says "Too robotic (Variance < 3.0)", the Writer **rewrites it** until it passes.
 
 ### 3. Smart Thresholds (The Semantic Gate) 🧠

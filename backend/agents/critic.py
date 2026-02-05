@@ -17,34 +17,53 @@ class CriticAgent:
         unique_ratio = calculate_unique_ratio(text)
         watermarks = detect_ai_watermarks(text)
 
-        is_robotic = False
-        reasons = []
-
-        # Rule 1: Burstiness (Variance)
-        if burstiness < human_threshold:
-            is_robotic = True
-            reasons.append(f"Sentence variation (Burstiness) is too low ({burstiness:.2f}). Needs > {human_threshold}.")
+        # --- WEIGHTED SCORING SYSTEM (Agent 2.0) ---
         
-        # Rule 2: Watermarks
+        # 1. Burstiness Score (Target: > human_threshold)
+        # Cap at 100 if above threshold
+        burstiness_score = min((burstiness / human_threshold) * 100, 100)
+        
+        # 2. Vocabulary Score (Target: > 0.4 unique ratio)
+        vocab_target = 0.45
+        vocabulary_score = min((unique_ratio / vocab_target) * 100, 100)
+        
+        # 3. Coherence Score (Pass=100, Fail=0) (From Brain 2)
+        coherence_result = self._check_coherence(text)
+        coherence_score = 100 if coherence_result['is_coherent'] else 0
+        
+        # Calculate Weighted Final Score
+        # Weights: Burstiness (40%), Vocabulary (30%), Coherence (30%)
+        final_score = (burstiness_score * 0.4) + (vocabulary_score * 0.3) + (coherence_score * 0.3)
+        
+        # Determine Verdict
+        passing_score = 75.0
+        is_robotic = final_score < passing_score
+        
+        reasons = []
+        if is_robotic:
+            reasons.append(f"Human Score too low ({final_score:.1f}/100). Needs > {passing_score}.")
+            if burstiness_score < 70:
+                reasons.append(f"Burstiness is weak ({burstiness:.2f}).")
+            if vocabulary_score < 70:
+                reasons.append(f"Vocabulary is repetitive ({unique_ratio:.2f}).")
+            if coherence_score == 0:
+                reasons.append(f"Coherence Logic Failed: {coherence_result['reason']}")
+
+        # Override for Watermarks (Immediate Fail)
         if len(watermarks) > 0:
             is_robotic = True
-            reasons.append(f"Contains AI words: {', '.join(watermarks)}.")
-        
-        # Brain 2: The Editor (Coherence Check)
-        coherence_result = self._check_coherence(text)
-        if not coherence_result['is_coherent']:
-            is_robotic = True
-            reasons.append(f"Coherence Failure: {coherence_result['reason']}")
+            final_score = 0 # Penalty
+            reasons.insert(0, f"Detected AI Watermarks: {', '.join(watermarks)}.")
 
         return {
             "is_robotic": is_robotic,
             "score": {
-                "burstiness": burstiness,
-                "grade_level": grade_level,
-                "unique_ratio": unique_ratio,
+                "total": round(final_score, 1),
+                "burstiness": round(burstiness, 2),
+                "vocabulary": round(unique_ratio, 2),
                 "coherence": "PASS" if coherence_result['is_coherent'] else "FAIL"
             },
-            "feedback": " ".join(reasons) if reasons else "Passes human verification."
+            "feedback": " ".join(reasons) if reasons else f"Excellent! Human Score: {final_score:.1f}/100"
         }
 
     def _check_coherence(self, text: str) -> dict:

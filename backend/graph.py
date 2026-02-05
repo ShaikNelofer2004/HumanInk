@@ -113,6 +113,7 @@ def critic_node(state: AgentState):
     result = critic.evaluate(state["current_draft"], human_threshold=5.0)
     
     print(f"    Verdict: {'ROBOTIC' if result['is_robotic'] else 'HUMAN'}")
+    print(f"    Score: {result.get('score', 'N/A')}")
     print(f"    Feedback: {result['feedback']}")
     
     return {
