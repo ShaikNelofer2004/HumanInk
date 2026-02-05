@@ -37,6 +37,14 @@ We don't just rely on one number. The **Pre-Critic Gate** intelligently adapts i
 *   **Dense/Academic Text:** If sentences are long (Avg > 20 words), we insist on higher variance (Burstiness > **7.0**) to prevent "pseudo-intellectual" AI patterns from slipping through.
 *   **AI Watermarks:** If words like "delve" or "landscape" appear, we **force a rewrite** regardless of the score.
 
+### 4. Weighted Scoring System ⚖️
+Instead of a simple Pass/Fail, the **Critic Agent** calculates a nuanced **Human Score (0-100)**:
+> **Formula:** `(Burstiness * 0.4) + (Vocabulary * 0.3) + (Coherence * 0.3)`
+*   **Burstiness (40%):** Variance in sentence length.
+*   **Vocabulary (30%):** Ratio of unique words (prevents repetition).
+*   **Coherence (30%):** LLM check to ensure the text makes sense.
+*   **Threshold:** A score of **< 75** triggers a rewrite.
+
 ---
 
 ## 🏗️ Architecture
@@ -59,13 +67,14 @@ graph TD
     Writer -->|Draft| Critic[CAS Critic Agent]
 
     Critic -->|Mathematician Brain| Tools[Python Tools NLTK TextStat]
-    Tools -->|Burstiness Score| Critic
+    Tools -->|Burstiness + Vocabulary| Critic
 
     Critic -->|Editor Brain| SemanticCheck[LLM Coherence Check]
+    SemanticCheck -->|Coherence Score| Critic
 
-    Critic --> Decision{Human Quality Met}
+    Critic --> Decision{Weighted Score > 75?}
 
-    Decision -->|No Burstiness < 5.0| Writer
+    Decision -->|No| Writer
     Decision -->|Yes| Output
 
 
