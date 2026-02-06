@@ -17,15 +17,14 @@
 
 ## 🆚 Real-World Comparison
 
-We took a standardized **ChatGPT-generated bio** and processed it through a leading competitor (*"Humanise AI"*) versus **HumanInk**. The difference is night and day.
+We took a standardized **ChatGPT-generated bio** and processed it through leading competitors (*"Humanise AI"* and *"aihumanize.io"*) versus **HumanInk**.
 
-| Feature | 🤖 Humanise AI Output | ✒️ HumanInk Result |
-| :--- | :--- | :--- |
-| **Opening Hook** | *"Presently, I am finishing my degree... where most of my time has been utilized..."* <br> *(Passive, wordy, academic filler)* | *"I’m currently an undergrad... studying Computer Science with a deep interest in..."* <br> *(Direct, active, establishes identity immediately)* |
-| **Sentence Structure** | *"One of the most favorite projects is leading... putting accent on..."* <br> *(Awkward phrasing, robotic rhythm)* | *"Lately, I’ve been leading... I love the challenge of building..."* <br> *(Natural conversational flow, varied sentence length)* |
-| **Technical Context** | *"Handling the overall integration was a great thing for me."* <br> *(Vague, generic enthusiasm)* | *"I spent most of my time focusing on reasoning pipelines... getting agents to work together."* <br> *(Specific, technical, credible)* |
-| **Tone & Voice** | *"My toolkit is pretty diverse... Keep a 9.05 GPA, but now looking..."* <br> *(Fragmented, sounds like a list)* | *"I’ve maintained a 9.05 GPA, but I’m really looking to get out of the classroom..."* <br> *(Cohesive, ambitious, human)* |
-| **Final Impression** | **Robotic Translation:** Feels like a thesaurus shuffle. | **Authentic Voice:** Feels like a passionate engineer. |
+| Feature |  Humanise AI |  aihumanize.io |  HumanInk Result |
+| :--- | :--- | :--- | :--- |
+| **Opening Hook** | *"Presently, I am finishing..."* <br> *(Passive, wordy)* | *"I am a senior... **is** studying..."* <br> *(Grammar Error! Clunky)* | *"I’m currently an undergrad..."* <br> *(Direct, active, clean)* |
+| **Sentence Structure** | *"One of the most favorite projects..."* <br> *(Awkward rhythm)* | *"...through the building of... where capabilities are applied in conjunction..."* <br> *(Painful run-on sentence)* | *"Lately, I’ve been leading..."* <br> *(Natural flow)* |
+| **Tone** | *"Most of my time has been utilized to dive deep..."* <br> *(Robotic filler)* | *"My primary passion is... fortunate to lead..."* <br> *(Generic Cover Letter style)* | *"I love the challenge of building..."* <br> *(Authentic passion)* |
+| **Verdict** | **FAIL:** Thesaurus shuffle. | **FAIL:** Structural & Grammar issues. | **WIN:** Sounds like a real person. |
 
 ---
 
