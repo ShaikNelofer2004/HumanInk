@@ -62,7 +62,7 @@ Instead of a simple Pass/Fail, the **Critic Agent** calculates a nuanced **Human
 
 ## 🏗️ Architecture
 
-![Architecture Diagram](assets/HumanInk_Arch.jpg)
+![Architecture Diagram](assets/HumanInk_Arch.png)
 
 ---
 

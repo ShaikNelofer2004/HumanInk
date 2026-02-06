@@ -8,7 +8,8 @@ load_dotenv()
 class CriticAgent:
     def __init__(self):
         # Brain 2: LLM for Coherence Check (Groq Llama 3 for speed)
-        self.llm = ChatGroq(model_name="llama3-70b-8192", temperature=0.1)
+        # Updated to Llama 3.3 for better reasoning
+        self.llm = ChatGroq(model_name="llama-3.3-70b-versatile", temperature=0.1)
 
     def evaluate(self, text: str, human_threshold: float = 5.0) -> dict:
         # Brain 1: The Mathematician (Fast, Local)

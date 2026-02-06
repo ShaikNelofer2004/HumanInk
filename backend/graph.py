@@ -38,28 +38,64 @@ def pre_critic_node(state: AgentState):
     
     print(f"    Avg Sentence Length: {avg_length:.2f}")
 
-    # Semantic Guardrail: Check for AI Watermarks
-    from utils import detect_ai_watermarks
-    watermarks = detect_ai_watermarks(state["input_text"])
+    # --- LLM GATEKEEPER (The "Mini-Brain") ---
+    # Uses a separate Groq Key to avoid rate-limit clashes
+    from langchain_groq import ChatGroq
+    from langchain_core.prompts import ChatPromptTemplate
+    import os
     
-    if watermarks:
-        print(f"    !! Detected AI Watermarks: {watermarks}. Forcing rewrite.")
+    gatekeeper_key = os.getenv("GROQ_API_KEY_GATEKEEPER")
+    if not gatekeeper_key:
+        print("    !! Missing GROQ_API_KEY_GATEKEEPER. Falling back to simple math.")
+        # Fallback to simple burstiness if key is missing
+        if burstiness >= 4.0:
+             return {"skip_rewriting": True, "current_draft": state["input_text"], "is_robotic": False, "style_profile": {}}
         return {"skip_rewriting": False}
 
-    # Intelligent Thresholding
-    # If text is "Dense/Academic" (Avg Length > 20), require higher burstiness to pass.
-    required_burstiness = 7.0 if avg_length > 20 else 4.0
-
-    if burstiness >= required_burstiness:
-        print(f"    >> Text is legitimate (Burstiness {burstiness:.2f} > {required_burstiness}). Skipping rewrite.")
-        return {
-            "skip_rewriting": True, 
-            "current_draft": state["input_text"], 
-            "is_robotic": False,
-            "style_profile": {} # Not needed
-        }
+    llm = ChatGroq(
+        model_name="llama-3.1-8b-instant", 
+        temperature=0.0,
+        api_key=gatekeeper_key
+    )
     
-    print(f"    >> Text needs humanization (Burstiness {burstiness:.2f} < {required_burstiness}). Proceeding to Profiler.")
+    prompt = ChatPromptTemplate.from_template(
+        "You are an expert Editor. Analyze the following text.\n"
+        "Determine if it is **High-Quality, Natural Human Writing**.\n\n"
+        "TEXT: {text}\n\n"
+        "The text requires 'Humanization' (Rewrite) if:\n"
+        "1. It contains grammar errors (e.g., 'I am a senior... is studying').\n"
+        "2. It has 'AI Watermarks' (delve, tapestry, landscape).\n"
+        "3. It has painful run-on sentences or robotic flow.\n\n"
+        "Respond ONLY with a JSON object: {{ \"needs_humanization\": boolean, \"reason\": \"short reason\" }}"
+    )
+    
+    try:
+        chain = prompt | llm
+        response = chain.invoke({"text": state["input_text"]})
+        import json, re
+        # Regex extract JSON
+        json_match = re.search(r"\{.*\}", response.content, re.DOTALL)
+        if json_match:
+            result = json.loads(json_match.group(0))
+            needs_humanization = result.get("needs_humanization", True) # Default to True (Rewrite) if unsure
+            reason = result.get("reason", "Unknown")
+            
+            if needs_humanization:
+                print(f"    (Gatekeeper) 🛑 Text needs work: {reason}")
+                return {"skip_rewriting": False}
+            else:
+                print(f"    (Gatekeeper) ✅ Text is High-Quality Human: {reason}")
+                return {
+                    "skip_rewriting": True, 
+                    "current_draft": state["input_text"], 
+                    "is_robotic": False,
+                    "style_profile": {} 
+                }
+    except Exception as e:
+        print(f"    !! Gatekeeper Error: {e}. Proceeding to rewrite to be safe.")
+        return {"skip_rewriting": False}
+
+    # If we get here, something weird happened, just rewrite
     return {"skip_rewriting": False}
 
 def profiler_node(state: AgentState):

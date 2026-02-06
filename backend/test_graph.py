@@ -4,9 +4,9 @@ print("--- Starting AI Humanizer Loop Test ---")
 
 # Sample "Robotic" input input
 input_text = ("""
-I’m a Computer Science and Engineering undergraduate at SRM University AP with a strong focus on Artificial Intelligence and Machine Learning. I enjoy building real-world systems that combine AI with full-stack development, especially in areas like autonomous agents, fraud detection, and intelligent web applications.
- I’ve led an international collaboration project developing multi-agent AI systems inspired by Manus AI, where I worked on agent orchestration, reasoning pipelines, and system integration. I’ve also completed an AIML internship where I built an Online Fraud Detection System using XGBoost and deployed it as a Streamlit web app for real-time predictions.
- My technical stack includes Python, Java, C++, Flask, React, TensorFlow, PyTorch, LangChain, and databases like MySQL and MongoDB. I enjoy solving problems using DSA concepts and building scalable AI-driven applications. With a current GPA of 9.05, I’m highly motivated to learn, collaborate, and contribute meaningfully as an intern while gaining hands-on industry experience.
+I am a senior at SRM University AP is studying Computer Science and Engineering, and my primary passion is developing AI and ML solutions through the building of robust real-world systems where the capabilities of AI are applied in conjunction with the capabilities of a full-stack application (i.e., autonomous agents, fraud detection solutions, and intelligent web apps).
+I have been fortunate to lead an international collaboration project to develop a multi-agent AI system inspired by Manus AI, which required the design and implementation of agent orchestration, reasoning pipelines, and system integration, as well as an AIML internship building an XGBoost online fraud detection system and deploying it as a Streamlit web app to provide real-time prediction capabilities.
+I have an excellent technical background, with a primary skill set in Python, Java, C++, Flask, React, TensorFlow, PyTorch, LangChain, and numerous databases (MySQL, MongoDB). I enjoy applying problem-solving techniques using DSA principles and developing scalable AI-driven applications. My current GPA is 9.05, I am motivated and willing to learn, collaborate and contribute to the internship experience and gain practical working knowledge of the industry.
  """)
 inputs = {
     "input_text": input_text,
