@@ -49,36 +49,7 @@ Instead of a simple Pass/Fail, the **Critic Agent** calculates a nuanced **Human
 
 ## 🏗️ Architecture
 
-```mermaid
-graph TD
-
-    User((User)) -->|Provides Input Text| PreCritic[Pre-Critic Gate]
-
-    PreCritic -->|Checks Semantics Density| DecisionGate{Safe?}
-    DecisionGate -->|Yes - High Burstiness| Output[Final Output Early Exit]
-    DecisionGate -->|No - AI Detected| Writer[WAS Writer Agent]
-
-    User -->|Optional Writing Samples| Profiler
-
-    Profiler -->|Creates Style Profile JSON| Style[Style Fingerprint]
-
-    Style -->|Inject Style| Writer[WAS Writer Agent]
-
-    Writer -->|Draft| Critic[CAS Critic Agent]
-
-    Critic -->|Mathematician Brain| Tools[Python Tools NLTK TextStat]
-    Tools -->|Burstiness + Vocabulary| Critic
-
-    Critic -->|Editor Brain| SemanticCheck[LLM Coherence Check]
-    SemanticCheck -->|Coherence Score| Critic
-
-    Critic --> Decision{Weighted Score > 75?}
-
-    Decision -->|No| Writer
-    Decision -->|Yes| Output
-
-
-```
+![Architecture Diagram](assets/HumanInk_Arch.jpg)
 
 ---
 
