@@ -44,13 +44,19 @@ We don't just output the first draft. We simulate an editor-writer fight:
 *   **The Critic (Agent B):** An aggressive "Detective" agent that uses **Weighted Scoring** to evaluate text quality (Burstiness + Vocabulary + Coherence).
 *   **The Loop:** If the Critic says "Too robotic (Variance < 3.0)", the Writer **rewrites it** until it passes.
 
-### 3. Smart Thresholds (The Semantic Gate) 🧠
-We don't just rely on one number. The **Pre-Critic Gate** intelligently adapts its strictness:
+### 3. Smart Thresholds (The Math Gate) 🧮
+We filter out obviously robotic text efficiently:
 *   **Normal Text:** Requires Burstiness > **4.0**.
-*   **Dense/Academic Text:** If sentences are long (Avg > 20 words), we insist on higher variance (Burstiness > **7.0**) to prevent "pseudo-intellectual" AI patterns from slipping through.
-*   **AI Watermarks:** If words like "delve" or "landscape" appear, we **force a rewrite** regardless of the score.
+*   **Dense/Academic Text:** If sentences are long (Avg > 20 words), we insist on higher variance (Burstiness > **7.0**) to prevent "pseudo-intellectual" AI patterns.
+*   **Verdict:** If the math fails, we rewrite immediately. If it passes, we check with the Gatekeeper.
 
-### 4. Weighted Scoring System ⚖️
+### 4. LLM Gatekeeper (The Semantic Gate) 🧠
+Text that "games" the math stats must face the **Llama 3.1 8B Gatekeeper**:
+*   **The Check:** "Does this read like high-quality human text?"
+*   **The Gate:** Catches grammar errors, painful run-on sentences (like from *aihumanize.io*), and "watermarked" AI phrases.
+*   **Why:** Ensures only truly natural text escapes the loop.
+
+### 5. Weighted Scoring System ⚖️
 Instead of a simple Pass/Fail, the **Critic Agent** calculates a nuanced **Human Score (0-100)**:
 > **Formula:** `(Burstiness * 0.4) + (Vocabulary * 0.3) + (Coherence * 0.3)`
 *   **Burstiness (40%):** Variance in sentence length.
@@ -72,7 +78,8 @@ Instead of a simple Pass/Fail, the **Critic Agent** calculates a nuanced **Human
 *   **Orchestration:** LangGraph (Cyclic flow control)
 *   **AI Models:**
     *   **Writer/Profiler:** Gemini Flash Preview (High Speed/Creativity)
-    *   **Critic:** Llama 3 70B (via Groq) + Python Analysis Tools
+    *   **Critic:** Llama 3.3 70B (State-of-the-Art Reasoning)
+    *   **Gatekeeper:** Llama 3.1 8B (High-Speed Classification)
 *   **Analysis Tools:** `nltk`, `textstat`, `numpy`
 
 ---

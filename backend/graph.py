@@ -36,9 +36,27 @@ def pre_critic_node(state: AgentState):
     lengths = [len(word_tokenize(s)) for s in sentences]
     avg_length = np.mean(lengths) if lengths else 0
     
+    # --- 1. SMART THRESHOLDS (The Math Gate) ---
+    import numpy as np
+    from nltk.tokenize import sent_tokenize, word_tokenize
+    
+    sentences = sent_tokenize(state["input_text"])
+    lengths = [len(word_tokenize(s)) for s in sentences]
+    avg_length = np.mean(lengths) if lengths else 0
+    
     print(f"    Avg Sentence Length: {avg_length:.2f}")
 
-    # --- LLM GATEKEEPER (The "Mini-Brain") ---
+    # Intelligent Thresholding
+    # If text is "Dense/Academic" (Avg Length > 20), require higher burstiness to pass.
+    required_burstiness = 7.0 if avg_length > 20 else 4.0
+
+    if burstiness < required_burstiness:
+        print(f"    >> FAILED Math Check (Burstiness {burstiness:.2f} < {required_burstiness}). Rewrite required.")
+        return {"skip_rewriting": False}
+
+    print(f"    >> PASSED Math Check. Verifying with Gatekeeper...")
+
+    # --- 2. LLM GATEKEEPER (The Semantic Gate) ---
     # Uses a separate Groq Key to avoid rate-limit clashes
     from langchain_groq import ChatGroq
     from langchain_core.prompts import ChatPromptTemplate
@@ -46,11 +64,8 @@ def pre_critic_node(state: AgentState):
     
     gatekeeper_key = os.getenv("GROQ_API_KEY_GATEKEEPER")
     if not gatekeeper_key:
-        print("    !! Missing GROQ_API_KEY_GATEKEEPER. Falling back to simple math.")
-        # Fallback to simple burstiness if key is missing
-        if burstiness >= 4.0:
-             return {"skip_rewriting": True, "current_draft": state["input_text"], "is_robotic": False, "style_profile": {}}
-        return {"skip_rewriting": False}
+        print("    !! Missing GROQ_API_KEY_GATEKEEPER. Skipping Gatekeeper check (since Math passed).")
+        return {"skip_rewriting": True, "current_draft": state["input_text"], "is_robotic": False, "style_profile": {}}
 
     llm = ChatGroq(
         model_name="llama-3.1-8b-instant", 
