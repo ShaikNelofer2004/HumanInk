@@ -15,20 +15,21 @@
 
 ---
 
-## � Real-World Comparison
+## 🆚 Real-World Comparison
 
-See the difference? **HumanInk** transforms stiff, robotic text into fluid, natural language.
+We took a standardized **ChatGPT-generated bio** and processed it through a leading competitor (*"Humanise AI"*) versus **HumanInk**. The difference is night and day.
 
 | Feature | 🤖 Humanise AI Output | ✒️ HumanInk Result |
 | :--- | :--- | :--- |
-| **Opening** | *"Presently, I am finishing my degree... where most of my time has been utilized..."* | *"I’m currently an undergrad... studying Computer Science with a deep interest in..."* |
-| **Flow** | *"One of the most favorite projects is leading... putting accent on..."* | *"Lately, I’ve been leading... I love the challenge of building..."* |
-| **Voice** | Passive, distant, and over-explained. | Active, personal, and confident. |
-| **Clarity** | *"Handling the overall integration was a great thing for me."* | *"I’m eager to collaborate... and build something that actually makes an impact."* |
+| **Opening Hook** | *"Presently, I am finishing my degree... where most of my time has been utilized..."* <br> *(Passive, wordy, academic filler)* | *"I’m currently an undergrad... studying Computer Science with a deep interest in..."* <br> *(Direct, active, establishes identity immediately)* |
+| **Sentence Structure** | *"One of the most favorite projects is leading... putting accent on..."* <br> *(Awkward phrasing, robotic rhythm)* | *"Lately, I’ve been leading... I love the challenge of building..."* <br> *(Natural conversational flow, varied sentence length)* |
+| **Technical Context** | *"Handling the overall integration was a great thing for me."* <br> *(Vague, generic enthusiasm)* | *"I spent most of my time focusing on reasoning pipelines... getting agents to work together."* <br> *(Specific, technical, credible)* |
+| **Tone & Voice** | *"My toolkit is pretty diverse... Keep a 9.05 GPA, but now looking..."* <br> *(Fragmented, sounds like a list)* | *"I’ve maintained a 9.05 GPA, but I’m really looking to get out of the classroom..."* <br> *(Cohesive, ambitious, human)* |
+| **Final Impression** | **Robotic Translation:** Feels like a thesaurus shuffle. | **Authentic Voice:** Feels like a passionate engineer. |
 
 ---
 
-## �🌟 The "Secret Sauce"
+## 🌟 The "Secret Sauce"
 
 Most humanizers sound like "different AI." HumanInk sounds like **YOU**.
 
@@ -110,6 +111,7 @@ Instead of a simple Pass/Fail, the **Critic Agent** calculates a nuanced **Human
 4.  **Run the Profiler Test:**
     ```bash
     python backend/test_profiler.py
+    ```
 
 5.  **Run the Graph Test:**
     ```bash
@@ -125,5 +127,3 @@ We welcome contributions! Please follow these steps:
 3.  Make your changes and commit them: `git commit -m 'Add some feature'`.
 4.  Push to the branch: `git push origin feature/your-feature-name`.
 5.  Submit a pull request.
-
-
