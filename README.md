@@ -95,7 +95,7 @@ Instead of a simple Pass/Fail, the **Critic Agent** calculates a nuanced **Human
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/yourusername/humanink.git
+    git clone https://github.com/ShaikNelofer2004/humanink.git
     cd humanink
     ```
 
@@ -111,6 +111,7 @@ Instead of a simple Pass/Fail, the **Critic Agent** calculates a nuanced **Human
     GOOGLE_API_KEY=your_gemini_key_here
     GROQ_API_KEY=your_groq_key_here
     OPENROUTER_API_KEY=your_openrouter_key_here
+    GROQ_API_KEY_GATEKEEPER=your_gatekeeper_key_here
     
     ```
 
