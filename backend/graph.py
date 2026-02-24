@@ -1,6 +1,6 @@
 from typing import TypedDict, Annotated, List, Dict, Any
 from langgraph.graph import StateGraph, END
-from agents import WriterAgent, CriticAgent, ProfilerAgent
+from agents import WriterAgent, CriticAgent, ProfilerAgent, GatekeeperAgent
 from utils import calculate_burstiness
 
 # Define the State of the Graph
@@ -19,6 +19,7 @@ class AgentState(TypedDict):
 writer = WriterAgent()
 critic = CriticAgent()
 profiler = ProfilerAgent()
+gatekeeper = GatekeeperAgent()
 
 def pre_critic_node(state: AgentState):
     """
@@ -26,92 +27,18 @@ def pre_critic_node(state: AgentState):
     Check if the input text is ALREADY human enough.
     """
     print("--- Node: Pre-Critic (Early Analysis) ---")
-    burstiness = calculate_burstiness(state["input_text"])
-    print(f"    Input Burstiness: {burstiness:.2f}")
     
-    import numpy as np
-    from nltk.tokenize import sent_tokenize, word_tokenize
+    evaluation = gatekeeper.evaluate(state["input_text"])
     
-    sentences = sent_tokenize(state["input_text"])
-    lengths = [len(word_tokenize(s)) for s in sentences]
-    avg_length = np.mean(lengths) if lengths else 0
-    
-    # --- 1. SMART THRESHOLDS (The Math Gate) ---
-    import numpy as np
-    from nltk.tokenize import sent_tokenize, word_tokenize
-    
-    sentences = sent_tokenize(state["input_text"])
-    lengths = [len(word_tokenize(s)) for s in sentences]
-    avg_length = np.mean(lengths) if lengths else 0
-    
-    print(f"    Avg Sentence Length: {avg_length:.2f}")
-
-    # Intelligent Thresholding
-    # If text is "Dense/Academic" (Avg Length > 20), require higher burstiness to pass.
-    required_burstiness = 7.0 if avg_length > 20 else 4.0
-
-    if burstiness < required_burstiness:
-        print(f"    >> FAILED Math Check (Burstiness {burstiness:.2f} < {required_burstiness}). Rewrite required.")
+    if evaluation.get("skip_rewriting"):
+        return {
+            "skip_rewriting": True, 
+            "current_draft": state["input_text"], 
+            "is_robotic": False,
+            "style_profile": {} 
+        }
+    else:
         return {"skip_rewriting": False}
-
-    print(f"    >> PASSED Math Check. Verifying with Gatekeeper...")
-
-    # --- 2. LLM GATEKEEPER (The Semantic Gate) ---
-    # Uses a separate Groq Key to avoid rate-limit clashes
-    from langchain_groq import ChatGroq
-    from langchain_core.prompts import ChatPromptTemplate
-    import os
-    
-    gatekeeper_key = os.getenv("GROQ_API_KEY_GATEKEEPER")
-    if not gatekeeper_key:
-        print("    !! Missing GROQ_API_KEY_GATEKEEPER. Skipping Gatekeeper check (since Math passed).")
-        return {"skip_rewriting": True, "current_draft": state["input_text"], "is_robotic": False, "style_profile": {}}
-
-    llm = ChatGroq(
-        model_name="llama-3.1-8b-instant", 
-        temperature=0.0,
-        api_key=gatekeeper_key
-    )
-    
-    prompt = ChatPromptTemplate.from_template(
-        "You are an expert Editor. Analyze the following text.\n"
-        "Determine if it is **High-Quality, Natural Human Writing**.\n\n"
-        "TEXT: {text}\n\n"
-        "The text requires 'Humanization' (Rewrite) if:\n"
-        "1. It contains grammar errors (e.g., 'I am a senior... is studying').\n"
-        "2. It has 'AI Watermarks' (delve, tapestry, landscape).\n"
-        "3. It has painful run-on sentences or robotic flow.\n\n"
-        "Respond ONLY with a JSON object: {{ \"needs_humanization\": boolean, \"reason\": \"short reason\" }}"
-    )
-    
-    try:
-        chain = prompt | llm
-        response = chain.invoke({"text": state["input_text"]})
-        import json, re
-        # Regex extract JSON
-        json_match = re.search(r"\{.*\}", response.content, re.DOTALL)
-        if json_match:
-            result = json.loads(json_match.group(0))
-            needs_humanization = result.get("needs_humanization", True) # Default to True (Rewrite) if unsure
-            reason = result.get("reason", "Unknown")
-            
-            if needs_humanization:
-                print(f"    (Gatekeeper) 🛑 Text needs work: {reason}")
-                return {"skip_rewriting": False}
-            else:
-                print(f"    (Gatekeeper) ✅ Text is High-Quality Human: {reason}")
-                return {
-                    "skip_rewriting": True, 
-                    "current_draft": state["input_text"], 
-                    "is_robotic": False,
-                    "style_profile": {} 
-                }
-    except Exception as e:
-        print(f"    !! Gatekeeper Error: {e}. Proceeding to rewrite to be safe.")
-        return {"skip_rewriting": False}
-
-    # If we get here, something weird happened, just rewrite
-    return {"skip_rewriting": False}
 
 def profiler_node(state: AgentState):
     """

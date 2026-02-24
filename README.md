@@ -44,19 +44,12 @@ We don't just output the first draft. We simulate an editor-writer fight:
 *   **The Critic (Agent B):** An aggressive "Detective" agent that uses **Weighted Scoring** to evaluate text quality (Burstiness + Vocabulary + Coherence).
 *   **The Loop:** If the Critic says "Too robotic (Variance < 3.0)", the Writer **rewrites it** until it passes.
 
-### 3. Smart Thresholds (The Math Gate) 🧮
-We filter out obviously robotic text efficiently:
-*   **Normal Text:** Requires Burstiness > **4.0**.
-*   **Dense/Academic Text:** If sentences are long (Avg > 20 words), we insist on higher variance (Burstiness > **7.0**) to prevent "pseudo-intellectual" AI patterns.
-*   **Verdict:** If the math fails, we rewrite immediately. If it passes, we check with the Gatekeeper.
+### 3. The Gatekeeper Agent (The Double Gate) 🚪
+Before rewriting, the **Gatekeeper Agent** screens the text to see if it's already "human enough" to skip the loop entirely via a two-step check:
+*   **Gate A (The Math Gate):** Filters obviously robotic text. Normal text needs Burstiness > **4.0**. Dense text (Avg > 20 words/sentence) needs Burstiness > **7.0**.
+*   **Gate B (The Semantic Gate):** Uses **Llama 3.1 8B** to ensure the text isn't gaming the math. It catches grammar errors, run-on sentences, and AI watermarked phrases.
 
-### 4. LLM Gatekeeper (The Semantic Gate) 🧠
-Text that "games" the math stats must face the **Llama 3.1 8B Gatekeeper**:
-*   **The Check:** "Does this read like high-quality human text?"
-*   **The Gate:** Catches grammar errors, painful run-on sentences (like from *aihumanize.io*), and "watermarked" AI phrases.
-*   **Why:** Ensures only truly natural text escapes the loop.
-
-### 5. Weighted Scoring System ⚖️
+### 4. Weighted Scoring System ⚖️
 Instead of a simple Pass/Fail, the **Critic Agent** calculates a nuanced **Human Score (0-100)**:
 > **Formula:** `(Burstiness * 0.4) + (Vocabulary * 0.3) + (Coherence * 0.3)`
 *   **Burstiness (40%):** Variance in sentence length.
