@@ -33,28 +33,32 @@ We took a standardized **ChatGPT-generated bio** and processed it through leadin
 Most humanizers sound like "different AI." HumanInk sounds like **YOU**.
 
 ### 1. The Profiler Agent 🕵️‍♂️
-Before writing anything, the **Profiler Agent** processes user samples to extract a unique **Style Fingerprint**:
-*   **Sentence Rhythm:** Do you use punchy short sentences? or long, academic ones?
-*   **Vocabulary:** Do you use formal or casual words?
-*   **Quirks:** Do you use em-dashes? Do you start sentences with "And"?
+**Goal:** Learn *how* you write, not just *what* you write.
+Before rewriting anything, the **Profiler Agent** (powered by Llama-3.3-70B) processes a set of your writing samples to extract a unique **Style Fingerprint**. It looks beyond simple tone and focuses on the mechanics of your writing:
+*   **Sentence Rhythm:** Do you heavily favor punchy, rapid-fire sentences, or do you lean towards long, academically structured compound sentences?
+*   **Vocabulary:** Do you use formal, elevated language ("utilize," "moreover"), or do you prefer casual, everyday terminology?
+*   **Quirks & Habits:** Do you overuse em-dashes? Do you frequently start sentences with conjunctions like "And" or "But"? Are you a strict adherent to the Oxford comma?
 
 ### 2. The Gatekeeper 🚪
-When input text is submitted, it first passes through the Gatekeeper to see if it even *needs* to be rewritten, saving time and tokens. It uses a two-step check:
-*   **Math Gate (Adaptive Math):** Filters obviously robotic text mathematically. Normal text needs Burstiness > **4.0**. Dense/Academic text needs Burstiness > **7.0**. If this fails, the text is sent to the Writer.
-*   **LLM Gatekeeper (Semantic Intelligence):** If the math passes, an LLM checks for grammar errors, robotic flow, and AI watermarks. If it passes this, the text goes straight to the **Final Output**. If not, it enters the Loop.
+**Goal:** Don't fix what isn't broken.
+When input text is submitted, it first passes through the Gatekeeper. This multi-stage screening prevents unnecessary API calls and time-consuming rewriting if the text is already "human enough."
+*   **Stage 1: Adaptive Math:** This is a deterministic mathematical filter. If the text is a generally standard email or paragraph (Avg Sentence Length < 20), it requires a Burstiness score of **> 4.0**. If it's a dense academic paper (Avg Sentence Length > 20), it demands a higher Burstiness score of **> 7.0**, as AI models notoriously generate monotonous dense text.
+*   **Stage 2: Semantic Intelligence:** If the math checks out, a high-speed LLM (Llama-3.1-8B) semantically analyzes the text. It actively searches for grammar errors, awkward run-on sentences, and glaring "AI Watermarks" (words like *delve*, *tapestry*, *testament*). 
+*   **The Routing:** If the text survives both stages, it skips the entire loop and goes straight to the **Final Output**. If it fails, it is passed to the Writer.
 
 ### 3. The Reflexion Loop (Writer & Critic) ⚔️
-If the text fails the Gatekeeper, it enters an iterative refinement loop until it reaches human-level quality.
+**Goal:** The Adversarial Showdown.
+If the text fails the Gatekeeper, it enters an iterative refinement loop. Here, two agents battle it out until the text reaches a human-level threshold.
 
 #### A. The Writer Agent (The Drafter) ✍️
-*   **Chain-of-Thought Planning:** The Writer uses reasoning to "Plan" edits to match the exact *Style Fingerprint* before generating the draft.
-*   **Style Injection:** It actively applies your quirks and vocabulary to the generated text.
+*   **Chain-of-Thought Planning:** The Writer uses a CoT process to "Plan" its edits first. It reviews the original text, reviews your *Style Fingerprint*, and plans 3 specific changes before generating the actual draft.
+*   **Style Injection:** It actively applies your quirks and vocabulary choices to the generated draft, attempting to perfectly mimic your voice while maintaining the original meaning.
 
 #### B. The Critic Agent (Dual-Brain Evaluation) ⚖️
-The Critic evaluates the Writer's draft using two "brains" to calculate a **Weighted Score**:
-*   **Math Brain (NLTK/TextStat):** Checks Burstiness (40% weight) and Vocabulary/Unique Words (30% weight).
-*   **Editor Brain (LLM Coherence):** Ensures the text fundamentally makes syntactic sense (30% weight).
-*   **The Verdict:** If the combined score is **> 75**, the text is approved and sent to **Final Output**. If it's less, the Critic sends feedback back to the Writer to **Refine** it again.
+The Critic mathematically and semantically evaluates the Writer's draft to calculate a nuanced **Human Score (0-100)**:
+*   **Math Brain:** Uses NLTK and TextStat to evaluate Burstiness (40% weight) and the ratio of Unique Words (30% weight) to prevent repetitive phrasing.
+*   **Editor Brain:** Uses an LLM to ensure the text fundamentally makes syntactic sense and is coherent (30% weight).
+*   **The Verdict:** If the final score is **> 75**, the text escapes the loop and is sent to **Final Output**. If it's **< 75**, the Critic rejects the draft and sends specific, actionable feedback back to the Writer to **Refine** the text again. This continues until the threshold is met.
 
 ---
 
