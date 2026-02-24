@@ -33,29 +33,28 @@ We took a standardized **ChatGPT-generated bio** and processed it through leadin
 Most humanizers sound like "different AI." HumanInk sounds like **YOU**.
 
 ### 1. The Personal Style Profiler 🕵️‍♂️
-Before writing a single word, our **Profiler Agent** analyzes your past writing (emails, essays, blogs) to extract your unique **Style Fingerprint**:
+Before writing anything, the **Profiler Agent** analyzes your past writing to extract your unique **Style Fingerprint**:
 *   **Sentence Rhythm:** Do you use punchy short sentences? or long, academic ones?
-*   **Vocabulary:** Do you say "utilize" or "use"?
+*   **Vocabulary:** Do you use formal or casual words?
 *   **Quirks:** Do you use em-dashes? Do you start sentences with "And"?
 
-### 2. The Adversarial Loop (Writer vs. Critic) ⚔️
-We don't just output the first draft. We simulate an editor-writer fight:
-*   **The Writer (Agent A):** Drafts content using your *Style Fingerprint*. Now uses **Chain-of-Thought (CoT)** reasoning to "Plan" edits before writing, ensuring higher quality.
-*   **The Critic (Agent B):** An aggressive "Detective" agent that uses **Weighted Scoring** to evaluate text quality (Burstiness + Vocabulary + Coherence).
-*   **The Loop:** If the Critic says "Too robotic (Variance < 3.0)", the Writer **rewrites it** until it passes.
+### 2. The Writer (The Drafter) ✍️
+The **Writer Agent** generates the actual content using your extracted *Style Fingerprint*.
+*   **Chain-of-Thought (CoT):** It uses reasoning to first "Plan" edits to match your style before generating the final draft, ensuring much higher quality output.
+*   **Adversarial Looping:** If the draft is rejected later in the pipeline, the Writer receives specific feedback on what to change and rewrites it.
 
-### 3. The Gatekeeper Agent (The Double Gate) 🚪
-Before rewriting, the **Gatekeeper Agent** screens the text to see if it's already "human enough" to skip the loop entirely via a two-step check:
+### 3. The Gatekeeper (The Double Gate) 🚪
+Before deciding if a rewrite was successful (or if the original text was already good enough), the **Gatekeeper Agent** screens the text:
 *   **Gate A (The Math Gate):** Filters obviously robotic text. Normal text needs Burstiness > **4.0**. Dense text (Avg > 20 words/sentence) needs Burstiness > **7.0**.
-*   **Gate B (The Semantic Gate):** Uses **Llama 3.1 8B** to ensure the text isn't gaming the math. It catches grammar errors, run-on sentences, and AI watermarked phrases.
+*   **Gate B (The Semantic Gate):** Uses an LLM to ensure the text isn't gaming the math. It catches grammar errors, run-on sentences, and AI phrase watermarks.
 
-### 4. Weighted Scoring System ⚖️
-Instead of a simple Pass/Fail, the **Critic Agent** calculates a nuanced **Human Score (0-100)**:
+### 4. The Critic (The Judge) ⚖️
+If the Gatekeeper passes the text loop, the **Critic Agent** evaluates the draft mathematically using a **Human Score (0-100)**:
 > **Formula:** `(Burstiness * 0.4) + (Vocabulary * 0.3) + (Coherence * 0.3)`
 *   **Burstiness (40%):** Variance in sentence length.
 *   **Vocabulary (30%):** Ratio of unique words (prevents repetition).
-*   **Coherence (30%):** LLM check to ensure the text makes sense.
-*   **Threshold:** A score of **< 75** triggers a rewrite.
+*   **Coherence (30%):** Ensuring the text fundamentally makes sense.
+*   **Threshold:** A score of **< 75** means the Writer must rewrite again.
 
 ---
 
