@@ -55,7 +55,11 @@ If the text fails the Gatekeeper, it enters an iterative refinement loop. Here, 
 *   **Style Injection:** It actively applies your quirks and vocabulary choices to the generated draft, attempting to perfectly mimic your voice while maintaining the original meaning.
 
 #### B. The Critic Agent (Dual-Brain Evaluation) ⚖️
-The Critic mathematically and semantically evaluates the Writer's draft to calculate a nuanced **Human Score (0-100)**:
+The Critic mathematically and semantically evaluates the Writer's draft to calculate a nuanced **Human Score (0-100)**. 
+
+The evaluation is weighted according to this formula:
+> `Score = (Burstiness * 0.4) + (Vocabulary * 0.3) + (Coherence * 0.3)`
+
 *   **Math Brain:** Uses NLTK and TextStat to evaluate Burstiness (40% weight) and the ratio of Unique Words (30% weight) to prevent repetitive phrasing.
 *   **Editor Brain:** Uses an LLM to ensure the text fundamentally makes syntactic sense and is coherent (30% weight).
 *   **The Verdict:** If the final score is **> 75**, the text escapes the loop and is sent to **Final Output**. If it's **< 75**, the Critic rejects the draft and sends specific, actionable feedback back to the Writer to **Refine** the text again. This continues until the threshold is met.
