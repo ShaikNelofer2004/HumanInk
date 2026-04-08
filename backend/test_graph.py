@@ -5,11 +5,7 @@ print("--- Starting AI Humanizer Loop Test ---")
 # Sample "Robotic" input (Low Burstiness)
 # Sentences have almost identical lengths (6-7 words) to trigger Math Fail.
 input_text = ("""
-I want to work in your company because it aligns well with my technical background and the kind of real-world problems I’m interested in solving. Through my internships and projects, I’ve worked extensively on AI/ML systems, backend development, and applied machine learning—especially in areas like fraud detection, NLP, and multi-agent AI platforms.
-
-Your company’s focus on building scalable, production-ready technology matches my experience of taking models beyond theory—designing pipelines, evaluating performance, and deploying solutions using tools like Python, FastAPI, Flask, and ML frameworks. I’m particularly interested in contributing to teams where I can apply my problem-solving skills, learn from experienced engineers, and work on systems that have real impact.
-
-Overall, I see this role as a strong opportunity to grow as a software/AI engineer while adding value through my hands-on experience, strong fundamentals, and willingness to learn.
+The integration of artificial intelligence into daily workflows significantly enhances overarching productivity. By automating repetitive administrative tasks, employees are empowered to allocate their cognitive resources toward high-level strategic objectives.
 """)
 inputs = {
     "input_text": input_text,
