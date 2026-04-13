@@ -79,7 +79,9 @@ const Workspace = ({ userProfile, onGoHome }) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           input_text: inputText,
-          style_profile: userProfile || { archetype: 'Guest', tone: 'Neutral' }
+          style_profile: userProfile || { archetype: 'Guest', tone: 'Neutral' },
+          academic_mode: userProfile?.academicMode || false,
+          field_id: userProfile?.field?.id || null,
         })
       });
 
@@ -178,7 +180,13 @@ const Workspace = ({ userProfile, onGoHome }) => {
         </div>
         
         {userProfile && (
-          <div className="flex gap-4">
+          <div className="flex gap-3 flex-wrap">
+             {userProfile.academicMode && (
+               <span className="bg-emerald-500/10 border border-emerald-500/30 px-4 py-1.5 rounded-full text-[10px] font-mono text-emerald-400 uppercase tracking-[0.2em] shadow-[0_0_15px_rgba(16,185,129,0.15)] flex items-center gap-1.5">
+                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                 Academic · {userProfile.field?.label || 'General'}
+               </span>
+             )}
              <span className="bg-ink-primary/10 border border-ink-primary/30 px-4 py-1.5 rounded-full text-[10px] font-mono text-ink-primary uppercase tracking-[0.2em] shadow-[0_0_15px_rgba(142,45,226,0.15)]">DNA: {userProfile.archetype || 'Guest'}</span>
              <span className="bg-white/5 border border-white/10 px-4 py-1.5 rounded-full text-[10px] font-mono text-gray-400 uppercase tracking-[0.2em]">Pitch: {userProfile.tone || 'Neutral'}</span>
           </div>

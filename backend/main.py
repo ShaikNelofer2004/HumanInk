@@ -2,12 +2,18 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 import json
 import asyncio
 
 # Import graph components
 from graph import app as langgraph_app, profiler
+from latex_utils import (
+    extract_latex_tokens,
+    reinjert_latex_tokens,
+    is_latex_document,
+    get_field_profile
+)
 
 app = FastAPI()
 
@@ -27,6 +33,8 @@ class HumanizeRequest(BaseModel):
     input_text: str
     style_profile: Dict[str, Any] = None
     max_iterations: int = 3
+    academic_mode: bool = False
+    field_id: Optional[str] = None  # 'cs', 'medicine', 'humanities', 'law', 'business', 'general'
 
 @app.post("/api/profile")
 async def extract_profile(req: ProfileRequest):
@@ -43,10 +51,37 @@ async def extract_profile(req: ProfileRequest):
 async def humanize_stream(req: HumanizeRequest):
     """Runs the LangGraph Reflexion Loop and streams events using SSE."""
     
+    # ── Academic Mode: LaTeX Pre-Processing ──────────────────────────────────
+    raw_input = req.input_text
+    token_map = {}
+    effective_profile = req.style_profile or {}
+
+    if req.academic_mode:
+        # Step 1: Auto-detect or use field baseline profile
+        if req.field_id and not effective_profile.get("style_instructions"):
+            field_profile = get_field_profile(req.field_id)
+            effective_profile = {**field_profile, **(effective_profile or {})}
+        
+        # Step 2: Strip LaTeX tokens, save to token_map
+        if is_latex_document(raw_input) or req.field_id:
+            clean_input, token_map = extract_latex_tokens(raw_input)
+            # Inject placeholder instructions into the style profile for the Writer
+            effective_profile["latex_note"] = (
+                "CRITICAL: The input text contains <<LATEX_*>> placeholders. "
+                "You MUST preserve ALL placeholders EXACTLY as-is in your output. "
+                "Do NOT translate, paraphrase, or remove any <<LATEX_*>> token. "
+                "Only rewrite the surrounding natural language prose."
+            )
+        else:
+            clean_input = raw_input
+    else:
+        clean_input = raw_input
+    # ─────────────────────────────────────────────────────────────────────────
+
     initial_state = {
-        "input_text": req.input_text,
+        "input_text": clean_input,
         "style_samples": [],
-        "style_profile": req.style_profile or {},
+        "style_profile": effective_profile,
         "current_draft": "",
         "critique_feedback": "",
         "iteration_count": 0,
@@ -129,6 +164,13 @@ async def humanize_stream(req: HumanizeRequest):
                     yield f"data: {json.dumps({'type': 'status', 'node': node_name, 'message': status_message, 'score': final_score_status})}\n\n"
                     await asyncio.sleep(0.1)
             
+            # ── Academic Mode: Re-inject LaTeX tokens into final output ──────
+            if req.academic_mode and token_map:
+                final_draft = reinjert_latex_tokens(final_draft, token_map)
+                yield f"data: {json.dumps({'type': 'status', 'node': 'latex', 'message': 'LaTeX-Safe: Re-injecting preserved tokens...', 'score': final_score_status})}\n\n"
+                await asyncio.sleep(0.1)
+            # ─────────────────────────────────────────────────────────────────
+
             # Send Final Output
             yield f"data: {json.dumps({'type': 'complete', 'output': final_draft})}\n\n"
             
