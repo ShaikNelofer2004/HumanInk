@@ -16,8 +16,12 @@ class WriterAgent:
                       (style_profile and style_profile.get("tone") == "Academic")
         
         latex_note = style_profile.get("latex_note", "") if style_profile else ""
+        depth_instruction = style_profile.get("paraphrase_depth_instruction", "") if style_profile else ""
 
         if is_academic:
+            section_rules = style_profile.get("section_writer_rules", "") if style_profile else ""
+            section_label = style_profile.get("section_label", "General Academic") if style_profile else "General Academic"
+
             system_instruction = (
                 "You are an expert academic ghostwriter. Your ONLY job is to REWRITE the provided text "
                 "to sound authentically human while preserving the academic register and field-appropriate vocabulary.\n\n"
@@ -30,14 +34,18 @@ class WriterAgent:
                 "4. Remove AI boilerplate: 'Furthermore', 'Moreover', 'It is evident that', 'In conclusion'.\n"
                 "5. Maintain academic credibility — do NOT make the text casual or conversational.\n"
                 "6. Do NOT add new content, citations, or claims not in the original.\n\n"
+                f"**SECTION-SPECIFIC RULES ({section_label.upper()}):**\n"
+                f"{section_rules}\n\n"
                 "**FORMAT:**\n"
                 "---THOUGHTS---\n"
-                "(Brief analysis of 2-3 robotic patterns you are fixing)\n"
+                f"(Brief note: which section is this [{section_label}], and 2-3 robotic patterns you are fixing)\n"
                 "---DRAFT---\n"
                 "(Your rewritten academic text ONLY — no preamble, no commentary)"
             )
             if latex_note:
                 system_instruction += f"\n\n{latex_note}"
+            if depth_instruction:
+                system_instruction += f"\n\n**REWRITE INTENSITY:**\n{depth_instruction}"
         else:
             system_instruction = (
                 "You are a professional ghostwriter. Your goal is to rewrite the input text to sound completely human. "
@@ -56,6 +64,8 @@ class WriterAgent:
                 "---DRAFT---\n"
                 "(Your final rewritten text here)"
             )
+            if depth_instruction:
+                system_instruction += f"\n\n**REWRITE INTENSITY:**\n{depth_instruction}"
 
         # Use a placeholder for style profile to avoid brace escaping hell
         if style_profile:

@@ -14,6 +14,7 @@ from latex_utils import (
     is_latex_document,
     get_field_profile
 )
+from section_detector import detect_section
 
 app = FastAPI()
 
@@ -34,7 +35,9 @@ class HumanizeRequest(BaseModel):
     style_profile: Dict[str, Any] = None
     max_iterations: int = 3
     academic_mode: bool = False
-    field_id: Optional[str] = None  # 'cs', 'medicine', 'humanities', 'law', 'business', 'general'
+    field_id: Optional[str] = None
+    section_override: Optional[str] = None
+    paraphrase_depth: int = 1  # 0=Light Touch  1=Balanced  2=Full Reconstruction
 
 @app.post("/api/profile")
 async def extract_profile(req: ProfileRequest):
@@ -51,21 +54,41 @@ async def extract_profile(req: ProfileRequest):
 async def humanize_stream(req: HumanizeRequest):
     """Runs the LangGraph Reflexion Loop and streams events using SSE."""
     
-    # ── Academic Mode: LaTeX Pre-Processing ──────────────────────────────────
+    # ── Academic Mode: Pre-Processing ────────────────────────────────────────
     raw_input = req.input_text
     token_map = {}
     effective_profile = req.style_profile or {}
+    detected_section = None
 
     if req.academic_mode:
-        # Step 1: Auto-detect or use field baseline profile
+        # Step 1: Load field baseline profile
         if req.field_id and not effective_profile.get("style_instructions"):
             field_profile = get_field_profile(req.field_id)
             effective_profile = {**field_profile, **(effective_profile or {})}
-        
-        # Step 2: Strip LaTeX tokens, save to token_map
+
+        # Step 2: Section detection (auto or manual override)
+        if req.section_override:
+            from section_detector import get_section_rules
+            rules = get_section_rules(req.section_override)
+            detected_section = {
+                "section_id": req.section_override,
+                "label": rules["label"],
+                "emoji": rules["emoji"],
+                "confidence": "manual",
+                "detection_method": "user_override",
+                "writer_rules": rules["writer_rules"]
+            }
+        else:
+            detected_section = detect_section(raw_input)
+
+        # Inject section-specific rules into the style profile for the Writer
+        effective_profile["section_type"] = detected_section["section_id"]
+        effective_profile["section_label"] = detected_section["label"]
+        effective_profile["section_writer_rules"] = detected_section["writer_rules"]
+
+        # Step 3: Strip LaTeX tokens, save to token_map
         if is_latex_document(raw_input) or req.field_id:
             clean_input, token_map = extract_latex_tokens(raw_input)
-            # Inject placeholder instructions into the style profile for the Writer
             effective_profile["latex_note"] = (
                 "CRITICAL: The input text contains <<LATEX_*>> placeholders. "
                 "You MUST preserve ALL placeholders EXACTLY as-is in your output. "
@@ -76,7 +99,39 @@ async def humanize_stream(req: HumanizeRequest):
             clean_input = raw_input
     else:
         clean_input = raw_input
-    # ─────────────────────────────────────────────────────────────────────────
+
+    # ── Paraphrase Depth — inject into profile for Writer ────────────────────────
+    DEPTH_INSTRUCTIONS = {
+        0: (
+            "PARAPHRASE DEPTH: LIGHT TOUCH.\n"
+            "Make only minimal changes. Your priorities in order:\n"
+            "1. Vary sentence length — break up any uniform-length runs.\n"
+            "2. Remove obvious AI boilerplate words (Furthermore, Moreover, It is worth noting).\n"
+            "3. Do NOT restructure sentences, change vocabulary dramatically, or alter meaning.\n"
+            "Preserve the original phrasing as much as possible."
+        ),
+        1: (
+            "PARAPHRASE DEPTH: BALANCED.\n"
+            "Rewrite naturally but don't overdo it. Your priorities:\n"
+            "1. Vary sentence length and structure meaningfully.\n"
+            "2. Replace AI-watermark vocabulary with natural alternatives.\n"
+            "3. Restructure 1-2 sentences per paragraph for flow.\n"
+            "Preserve the core meaning and all key facts exactly."
+        ),
+        2: (
+            "PARAPHRASE DEPTH: FULL RECONSTRUCTION.\n"
+            "Aggressively reconstruct the text at every level. Your priorities:\n"
+            "1. Rewrite every sentence with a different grammatical structure than the original.\n"
+            "2. Replace vocabulary throughout — use synonyms, rephrasings, and reorderings.\n"
+            "3. Convert passive constructions to active and vice versa throughout.\n"
+            "4. Break long sentences into short ones and merge short sentences into complex ones.\n"
+            "You may restructure paragraph order if it improves naturalness. Preserve all facts."
+        ),
+    }
+    depth = max(0, min(2, req.paraphrase_depth))  # clamp to 0-2
+    effective_profile["paraphrase_depth"] = depth
+    effective_profile["paraphrase_depth_instruction"] = DEPTH_INSTRUCTIONS[depth]
+    # ────────────────────────────────────────────────────────────────────────
 
     initial_state = {
         "input_text": clean_input,
@@ -136,6 +191,20 @@ async def humanize_stream(req: HumanizeRequest):
         final_draft = ""
         final_score_status = "N/A"
         try:
+            # ── Stream detected section to frontend immediately ───────────────
+            if req.academic_mode and detected_section:
+                section_msg = detected_section['emoji'] + " Section Detected: " + detected_section['label'] + " (" + detected_section['confidence'] + " confidence)"
+                section_event = {
+                    "type": "section_detected",
+                    "section_id": detected_section["section_id"],
+                    "label": detected_section["label"],
+                    "emoji": detected_section["emoji"],
+                    "confidence": detected_section["confidence"],
+                    "message": section_msg
+                }
+                yield f"data: {json.dumps(section_event)}\n\n"
+                await asyncio.sleep(0.05)
+            # ─────────────────────────────────────────────────────────────────
             # We must use sync iteration if app.stream is sync, or run in executor.
             # LangGraph standard stream is sync if app is standard StateGraph.
             for event in langgraph_app.stream(initial_state):

@@ -30,10 +30,12 @@ We took a standardized **ChatGPT-generated bio** and processed it through leadin
 
 ## ✨ What's New
 
-### 🎓 Academic Mode
+### 🎓 Academic Mode (Section-Aware)
 A dedicated pipeline for academic and research writing. When enabled:
 - **Field Selector** — Choose from Computer Science, Medicine/Bio, Humanities, Law/Social Sciences, Business, or General Academic. Each field loads a pre-baked style profile calibrated to that discipline's writing conventions.
-- **DNA Sample Optional** — First-time academic writers can skip the sample step entirely and use the field baseline profile.
+- **Section-Aware Heuristics** — Auto-detects 7 distinct paper sections (Abstract, Introduction, Literature Review, Methodology, Results, Discussion, Conclusion) based on LaTeX tags or keyword density.
+- **Section-Specific Rewriting Rules** — The Writer dynamically adapts to the detected section (e.g., *Results* strictly uses passive voice and past tense with no hedging, while *Discussion* mandates interpretive hedging and present tense).
+- **Manual Section Override** — A clean dropdown lets users force a specific section type if the auto-detector misfires.
 - **LaTeX-Safe Processing** — The pipeline automatically detects and preserves all LaTeX markup:
   - Math environments (`equation`, `align`, `$$...$$`) → stored as placeholders, re-injected post-rewrite
   - Prose environments (`abstract`, `document`) → only the `\begin{}` / `\end{}` tags are replaced; content flows through the Writer normally
@@ -62,10 +64,11 @@ A full cinematic landing page and command center:
 **Workspace / Command Center (`Workspace.jsx`)**
 - 50/50 horizontal split-pane: Target Payload (left) | Synthesized Draft (right)
 - **Horizontal Agent Pipeline Rail** — GATEKEEPER → WRITER → CRITIC with live neon glow states
+- **Paraphrase Depth Slider** — 3-step intensity control (Light / Balanced / Full) that instructs the Writer agent on how aggressively to restructure sentences and swap vocabulary.
 - **Dynamic thinking phrases** while processing ("Examining semantic density...", "Synthesizing burstiness variance...")
 - **Copy to Clipboard** button with CheckCircle confirmation flash
-- **Academic Mode badge** — pulsing emerald `● Academic · Computer Science` in the header
-- Smooth exit animation back to Home on HumanInk logo click
+- **Live Section Detection Badge** — pulsing emerald `Abstract · high` badge directly in the payload header.
+- **Unified Telemetry Strip** — The execution button is neatly nested alongside the `STATUS` / `SCORE` indicators at the bottom right.
 - SSE buffer system preventing silent JSON parse errors on split chunks
 
 ### ⚡ Real-Time SSE Streaming

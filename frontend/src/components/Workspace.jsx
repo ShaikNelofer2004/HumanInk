@@ -37,10 +37,13 @@ const Workspace = ({ userProfile, onGoHome }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [status, setStatus] = useState('System Idle');
   const [score, setScore] = useState(0);
-  const [activeNode, setActiveNode] = useState(null); // 'pre_critic', 'writer', 'critic', 'complete'
+  const [activeNode, setActiveNode] = useState(null);
   const [isExiting, setIsExiting] = useState(false);
   const [copied, setCopied] = useState(false);
   const [thinkingIndex, setThinkingIndex] = useState(0);
+  const [detectedSection, setDetectedSection] = useState(null);
+  const [sectionOverride, setSectionOverride] = useState('');
+  const [paraphraseDepth, setParaphraseDepth] = useState(1); // 0=Light 1=Balanced 2=Full
 
   const outputRef = useRef(null);
 
@@ -70,6 +73,7 @@ const Workspace = ({ userProfile, onGoHome }) => {
     setIsProcessing(true);
     setScore(0);
     setOutputText('');
+    setDetectedSection(null);
     setStatus('Initializing Neural Loop...');
     setActiveNode('pre_critic');
     
@@ -82,6 +86,8 @@ const Workspace = ({ userProfile, onGoHome }) => {
           style_profile: userProfile || { archetype: 'Guest', tone: 'Neutral' },
           academic_mode: userProfile?.academicMode || false,
           field_id: userProfile?.field?.id || null,
+          section_override: sectionOverride || null,
+          paraphrase_depth: paraphraseDepth,
         })
       });
 
@@ -106,7 +112,10 @@ const Workspace = ({ userProfile, onGoHome }) => {
             try {
               const data = JSON.parse(line.trim().substring(6));
               
-              if (data.type === 'status') {
+              if (data.type === 'section_detected') {
+                setDetectedSection({ section_id: data.section_id, label: data.label, emoji: data.emoji, confidence: data.confidence });
+                setStatus(data.message);
+              } else if (data.type === 'status') {
                 setStatus(data.message);
                 if (data.node) setActiveNode(data.node);
                 
@@ -210,17 +219,30 @@ const Workspace = ({ userProfile, onGoHome }) => {
             <HorizontalNode id="critic" activeId={activeNode} title="Critic" isComplete={activeNode === 'complete'} />
          </div>
 
-         {/* Execution Button */}
-         <button 
-           onClick={handleProcess}
-           disabled={!inputText.trim() || isProcessing}
-           className={`px-8 py-3 rounded-full flex justify-center items-center gap-3 font-outfit text-xs font-bold tracking-[0.2em] uppercase transition-all duration-500 ease-out 
-             ${isProcessing ? 'bg-transparent border border-ink-primary/50 text-ink-primary opacity-70 cursor-wait' : 'bg-ink-primary/20 border border-ink-primary/50 text-ink-primary hover:bg-ink-primary hover:text-white hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(142,45,226,0.3)] hover:shadow-[0_0_50px_rgba(142,45,226,0.6)]'} 
-             ${!inputText.trim() ? 'opacity-30 cursor-not-allowed hover:bg-ink-primary/20 hover:text-ink-primary hover:scale-100 hover:shadow-none' : ''}`}
-         >
-           {isProcessing ? <Zap size={14} className="animate-pulse" /> : <Zap size={14} />}
-           {isProcessing ? 'Sequence Active' : 'Execute Translation'}
-         </button>
+         {/* Paraphrase Depth — right side of pipeline bar */}
+         <div className="flex flex-col items-end gap-1.5">
+           <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-gray-500">Paraphrase Depth</span>
+           <div className="flex items-center gap-2">
+             {['Light', 'Balanced', 'Full'].map((label, i) => (
+               <button
+                 key={i}
+                 onClick={() => !isProcessing && setParaphraseDepth(i)}
+                 disabled={isProcessing}
+                 className={`px-4 py-1.5 rounded-full text-xs font-mono tracking-wider border transition-all duration-200 ${
+                   paraphraseDepth === i
+                     ? i === 0
+                       ? 'border-sky-500/50 bg-sky-500/10 text-sky-400 shadow-[0_0_12px_rgba(14,165,233,0.25)]'
+                       : i === 1
+                       ? 'border-ink-primary/50 bg-ink-primary/10 text-ink-primary shadow-[0_0_12px_rgba(142,45,226,0.25)]'
+                       : 'border-rose-500/50 bg-rose-500/10 text-rose-400 shadow-[0_0_12px_rgba(244,63,94,0.25)]'
+                     : 'border-white/5 bg-transparent text-gray-500 hover:text-gray-300 hover:border-white/15'
+                 } ${isProcessing ? 'cursor-not-allowed opacity-40' : 'cursor-pointer'}`}
+               >
+                 {label}
+               </button>
+             ))}
+           </div>
+         </div>
       </div>
 
       {/* SPLIT PANE WORKSPACE - Maximize Reading Space */}
@@ -230,12 +252,33 @@ const Workspace = ({ userProfile, onGoHome }) => {
         <div className="flex flex-col flex-1 bg-[#0a0a0c]/80 backdrop-blur-2xl border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
           <div className="px-6 py-4 border-b border-white/5 flex items-center justify-between bg-white/[0.02]">
             <span className="font-outfit font-semibold text-gray-500 tracking-[0.2em] uppercase text-[10px]">Target Payload (AI Draft)</span>
+            {/* Academic Mode: Section Override Selector */}
+            {userProfile?.academicMode && (
+              <select
+                value={sectionOverride}
+                onChange={e => setSectionOverride(e.target.value)}
+                disabled={isProcessing}
+                className="bg-transparent border border-white/10 text-gray-400 text-[10px] font-mono tracking-wider rounded-lg px-3 py-1 outline-none cursor-pointer hover:border-emerald-500/40 transition-colors"
+              >
+                <option value="">Auto-Detect Section</option>
+                <option value="abstract">Abstract</option>
+                <option value="introduction">Introduction</option>
+                <option value="literature_review">Literature Review</option>
+                <option value="methodology">Methodology</option>
+                <option value="results">Results</option>
+                <option value="discussion">Discussion</option>
+                <option value="conclusion">Conclusion</option>
+              </select>
+            )}
           </div>
           <textarea 
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
             disabled={isProcessing}
-            placeholder="Paste the robotic, AI-generated text you want to break down and refine here..."
+            placeholder={userProfile?.academicMode
+              ? "Paste your academic section here. Section type will be auto-detected, or select manually above..."
+              : "Paste the robotic, AI-generated text you want to break down and refine here..."
+            }
             className="flex-1 w-full resize-none bg-transparent text-gray-300 p-8 font-inter text-lg leading-relaxed outline-none placeholder:text-gray-700 custom-scrollbar"
           />
         </div>
@@ -243,9 +286,24 @@ const Workspace = ({ userProfile, onGoHome }) => {
         {/* RIGHT COLUMN: OUTPUT */}
         <div className="flex flex-col flex-1 bg-[#0a0a0c]/80 backdrop-blur-2xl border border-ink-primary/20 rounded-2xl overflow-hidden shadow-[0_0_50px_rgba(142,45,226,0.05)] relative">
           <div className="px-6 py-4 border-b border-ink-primary/20 flex items-center justify-between bg-ink-primary/5">
-             <div className="flex items-center gap-3">
+             <div className="flex items-center gap-3 flex-wrap">
                <span className="font-outfit font-bold text-ink-primary tracking-[0.2em] uppercase text-[10px] drop-shadow-[0_0_5px_rgba(142,45,226,0.5)]">Synthesized Draft</span>
                {activeNode === 'complete' && <CheckCircle2 size={14} className="text-emerald-400" />}
+               {/* Live Section Detection Badge */}
+               {detectedSection && (
+                 <span className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-mono tracking-wider border transition-all duration-300 ${
+                   detectedSection.confidence === 'high' || detectedSection.confidence === 'manual'
+                     ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-400'
+                     : detectedSection.confidence === 'medium'
+                     ? 'border-amber-500/40 bg-amber-500/10 text-amber-400'
+                     : 'border-white/10 bg-white/5 text-gray-400'
+                 }`}>
+                   <span>{detectedSection.label}</span>
+                   {detectedSection.confidence !== 'manual' && (
+                     <span className="opacity-50">· {detectedSection.confidence}</span>
+                   )}
+                 </span>
+               )}
              </div>
              
              <button 
@@ -281,8 +339,23 @@ const Workspace = ({ userProfile, onGoHome }) => {
           </div>
           
           {/* Integrated Horizontal Telemetry Strip strictly fixed to the bottom of output */}
-          <div className="mt-auto shrink-0 w-full">
-             <StatsPanel score={score} status={activeNode === 'complete' ? 'Loop Terminated' : isProcessing ? status : 'Offline'} />
+          <div className="shrink-0 w-full">
+             <StatsPanel score={score} status={activeNode === 'complete' ? 'Loop Terminated' : isProcessing ? status : 'Offline'}>
+               <div className="ml-auto">
+                 <button
+                   onClick={handleProcess}
+                   disabled={!inputText.trim() || isProcessing}
+                   className={`px-8 py-2.5 rounded-full flex items-center gap-3 font-outfit text-xs font-bold tracking-[0.2em] uppercase transition-all duration-500 ease-out
+                     ${isProcessing
+                       ? 'bg-transparent border border-ink-primary/50 text-ink-primary opacity-70 cursor-wait'
+                       : 'bg-ink-primary/20 border border-ink-primary/50 text-ink-primary hover:bg-ink-primary hover:text-white hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(142,45,226,0.3)] hover:shadow-[0_0_50px_rgba(142,45,226,0.6)]'}
+                     ${!inputText.trim() ? 'opacity-30 cursor-not-allowed hover:bg-ink-primary/20 hover:text-ink-primary hover:scale-100 hover:shadow-none' : ''}`}
+                 >
+                   {isProcessing ? <Zap size={14} className="animate-pulse" /> : <Zap size={14} />}
+                   {isProcessing ? 'Sequence Active' : 'Execute Translation'}
+                 </button>
+               </div>
+             </StatsPanel>
           </div>
         </div>
 
