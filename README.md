@@ -22,12 +22,12 @@
 
 We took a standardized **ChatGPT-generated bio** and processed it through leading competitors (*"Humanise AI"* and *"aihumanize.io"*) versus **HumanInk** (using a casual DNA profile).
 
-| Feature |  Generic AI Rewriters |  HumanInk (Custom DNA) |
-| :--- | :--- | :--- |
-| **Opening Hook** | *"Presently, I am finishing..."* <br> *(Passive, wordy)* | *"I'm currently an undergrad..."* <br> *(Direct, active, clean)* |
-| **Sentence Structure** | *"One of the most favorite projects..."* <br> *(Awkward rhythm)* | *"Lately, I've been leading..."* <br> *(Natural flow)* |
-| **Quirks & Style** | *"Most of my time has been utilized to dive deep..."* <br> *(Robotic filler)* | *"I love the challenge of building—especially when it's hard."* <br> *(Enforced em-dash, authentic passion)* |
-| **Verdict** | **FAIL:** Thesaurus shuffle. | **WIN:** Sounds exactly like the author. |
+| Feature |  Humanise AI |  aihumanize.io |  HumanInk (Custom DNA) |
+| :--- | :--- | :--- | :--- |
+| **Opening Hook** | *"Presently, I am finishing..."* <br> *(Passive, wordy)* | *"I am a senior... **is** studying..."* <br> *(Grammar Error! Clunky)* | *"I'm currently an undergrad..."* <br> *(Direct, active, clean)* |
+| **Sentence Structure** | *"One of the most favorite projects..."* <br> *(Awkward rhythm)* | *"...through the building of... where capabilities are applied in conjunction..."* <br> *(Painful run-on sentence)* | *"Lately, I've been leading..."* <br> *(Natural flow)* |
+| **Quirks & Style** | *"Most of my time has been utilized to dive deep..."* <br> *(Robotic filler)* | *"My primary passion is... fortunate to lead..."* <br> *(Generic Cover Letter style)* | *"I love the challenge of building—especially when it's hard."* <br> *(Enforced em-dash, authentic passion)* |
+| **Verdict** | **FAIL:** Thesaurus shuffle. | **FAIL:** Structural & Grammar issues. | **WIN:** Sounds exactly like the author. |
 
 ---
 
