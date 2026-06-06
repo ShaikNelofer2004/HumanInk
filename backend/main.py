@@ -103,7 +103,7 @@ async def fetch_profiles(user: dict = Depends(verify_token)):
     migrated_data = migrate_to_v2(profile_data)
     
     # If it was migrated from legacy, save the v2 format back
-    if not profile_data or profile_data.get("version") != 2:
+    if profile_data and profile_data.get("version") != 2:
         upsert_user_profile(clerk_id, migrated_data)
         
     return {"profileData": migrated_data}

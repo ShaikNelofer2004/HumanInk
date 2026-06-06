@@ -28,7 +28,7 @@ def get_user_profiles(clerk_user_id: str) -> Optional[Dict[str, Any]]:
         return None
     except Exception as e:
         print(f"Error fetching profile from Supabase: {e}")
-        return None
+        raise Exception("Database connection failed") from e
 
 def upsert_user_profile(clerk_user_id: str, profile_data: Dict[str, Any]) -> bool:
     """

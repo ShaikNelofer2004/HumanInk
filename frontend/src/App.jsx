@@ -8,43 +8,61 @@ import './App.css';
 
 function App() {
   // States: 'HOME', 'EXTRACTION', 'WORKSPACE', 'PROFILE'
-  const [currentView, setCurrentView] = useState('HOME');
+  const [currentView, setCurrentView] = useState(() => sessionStorage.getItem('humanink_view') || 'HOME');
   const [userProfileData, setUserProfileData] = useState(null);
   const [isLoadingProfile, setIsLoadingProfile] = useState(false);
-  const [workspaceState, setWorkspaceState] = useState({
-    inputText: '',
-    outputText: '',
-    status: 'System Idle',
-    score: 0,
-    activeNode: null,
-    detectedSection: null,
-    sectionOverride: '',
-    paraphraseDepth: 1
+  const [hasFetchedProfile, setHasFetchedProfile] = useState(false);
+  
+  const [workspaceState, setWorkspaceState] = useState(() => {
+    const saved = sessionStorage.getItem('humanink_workspace');
+    if (saved) return JSON.parse(saved);
+    return {
+      inputText: '',
+      outputText: '',
+      status: 'System Idle',
+      score: 0,
+      activeNode: null,
+      detectedSection: null,
+      sectionOverride: '',
+      paraphraseDepth: 1
+    };
   });
   
   const { isSignedIn, getToken } = useAuth();
+
+  useEffect(() => {
+    sessionStorage.setItem('humanink_view', currentView);
+  }, [currentView]);
+
+  useEffect(() => {
+    sessionStorage.setItem('humanink_workspace', JSON.stringify(workspaceState));
+  }, [workspaceState]);
 
   useEffect(() => {
     // When user logs out, reset view
     if (isSignedIn === false) {
       setCurrentView('HOME');
       setUserProfileData(null);
+      setHasFetchedProfile(false);
+      sessionStorage.removeItem('humanink_view');
+      sessionStorage.removeItem('humanink_workspace');
     }
     
-    // When user logs in, fetch their DNA profile
-    if (isSignedIn === true && currentView === 'HOME') {
+    // When user logs in, fetch their DNA profile exactly once
+    if (isSignedIn === true && !hasFetchedProfile) {
       const fetchSavedProfile = async () => {
         setIsLoadingProfile(true);
         try {
           const token = await getToken();
-          const response = await fetch('http://localhost:8000/api/profiles', {
+          const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/profiles`, {
             headers: { 'Authorization': `Bearer ${token}` }
           });
           if (response.ok) {
             const data = await response.json();
             if (data.profileData && data.profileData.profiles && data.profileData.profiles.length > 0) {
               setUserProfileData(data.profileData);
-              setCurrentView('WORKSPACE');
+              // Only override route if we are stuck on HOME or EXTRACTION.
+              setCurrentView(prev => (prev === 'HOME' || prev === 'EXTRACTION') ? 'WORKSPACE' : prev);
             } else {
               setCurrentView('EXTRACTION');
             }
@@ -56,12 +74,13 @@ function App() {
           setCurrentView('EXTRACTION');
         } finally {
           setIsLoadingProfile(false);
+          setHasFetchedProfile(true);
         }
       };
       
       fetchSavedProfile();
     }
-  }, [isSignedIn, currentView, getToken]);
+  }, [isSignedIn, getToken, hasFetchedProfile]);
 
   const startSetup = () => {
     if (userProfileData && userProfileData.profiles.length > 0) {
@@ -92,7 +111,7 @@ function App() {
     if (isSignedIn) {
       try {
         const token = await getToken();
-        const res = await fetch('http://localhost:8000/api/profile', {
+        const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/profile`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

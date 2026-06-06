@@ -198,7 +198,7 @@ const Home = ({ onStartSetup, isLoading }) => {
         <div className="flex flex-col items-center justify-center flex-1 z-10 relative w-full">
 
           {/* The Infinite Faded Marquee Background */}
-          <div className="absolute top-1/2 left-0 w-full overflow-hidden whitespace-nowrap opacity-[0.03] pointer-events-none -translate-y-1/2 flex select-none" style={{ maskImage: 'linear-gradient(to right, transparent, black 15%, black 85%, transparent)', WebkitMaskImage: 'linear-gradient(to right, transparent, black 15%, black 85%, transparent)' }}>
+          <div className="absolute top-1/2 left-0 w-full overflow-hidden whitespace-nowrap opacity-[0.08] md:opacity-[0.03] pointer-events-none -translate-y-1/2 flex select-none" style={{ maskImage: 'linear-gradient(to right, transparent, black 15%, black 85%, transparent)', WebkitMaskImage: 'linear-gradient(to right, transparent, black 15%, black 85%, transparent)' }}>
             <div className="animate-marquee flex gap-12 font-outfit font-black text-7xl md:text-[10rem] tracking-widest text-[#fff] items-center">
               <span>THE FOUNDER</span><span className="text-4xl text-ink-primary">✦</span>
               <span>THE NOVELIST</span><span className="text-4xl text-ink-secondary">✦</span>

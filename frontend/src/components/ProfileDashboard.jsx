@@ -54,7 +54,7 @@ const ProfileDashboard = ({ userProfileData, setUserProfileData, onBackToWorkspa
     setIsDeleting(profileId);
     try {
       const token = await getToken();
-      const res = await fetch(`http://localhost:8000/api/profile/${profileId}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/profile/${profileId}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -78,7 +78,7 @@ const ProfileDashboard = ({ userProfileData, setUserProfileData, onBackToWorkspa
     setUserProfileData({ ...userProfileData, activeProfileId: profileId });
     try {
       const token = await getToken();
-      await fetch('http://localhost:8000/api/profile/active', {
+      await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/profile/active`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -110,7 +110,7 @@ const Workspace = ({ userProfile, onGoHome, onOpenProfile, workspaceState, setWo
     try {
       const token = await getToken();
       
-      const response = await fetch('http://localhost:8000/api/humanize/stream', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/humanize/stream`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
@@ -210,20 +210,20 @@ const Workspace = ({ userProfile, onGoHome, onOpenProfile, workspaceState, setWo
   };
 
   return (
-    <div className={`w-full h-screen flex flex-col pt-8 pb-0 px-8 relative bg-[#050505] overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] ${(!isMounted || isExiting) ? 'opacity-0 scale-95 blur-md' : 'opacity-100 scale-100 blur-0'}`}>
+    <div className={`w-full min-h-screen lg:h-screen flex flex-col pt-4 lg:pt-8 pb-4 lg:pb-0 px-4 lg:px-8 relative bg-[#050505] overflow-y-auto lg:overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] ${(!isMounted || isExiting) ? 'opacity-0 scale-95 blur-md' : 'opacity-100 scale-100 blur-0'}`}>
        {/* Shared Background Orbs */}
       <div className="absolute top-[10%] left-[20%] w-[600px] h-[600px] bg-ink-primary/5 rounded-full blur-[150px] mix-blend-screen pointer-events-none" />
       <div className="absolute bottom-[20%] right-[20%] w-[500px] h-[500px] bg-ink-secondary/5 rounded-full blur-[150px] mix-blend-screen pointer-events-none" />
 
       {/* Top Navbar */}
-      <header className="flex justify-between items-center mb-6 shrink-0 z-10">
+      <header className="flex flex-col lg:flex-row gap-4 justify-between items-center mb-6 shrink-0 z-10">
         <div className="flex items-center gap-4">
            <span className="font-outfit font-black tracking-widest text-white opacity-20 hover:opacity-100 transition-opacity cursor-pointer">
              <span onClick={handleExit}>HumanInk</span> <span className="font-light mx-2 text-white/50">//</span> <span className="uppercase text-white/50">Command Center</span>
            </span>
         </div>
         
-        <div className="flex gap-3 flex-wrap items-center">
+        <div className="flex gap-3 flex-wrap items-center justify-center">
            {userProfile?.academicMode && (
              <span className="bg-emerald-500/10 border border-emerald-500/30 px-4 py-1.5 rounded-full text-[10px] font-mono text-emerald-400 uppercase tracking-[0.2em] shadow-[0_0_15px_rgba(16,185,129,0.15)] flex items-center gap-1.5">
                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
@@ -247,7 +247,7 @@ const Workspace = ({ userProfile, onGoHome, onOpenProfile, workspaceState, setWo
       </header>
 
       {/* HORIZONTAL AGENT PIPELINE & CONTROLS */}
-      <div className="flex items-center justify-between bg-black/40 border border-white/10 rounded-2xl p-4 mb-6 z-10 backdrop-blur-xl">
+      <div className="flex flex-col lg:flex-row items-center justify-between gap-4 bg-black/40 border border-white/10 rounded-2xl p-4 mb-6 z-10 backdrop-blur-xl">
          {/* Agents Loop */}
          <div className="flex items-center gap-2">
             <HorizontalNode id="pre_critic" activeId={activeNode} title="Gatekeeper" isComplete={['writer', 'critic', 'complete'].includes(activeNode)} />
@@ -264,7 +264,7 @@ const Workspace = ({ userProfile, onGoHome, onOpenProfile, workspaceState, setWo
          </div>
 
          {/* Paraphrase Depth — right side of pipeline bar */}
-         <div className="flex flex-col items-end gap-1.5">
+         <div className="flex flex-col items-center lg:items-end gap-1.5">
            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-gray-500">Paraphrase Depth</span>
            <div className="flex items-center gap-2">
              {['Light', 'Balanced', 'Full'].map((label, i) => (
@@ -290,7 +290,7 @@ const Workspace = ({ userProfile, onGoHome, onOpenProfile, workspaceState, setWo
       </div>
 
       {/* SPLIT PANE WORKSPACE - Maximize Reading Space */}
-      <div className="flex gap-6 flex-1 relative min-h-0 z-10 w-full pb-6">
+      <div className="flex flex-col lg:flex-row gap-6 flex-1 relative min-h-0 z-10 w-full pb-6">
         
         {/* LEFT COLUMN: INPUT */}
         <div className="flex flex-col flex-1 bg-[#0a0a0c]/80 backdrop-blur-2xl border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
@@ -327,8 +327,8 @@ const Workspace = ({ userProfile, onGoHome, onOpenProfile, workspaceState, setWo
           />
         </div>
 
-        {/* RIGHT COLUMN: OUTPUT */}
-        <div className="flex flex-col flex-1 bg-[#0a0a0c]/80 backdrop-blur-2xl border border-ink-primary/20 rounded-2xl overflow-hidden shadow-[0_0_50px_rgba(142,45,226,0.05)] relative">
+        {/* RIGHT COLUMN: OUTPUT & TELEMETRY */}
+        <div className="flex flex-col flex-1 gap-6 min-h-[500px] lg:min-h-0 bg-[#0a0a0c]/80 backdrop-blur-2xl border border-ink-primary/20 rounded-2xl overflow-hidden shadow-[0_0_50px_rgba(142,45,226,0.05)] relative">
           <div className="px-6 py-4 border-b border-ink-primary/20 flex items-center justify-between bg-ink-primary/5">
              <div className="flex items-center gap-3 flex-wrap">
                <span className="font-outfit font-bold text-ink-primary tracking-[0.2em] uppercase text-[10px] drop-shadow-[0_0_5px_rgba(142,45,226,0.5)]">Synthesized Draft</span>

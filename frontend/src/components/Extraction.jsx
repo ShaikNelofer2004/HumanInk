@@ -60,7 +60,7 @@ const Extraction = ({ onComplete, onGoHome, onSkip }) => {
        const headers = { 'Content-Type': 'application/json' };
        if (token) headers['Authorization'] = `Bearer ${token}`;
 
-       const res = await fetch('http://127.0.0.1:8000/api/profile/extract', {
+       const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/profile/extract`, {
          method: 'POST',
          headers,
          body: JSON.stringify({ samples })
