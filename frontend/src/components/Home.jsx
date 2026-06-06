@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { PenTool, ArrowRight, Shield, Zap, BrainCircuit, Terminal, Mail, BookOpen, MessageSquare, Search, Target } from 'lucide-react';
+import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton, ClerkLoading, ClerkLoaded } from '@clerk/clerk-react';
 
 const STANDARD_TEXT = "The integration of artificial intelligence into daily workflows significantly enhances overarching productivity. By automating repetitive administrative tasks, employees are empowered to allocate their cognitive resources toward high-level strategic objectives.";
 const HUMAN_TEXT = "Putting AI to work in your daily routine really gives productivity a boost. When you let it handle the boring, repetitive admin stuff, you're finally free to focus your energy on the big projects that actually matter."
@@ -171,13 +172,20 @@ const UseCases = () => {
   );
 };
 
-const Home = ({ onStartSetup }) => {
+const Home = ({ onStartSetup, isLoading }) => {
   return (
     <div className="w-full min-h-screen text-white scroll-smooth relative">
 
       {/* Shared Background Orbs fixed in background */}
       <div className="fixed top-[10%] left-[20%] w-[600px] h-[600px] bg-ink-primary/5 rounded-full blur-[150px] -z-10 mix-blend-screen pointer-events-none" />
       <div className="fixed bottom-[20%] right-[20%] w-[500px] h-[500px] bg-ink-secondary/5 rounded-full blur-[150px] -z-10 mix-blend-screen pointer-events-none" />
+
+      {/* Global User Profile Button positioned relative to viewport */}
+      <SignedIn>
+        <div className="absolute top-8 right-12 z-50">
+          <UserButton appearance={{ elements: { userButtonAvatarBox: "w-11 h-11 border border-white/20 shadow-[0_0_15px_rgba(255,255,255,0.1)] hover:scale-105 transition-transform" } }} />
+        </div>
+      </SignedIn>
 
       {/* =========================================
           SECTION 1: HERO
@@ -209,12 +217,31 @@ const Home = ({ onStartSetup }) => {
           </div>
 
           <div className="flex flex-col items-center translate-y-6 z-10">
-            <button
-              onClick={onStartSetup}
-              className="px-8 py-4 rounded-full bg-white text-black font-semibold tracking-wide hover:scale-105 active:scale-95 transition-all flex items-center gap-3 shadow-[0_0_40px_rgba(255,255,255,0.15)] hover:shadow-[0_0_60px_rgba(255,255,255,0.3)]"
-            >
-              Begin Extraction Setup <ArrowRight size={18} />
-            </button>
+            <ClerkLoading>
+              <button className="px-8 py-4 rounded-full bg-white/50 text-black/50 font-semibold tracking-wide flex items-center gap-3 cursor-not-allowed">
+                Initializing...
+              </button>
+            </ClerkLoading>
+            <ClerkLoaded>
+              <SignedIn>
+                <button
+                  onClick={onStartSetup}
+                  disabled={isLoading}
+                  className={`px-8 py-4 rounded-full ${isLoading ? 'bg-white/50 cursor-not-allowed' : 'bg-white hover:scale-105 active:scale-95 shadow-[0_0_40px_rgba(255,255,255,0.15)] hover:shadow-[0_0_60px_rgba(255,255,255,0.3)]'} text-black font-semibold tracking-wide transition-all flex items-center gap-3`}
+                >
+                  {isLoading ? 'Checking DNA Profile...' : 'Begin Extraction Setup'} <ArrowRight size={18} />
+                </button>
+              </SignedIn>
+              
+              <SignedOut>
+                <SignInButton mode="modal">
+                  <button className="px-8 py-4 rounded-full bg-white text-black font-semibold tracking-wide hover:scale-105 active:scale-95 transition-all flex items-center gap-3 shadow-[0_0_40px_rgba(255,255,255,0.15)] hover:shadow-[0_0_60px_rgba(255,255,255,0.3)]">
+                    Begin Extraction Setup <ArrowRight size={18} />
+                  </button>
+                </SignInButton>
+              </SignedOut>
+            </ClerkLoaded>
+
             <p className="mt-6 text-gray-500 font-inter text-sm tracking-widest uppercase">The loop starts here.</p>
           </div>
         </div>

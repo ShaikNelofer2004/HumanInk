@@ -26,6 +26,11 @@ def pre_critic_node(state: AgentState):
     Step 0: Pre-Critic Analysis.
     Check if the input text is ALREADY human enough.
     """
+    existing_profile = state.get("style_profile", {})
+    if existing_profile.get("style_instructions"):
+        print("--- Node: Pre-Critic (Skipping - Active DNA Provided) ---")
+        return {"skip_rewriting": False}
+
     print("--- Node: Pre-Critic (Early Analysis) ---")
     
     evaluation = gatekeeper.evaluate(state["input_text"])
@@ -34,8 +39,7 @@ def pre_critic_node(state: AgentState):
         return {
             "skip_rewriting": True, 
             "current_draft": state["input_text"], 
-            "is_robotic": False,
-            "style_profile": {} 
+            "is_robotic": False
         }
     else:
         return {"skip_rewriting": False}
@@ -44,17 +48,24 @@ def profiler_node(state: AgentState):
     """
     Step 1: Determine the style profile.
     """
+    existing_profile = state.get("style_profile", {})
+    if existing_profile.get("style_instructions"):
+        print(f"--- Node: Profiler (Using Provided Active DNA: {existing_profile.get('archetype', 'Custom')}) ---")
+        return {"iteration_count": 0, "current_draft": state["input_text"]}
+
     samples = state.get("style_samples", [])
     
     if samples:
         print("--- Node: Profiler (Extracting Style) ---")
         profile = profiler.extract_style(samples)
+        profile = {**existing_profile, **profile}
     else:
         print("--- Node: Profiler (Using Default) ---")
         profile = {
             "tone": "Natural, Balanced",
             "sentence_structure": "Varied length, mix of simple and compound sentences.",
-            "quirks": "Uses contractions (e.g., 'don't' instead of 'do not'). Avoids overly formal transition words."
+            "quirks": "Uses contractions (e.g., 'don't' instead of 'do not'). Avoids overly formal transition words.",
+            **existing_profile
         }
     
     return {"style_profile": profile, "iteration_count": 0, "current_draft": state["input_text"]}

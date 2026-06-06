@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Fingerprint, ArrowRight, ScanLine, PenTool, GraduationCap, FlaskConical, BookOpen, Landmark, BarChart2, Code2 } from 'lucide-react';
+import { useAuth } from '@clerk/clerk-react';
 
 const ACADEMIC_FIELDS = [
   { id: 'cs',         label: 'Computer Science', icon: Code2,       color: 'text-blue-400',    border: 'border-blue-500/30',    bg: 'bg-blue-500/10',    glow: 'shadow-[0_0_20px_rgba(59,130,246,0.2)]' },
@@ -11,6 +12,7 @@ const ACADEMIC_FIELDS = [
 ];
 
 const Extraction = ({ onComplete, onGoHome, onSkip }) => {
+  const { getToken, isSignedIn } = useAuth();
   const [stage, setStage] = useState('IDENTIFY'); // IDENTIFY | INPUT | SCRAMBLE | ANALYZING
   const [userName, setUserName] = useState('');
   const [samples, setSamples] = useState('');
@@ -54,19 +56,35 @@ const Extraction = ({ onComplete, onGoHome, onSkip }) => {
 
   const handleExtraction = async () => {
      try {
-       const res = await fetch('http://127.0.0.1:8000/api/profiler/analyze', {
+       const token = isSignedIn ? await getToken() : null;
+       const headers = { 'Content-Type': 'application/json' };
+       if (token) headers['Authorization'] = `Bearer ${token}`;
+
+       const res = await fetch('http://127.0.0.1:8000/api/profile/extract', {
          method: 'POST',
-         headers: { 'Content-Type': 'application/json' },
-         body: JSON.stringify({ samples: [samples] })
+         headers,
+         body: JSON.stringify({ samples })
        });
        
        if (!res.ok) throw new Error("Backend failed");
        
        const data = await res.json();
+       const p = data.profile || {};
+       
+       const styleInstructions = `
+Sentence Rhythm: ${p.Sentence_Length_Variance || 'Medium'}
+Vocabulary: ${p.Vocabulary_Level || 'Standard'}
+Connectors: ${(p.Common_Connectors || []).join(', ')}
+Quirks: ${(p.Quirks || []).join('; ')}
+`.trim();
+
        setTimeout(() => onComplete({
-         ...data.profile,
+         archetype: userName || 'Custom DNA',
+         tone: p.Tone || 'Neutral',
+         style_instructions: styleInstructions,
          academicMode,
          field: selectedField,
+         rawProfile: p
        }), 2500);
      } catch (err) {
        console.error("Backend error, proceeding with mock...", err);
@@ -91,6 +109,19 @@ const Extraction = ({ onComplete, onGoHome, onSkip }) => {
         tone: 'Academic',
         academicMode: true,
         field: selectedField,
+      });
+    }, 2200);
+  };
+
+  // General Mode skip — go straight to workspace with a basic persona based on their input
+  const handleGeneralSkip = () => {
+    setStage('ANALYZING');
+    setTimeout(() => {
+      onComplete({
+        archetype: `The ${userName || 'Professional'}`,
+        tone: 'Direct',
+        academicMode: false,
+        field: null,
       });
     }, 2200);
   };
@@ -189,29 +220,39 @@ const Extraction = ({ onComplete, onGoHome, onSkip }) => {
                     : <>Paste your sample, <span className="text-transparent bg-clip-text bg-gradient-to-r from-ink-primary to-ink-secondary">{userName}</span>.</>
                   }
                 </h2>
-                {academicMode && (
+                {academicMode ? (
                   <p className="text-gray-500 font-inter text-sm mt-1">
                     Optional — paste a past academic paragraph or <button onClick={handleAcademicSkip} disabled={!selectedField} className={`underline transition-colors ${selectedField ? 'text-emerald-400 hover:text-emerald-300 cursor-pointer' : 'text-gray-600 cursor-not-allowed'}`}>use field baseline ({selectedField?.label || 'select a field first'})</button>
+                  </p>
+                ) : (
+                  <p className="text-gray-500 font-inter text-sm mt-1">
+                    Optional — paste a sample of your writing or <button onClick={handleGeneralSkip} className="underline transition-colors text-ink-primary hover:text-ink-secondary cursor-pointer">skip to use a default {userName || 'professional'} baseline</button>
                   </p>
                 )}
               </div>
               <button 
                 onClick={() => {
-                  if (samples.length > 10) {
+                  if (!samples) {
+                    if (academicMode) handleAcademicSkip();
+                    else handleGeneralSkip();
+                  } else if (samples.trim().length >= 150) {
                     setStage('SCRAMBLE');
-                  } else if (academicMode) {
-                    handleAcademicSkip();
                   } else {
-                    alert('Please paste a slightly longer sample to analyze.');
+                    alert('Please paste a longer sample! We need at least 150 characters to accurately extract your linguistic DNA.');
                   }
                 }}
                 className={`px-6 py-3 rounded-full font-semibold hover:scale-105 active:scale-95 transition-all text-sm flex items-center gap-2 relative z-[999] cursor-pointer pointer-events-auto ${
-                  academicMode && !samples
-                    ? 'bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 hover:bg-emerald-500 hover:text-white shadow-[0_0_20px_rgba(16,185,129,0.2)]'
+                  !samples
+                    ? academicMode
+                      ? 'bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 hover:bg-emerald-500 hover:text-white shadow-[0_0_20px_rgba(16,185,129,0.2)]'
+                      : 'bg-ink-primary/20 border border-ink-primary/40 text-ink-primary hover:bg-ink-primary hover:text-white shadow-[0_0_20px_rgba(142,45,226,0.2)]'
                     : 'bg-white text-black shadow-[0_0_20px_rgba(255,255,255,0.1)]'
                 }`}
               >
-                {academicMode && !samples ? 'Use Field Baseline' : 'Extract DNA'} <ArrowRight size={16} pointerEvents="none" />
+                {!samples 
+                  ? (academicMode ? 'Use Field Baseline' : 'Skip & Use Default Profile') 
+                  : 'Extract DNA'
+                } <ArrowRight size={16} pointerEvents="none" />
               </button>
             </div>
             

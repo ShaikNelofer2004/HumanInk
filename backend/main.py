@@ -1,10 +1,13 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, HTTPException, Security, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
 from typing import List, Dict, Any, Optional
 import json
 import asyncio
+import jwt
+from jwt import PyJWKClient
 
 # Import graph components
 from graph import app as langgraph_app, profiler
@@ -16,6 +19,9 @@ from latex_utils import (
 )
 from section_detector import detect_section
 
+# Import database module
+from database import get_user_profiles, upsert_user_profile
+
 app = FastAPI()
 
 # Enable CORS for React frontend (Fully permissive for development)
@@ -26,6 +32,26 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# --- Clerk Authentication Setup ---
+security = HTTPBearer()
+# JWKS URL derived from your publishable key (summary-civet-91.clerk.accounts.dev)
+JWKS_URL = "https://summary-civet-91.clerk.accounts.dev/.well-known/jwks.json"
+jwks_client = PyJWKClient(JWKS_URL)
+
+def verify_token(credentials: HTTPAuthorizationCredentials = Security(security)):
+    try:
+        signing_key = jwks_client.get_signing_key_from_jwt(credentials.credentials)
+        payload = jwt.decode(
+            credentials.credentials,
+            signing_key.key,
+            algorithms=["RS256"],
+            options={"verify_aud": False}
+        )
+        return payload
+    except Exception as e:
+        raise HTTPException(status_code=401, detail=f"Invalid or expired token: {str(e)}")
+# ----------------------------------
 
 class ProfileRequest(BaseModel):
     samples: str
@@ -39,10 +65,52 @@ class HumanizeRequest(BaseModel):
     section_override: Optional[str] = None
     paraphrase_depth: int = 1  # 0=Light Touch  1=Balanced  2=Full Reconstruction
 
-@app.post("/api/profile")
-async def extract_profile(req: ProfileRequest):
+import uuid
+
+class ProfileSaveRequest(BaseModel):
+    profile: Dict[str, Any]
+
+class ActiveProfileRequest(BaseModel):
+    activeProfileId: Optional[str] = None
+
+def migrate_to_v2(profile_data):
+    if not profile_data:
+        return {"version": 2, "activeProfileId": None, "profiles": []}
+    if profile_data.get("version") == 2:
+        return profile_data
+    
+    # Legacy migration
+    default_id = str(uuid.uuid4())
+    name = profile_data.get("archetype", "Legacy Profile")
+    if name.startswith("The "):
+        name = name[4:]
+    profile_data["id"] = default_id
+    profile_data["name"] = name
+    return {
+        "version": 2,
+        "activeProfileId": default_id,
+        "profiles": [profile_data]
+    }
+
+@app.get("/api/profiles")
+async def fetch_profiles(user: dict = Depends(verify_token)):
+    """Fetches the saved DNA profile for the authenticated user from Supabase."""
+    clerk_id = user.get("sub")
+    if not clerk_id:
+        raise HTTPException(status_code=401, detail="No user ID found in token")
+        
+    profile_data = get_user_profiles(clerk_id)
+    migrated_data = migrate_to_v2(profile_data)
+    
+    # If it was migrated from legacy, save the v2 format back
+    if not profile_data or profile_data.get("version") != 2:
+        upsert_user_profile(clerk_id, migrated_data)
+        
+    return {"profileData": migrated_data}
+
+@app.post("/api/profile/extract")
+async def extract_profile(req: ProfileRequest, user: dict = Depends(verify_token)):
     """Takes writing samples and uses the Profiler Agent to extract the Style Fingerprint."""
-    # Split the big string by newline blocks to form a list
     samples_list = [s.strip() for s in req.samples.split("\n\n") if len(s.strip()) > 10]
     if not samples_list:
         samples_list = [req.samples]
@@ -50,8 +118,54 @@ async def extract_profile(req: ProfileRequest):
     profile = profiler.extract_style(samples_list)
     return {"profile": profile}
 
+@app.post("/api/profile")
+async def save_profile(req: ProfileSaveRequest, user: dict = Depends(verify_token)):
+    """Appends a new DNA profile to the user's account."""
+    clerk_id = user.get("sub")
+    if not clerk_id:
+        raise HTTPException(status_code=401, detail="No user ID found in token")
+        
+    current_data = migrate_to_v2(get_user_profiles(clerk_id))
+    
+    new_profile = req.profile
+    if "id" not in new_profile:
+        new_profile["id"] = str(uuid.uuid4())
+        
+    current_data["profiles"].append(new_profile)
+    current_data["activeProfileId"] = new_profile["id"]
+    
+    upsert_user_profile(clerk_id, current_data)
+    return {"profileData": current_data}
+
+@app.post("/api/profile/active")
+async def set_active_profile(req: ActiveProfileRequest, user: dict = Depends(verify_token)):
+    clerk_id = user.get("sub")
+    if not clerk_id:
+        raise HTTPException(status_code=401)
+        
+    current_data = migrate_to_v2(get_user_profiles(clerk_id))
+    current_data["activeProfileId"] = req.activeProfileId
+    
+    upsert_user_profile(clerk_id, current_data)
+    return {"profileData": current_data}
+
+@app.delete("/api/profile/{profile_id}")
+async def delete_profile(profile_id: str, user: dict = Depends(verify_token)):
+    clerk_id = user.get("sub")
+    if not clerk_id:
+        raise HTTPException(status_code=401)
+        
+    current_data = migrate_to_v2(get_user_profiles(clerk_id))
+    current_data["profiles"] = [p for p in current_data["profiles"] if p["id"] != profile_id]
+    
+    if current_data["activeProfileId"] == profile_id:
+        current_data["activeProfileId"] = current_data["profiles"][0]["id"] if len(current_data["profiles"]) > 0 else None
+        
+    upsert_user_profile(clerk_id, current_data)
+    return {"profileData": current_data}
+
 @app.post("/api/humanize/stream")
-async def humanize_stream(req: HumanizeRequest):
+async def humanize_stream(req: HumanizeRequest, user: dict = Depends(verify_token)):
     """Runs the LangGraph Reflexion Loop and streams events using SSE."""
     
     # ── Academic Mode: Pre-Processing ────────────────────────────────────────
@@ -101,6 +215,7 @@ async def humanize_stream(req: HumanizeRequest):
         clean_input = raw_input
 
     # ── Paraphrase Depth — inject into profile for Writer ────────────────────────
+    word_count = len(clean_input.split())
     DEPTH_INSTRUCTIONS = {
         0: (
             "PARAPHRASE DEPTH: LIGHT TOUCH.\n"
@@ -108,7 +223,8 @@ async def humanize_stream(req: HumanizeRequest):
             "1. Vary sentence length — break up any uniform-length runs.\n"
             "2. Remove obvious AI boilerplate words (Furthermore, Moreover, It is worth noting).\n"
             "3. Do NOT restructure sentences, change vocabulary dramatically, or alter meaning.\n"
-            "Preserve the original phrasing as much as possible."
+            "Preserve the original phrasing as much as possible.\n"
+            f"**LENGTH CONSTRAINT:** The original text is {word_count} words. You may reduce the length slightly, but your output MUST be at least {int(word_count * 0.85)} words."
         ),
         1: (
             "PARAPHRASE DEPTH: BALANCED.\n"
@@ -116,7 +232,8 @@ async def humanize_stream(req: HumanizeRequest):
             "1. Vary sentence length and structure meaningfully.\n"
             "2. Replace AI-watermark vocabulary with natural alternatives.\n"
             "3. Restructure 1-2 sentences per paragraph for flow.\n"
-            "Preserve the core meaning and all key facts exactly."
+            "Preserve the core meaning and all key facts exactly.\n"
+            f"**LENGTH CONSTRAINT:** The original text is {word_count} words. Your output MUST be roughly the same length (between {int(word_count * 0.95)} and {int(word_count * 1.05)} words)."
         ),
         2: (
             "PARAPHRASE DEPTH: FULL RECONSTRUCTION.\n"
@@ -125,7 +242,8 @@ async def humanize_stream(req: HumanizeRequest):
             "2. Replace vocabulary throughout — use synonyms, rephrasings, and reorderings.\n"
             "3. Convert passive constructions to active and vice versa throughout.\n"
             "4. Break long sentences into short ones and merge short sentences into complex ones.\n"
-            "You may restructure paragraph order if it improves naturalness. Preserve all facts."
+            "You may restructure paragraph order if it improves naturalness. Preserve all facts.\n"
+            f"**LENGTH CONSTRAINT:** The original text is {word_count} words. You MUST aggressively expand on concepts to increase the length. Your output MUST be strictly between {int(word_count * 1.10)} and {int(word_count * 1.40)} words."
         ),
     }
     depth = max(0, min(2, req.paraphrase_depth))  # clamp to 0-2

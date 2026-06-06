@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Zap, CheckCircle2, Copy } from 'lucide-react';
+import { useAuth } from '@clerk/clerk-react';
 import StatsPanel from './StatsPanel';
 
 const THINKING_PHRASES = [
@@ -31,25 +32,54 @@ const HorizontalNode = ({ id, activeId, title, isComplete }) => {
   );
 };
 
-const Workspace = ({ userProfile, onGoHome }) => {
-  const [inputText, setInputText] = useState('');
-  const [outputText, setOutputText] = useState('');
+const Workspace = ({ userProfile, onGoHome, onOpenProfile, workspaceState, setWorkspaceState }) => {
+  const { getToken } = useAuth();
+  
+  const {
+    inputText,
+    outputText,
+    status,
+    score,
+    activeNode,
+    detectedSection,
+    sectionOverride,
+    paraphraseDepth
+  } = workspaceState;
+
+  const setInputText = (v) => setWorkspaceState(s => ({ ...s, inputText: typeof v === 'function' ? v(s.inputText) : v }));
+  const setOutputText = (v) => setWorkspaceState(s => ({ ...s, outputText: typeof v === 'function' ? v(s.outputText) : v }));
+  const setStatus = (v) => setWorkspaceState(s => ({ ...s, status: typeof v === 'function' ? v(s.status) : v }));
+  const setScore = (v) => setWorkspaceState(s => ({ ...s, score: typeof v === 'function' ? v(s.score) : v }));
+  const setActiveNode = (v) => setWorkspaceState(s => ({ ...s, activeNode: typeof v === 'function' ? v(s.activeNode) : v }));
+  const setDetectedSection = (v) => setWorkspaceState(s => ({ ...s, detectedSection: typeof v === 'function' ? v(s.detectedSection) : v }));
+  const setSectionOverride = (v) => setWorkspaceState(s => ({ ...s, sectionOverride: typeof v === 'function' ? v(s.sectionOverride) : v }));
+  const setParaphraseDepth = (v) => setWorkspaceState(s => ({ ...s, paraphraseDepth: typeof v === 'function' ? v(s.paraphraseDepth) : v }));
+
   const [isProcessing, setIsProcessing] = useState(false);
-  const [status, setStatus] = useState('System Idle');
-  const [score, setScore] = useState(0);
-  const [activeNode, setActiveNode] = useState(null);
+  const [isMounted, setIsMounted] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
   const [copied, setCopied] = useState(false);
   const [thinkingIndex, setThinkingIndex] = useState(0);
-  const [detectedSection, setDetectedSection] = useState(null);
-  const [sectionOverride, setSectionOverride] = useState('');
-  const [paraphraseDepth, setParaphraseDepth] = useState(1); // 0=Light 1=Balanced 2=Full
 
   const outputRef = useRef(null);
 
+  useEffect(() => {
+    const t = setTimeout(() => setIsMounted(true), 10);
+    return () => clearTimeout(t);
+  }, []);
+
   const handleExit = () => {
     setIsExiting(true);
-    setTimeout(() => onGoHome(), 400);
+    setTimeout(() => {
+      onGoHome();
+    }, 300);
+  };
+
+  const handleOpenProfile = () => {
+    setIsExiting(true);
+    setTimeout(() => {
+      onOpenProfile();
+    }, 300);
   };
 
   useEffect(() => {
@@ -78,9 +108,14 @@ const Workspace = ({ userProfile, onGoHome }) => {
     setActiveNode('pre_critic');
     
     try {
+      const token = await getToken();
+      
       const response = await fetch('http://localhost:8000/api/humanize/stream', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` 
+        },
         body: JSON.stringify({ 
           input_text: inputText,
           style_profile: userProfile || { archetype: 'Guest', tone: 'Neutral' },
@@ -175,7 +210,7 @@ const Workspace = ({ userProfile, onGoHome }) => {
   };
 
   return (
-    <div className={`w-full h-screen flex flex-col pt-8 pb-0 px-8 relative bg-[#050505] overflow-hidden transition-all duration-500 ease-in-out ${isExiting ? 'opacity-0 scale-95 blur-sm' : 'opacity-100 scale-100 blur-0'}`}>
+    <div className={`w-full h-screen flex flex-col pt-8 pb-0 px-8 relative bg-[#050505] overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] ${(!isMounted || isExiting) ? 'opacity-0 scale-95 blur-md' : 'opacity-100 scale-100 blur-0'}`}>
        {/* Shared Background Orbs */}
       <div className="absolute top-[10%] left-[20%] w-[600px] h-[600px] bg-ink-primary/5 rounded-full blur-[150px] mix-blend-screen pointer-events-none" />
       <div className="absolute bottom-[20%] right-[20%] w-[500px] h-[500px] bg-ink-secondary/5 rounded-full blur-[150px] mix-blend-screen pointer-events-none" />
@@ -188,18 +223,27 @@ const Workspace = ({ userProfile, onGoHome }) => {
            </span>
         </div>
         
-        {userProfile && (
-          <div className="flex gap-3 flex-wrap">
-             {userProfile.academicMode && (
-               <span className="bg-emerald-500/10 border border-emerald-500/30 px-4 py-1.5 rounded-full text-[10px] font-mono text-emerald-400 uppercase tracking-[0.2em] shadow-[0_0_15px_rgba(16,185,129,0.15)] flex items-center gap-1.5">
-                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                 Academic · {userProfile.field?.label || 'General'}
-               </span>
-             )}
-             <span className="bg-ink-primary/10 border border-ink-primary/30 px-4 py-1.5 rounded-full text-[10px] font-mono text-ink-primary uppercase tracking-[0.2em] shadow-[0_0_15px_rgba(142,45,226,0.15)]">DNA: {userProfile.archetype || 'Guest'}</span>
-             <span className="bg-white/5 border border-white/10 px-4 py-1.5 rounded-full text-[10px] font-mono text-gray-400 uppercase tracking-[0.2em]">Pitch: {userProfile.tone || 'Neutral'}</span>
-          </div>
-        )}
+        <div className="flex gap-3 flex-wrap items-center">
+           {userProfile?.academicMode && (
+             <span className="bg-emerald-500/10 border border-emerald-500/30 px-4 py-1.5 rounded-full text-[10px] font-mono text-emerald-400 uppercase tracking-[0.2em] shadow-[0_0_15px_rgba(16,185,129,0.15)] flex items-center gap-1.5">
+               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+               Academic · {userProfile.field?.label || 'General'}
+             </span>
+           )}
+           <span className="bg-ink-primary/10 border border-ink-primary/30 px-4 py-1.5 rounded-full text-[10px] font-mono text-ink-primary uppercase tracking-[0.2em] shadow-[0_0_15px_rgba(142,45,226,0.15)]">
+             DNA: {userProfile?.archetype || 'Default Agent'}
+           </span>
+           <span className="bg-white/5 border border-white/10 px-4 py-1.5 rounded-full text-[10px] font-mono text-gray-400 uppercase tracking-[0.2em]">
+             Pitch: {userProfile?.tone || 'Balanced'}
+           </span>
+           
+           <button 
+             onClick={handleOpenProfile}
+             className="ml-4 px-4 py-1.5 rounded-full bg-white text-black font-semibold tracking-wide text-xs hover:scale-105 transition-transform"
+           >
+             My DNA Profile
+           </button>
+        </div>
       </header>
 
       {/* HORIZONTAL AGENT PIPELINE & CONTROLS */}

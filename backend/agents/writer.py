@@ -67,9 +67,14 @@ class WriterAgent:
             if depth_instruction:
                 system_instruction += f"\n\n**REWRITE INTENSITY:**\n{depth_instruction}"
 
-        # Use a placeholder for style profile to avoid brace escaping hell
         if style_profile:
-            system_instruction += "\n\nSTRICTLY FOLLOW THIS STYLE PROFILE:\n{style_json}"
+            system_instruction += (
+                "\n\nSTRICTLY FOLLOW THIS STYLE PROFILE:\n{style_json}\n\n"
+                "CRITICAL: You MUST explicitly use the exact 'Quirks' and 'Common_Connectors' listed in the style profile! "
+                "If the profile says 'Uses em-dashes', you MUST use em-dashes. "
+                "If it says 'No Oxford comma', you MUST remove them. "
+                "Failure to adopt these exact stylistic habits is a failure of your primary directive."
+            )
         
         user_prompt = "Rewrite the following text:\n\n{input_text}"
 

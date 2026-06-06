@@ -9,3 +9,6 @@ langchain-openai
 python-dotenv
 numpy
 diff-match-patch
+pyjwt
+cryptography
+supabase
