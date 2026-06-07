@@ -24,7 +24,14 @@ def get_user_profiles(clerk_user_id: str) -> Optional[Dict[str, Any]]:
         response = supabase.table("user_profiles").select("profile_data").eq("clerk_user_id", clerk_user_id).execute()
         
         if len(response.data) > 0:
-            return response.data[0]["profile_data"]
+            data = response.data[0]["profile_data"]
+            if isinstance(data, str):
+                import json
+                try:
+                    data = json.loads(data)
+                except json.JSONDecodeError:
+                    pass
+            return data
         return None
     except Exception as e:
         print(f"Error fetching profile from Supabase: {e}")
