@@ -172,6 +172,62 @@ const UseCases = () => {
   );
 };
 
+const MetricsSection = () => {
+  return (
+    <section className="w-full max-w-7xl mx-auto px-6 py-20 z-10 relative">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full border-y border-white/5 py-12 bg-[#050505]/50 backdrop-blur-sm">
+        <div className="flex flex-col items-center text-center px-4 border-b md:border-b-0 md:border-r border-white/5 pb-8 md:pb-0">
+          <span className="font-outfit text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-emerald-400 to-emerald-600 mb-2">0%</span>
+          <h3 className="font-outfit font-bold text-white text-xl mb-2">AI Detection Rate</h3>
+          <p className="text-gray-400 font-light text-sm">Flawlessly bypasses Turnitin, GPTZero, and Winston AI with natural rhythm.</p>
+        </div>
+        <div className="flex flex-col items-center text-center px-4 border-b md:border-b-0 md:border-r border-white/5 pb-8 md:pb-0">
+          <span className="font-outfit text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-ink-primary to-ink-secondary mb-2">3.2x</span>
+          <h3 className="font-outfit font-bold text-white text-xl mb-2">Higher Engagement</h3>
+          <p className="text-gray-400 font-light text-sm">Cold outreach and social content convert dramatically higher when sounding human.</p>
+        </div>
+        <div className="flex flex-col items-center text-center px-4">
+          <span className="font-outfit text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-blue-400 to-blue-600 mb-2">100%</span>
+          <h3 className="font-outfit font-bold text-white text-xl mb-2">Neural Consistency</h3>
+          <p className="text-gray-400 font-light text-sm">Locks in your exact vocabulary distribution, sentence variance, and quirks.</p>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const DNACarousel = () => {
+  const dnas = [
+    { name: "The Novelist", color: "from-ink-secondary to-pink-600", border: "hover:border-ink-secondary", bg: "bg-ink-secondary/10", icon: "text-ink-secondary", desc: "Highly emotive, vivid imagery, varied sentence structure with a lyrical rhythm." },
+    { name: "The Academic", color: "from-emerald-400 to-emerald-600", border: "hover:border-emerald-500", bg: "bg-emerald-500/10", icon: "text-emerald-400", desc: "Dense, objective, citation-heavy prose with highly structured argumentation." },
+    { name: "The Marketer", color: "from-ink-primary to-purple-600", border: "hover:border-ink-primary", bg: "bg-ink-primary/10", icon: "text-ink-primary", desc: "Punchy, persuasive, high-energy hooks optimized for maximum scroll-stopping engagement." }
+  ];
+
+  return (
+    <section className="w-full max-w-7xl mx-auto px-6 py-32 z-10 relative flex flex-col items-center">
+      <div className="text-center mb-16">
+        <h2 className="font-outfit text-4xl md:text-5xl text-white font-extrabold tracking-tight mb-4">Choose your <span className="text-transparent bg-clip-text bg-gradient-to-r from-ink-primary to-ink-secondary">Digital DNA.</span></h2>
+        <p className="text-gray-400 font-light text-lg max-w-2xl mx-auto">Or extract your own. HumanInk shapes the AI pipeline to match the exact mathematical rhythm of your chosen profile.</p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full">
+        {dnas.map((dna, idx) => (
+          <div key={idx} className={`rounded-3xl bg-[#0a0a0c]/80 backdrop-blur-2xl border border-white/5 p-8 flex flex-col relative overflow-hidden group transition-all duration-500 shadow-2xl hover:shadow-[0_0_80px_rgba(255,255,255,0.05)] ${dna.border}`}>
+            <div className={`absolute top-0 right-0 w-32 h-32 rounded-full blur-[60px] opacity-20 group-hover:opacity-50 transition-all duration-500 bg-gradient-to-bl ${dna.color}`} />
+            <div className="z-10 relative">
+              <div className={`w-12 h-12 rounded-full ${dna.bg} flex items-center justify-center mb-6 border border-white/5`}>
+                <BrainCircuit size={20} className={dna.icon} />
+              </div>
+              <h3 className="font-outfit text-2xl font-bold text-white mb-3 tracking-wide">{dna.name}</h3>
+              <p className="text-gray-400 font-light text-sm leading-relaxed">{dna.desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+};
+
 const Home = ({ onStartSetup, isLoading }) => {
   return (
     <div className="w-full min-h-screen text-white scroll-smooth relative">
@@ -318,6 +374,11 @@ const Home = ({ onStartSetup, isLoading }) => {
       </section>
 
       {/* =========================================
+          SECTION 2.5: METRICS
+          ========================================= */}
+      <MetricsSection />
+
+      {/* =========================================
           SECTION 3: USE CASES BENTO BOX
           ========================================= */}
       <UseCases />
@@ -326,6 +387,11 @@ const Home = ({ onStartSetup, isLoading }) => {
           SECTION 4: THE PROOF (Split Screen Typewriter)
           ========================================= */}
       <TypewriterComparison />
+
+      {/* =========================================
+          SECTION 5: DNA CAROUSEL
+          ========================================= */}
+      <DNACarousel />
 
       {/* Footer */}
       <footer className="w-full border-t border-white/5 relative z-10 bg-[#050505] mt-24">
