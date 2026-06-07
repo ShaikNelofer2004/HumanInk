@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { PenTool, ArrowRight, Shield, Zap, BrainCircuit, Terminal, Mail, BookOpen, MessageSquare, Search, Target } from 'lucide-react';
 import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton, ClerkLoading, ClerkLoaded } from '@clerk/clerk-react';
+import PricingModal from './PricingModal';
+import LegalModal from './LegalModal';
 
 const STANDARD_TEXT = "The integration of artificial intelligence into daily workflows significantly enhances overarching productivity. By automating repetitive administrative tasks, employees are empowered to allocate their cognitive resources toward high-level strategic objectives.";
 const HUMAN_TEXT = "Putting AI to work in your daily routine really gives productivity a boost. When you let it handle the boring, repetitive admin stuff, you're finally free to focus your energy on the big projects that actually matter."
@@ -229,6 +231,11 @@ const DNACarousel = () => {
 };
 
 const Home = ({ onStartSetup, isLoading }) => {
+  const [isPricingModalOpen, setIsPricingModalOpen] = useState(false);
+  const [legalModalState, setLegalModalState] = useState({ isOpen: false, tab: 'privacy' });
+
+  const openLegal = (tab) => setLegalModalState({ isOpen: true, tab });
+
   return (
     <div className="w-full min-h-screen text-white scroll-smooth relative">
 
@@ -423,6 +430,7 @@ const Home = ({ onStartSetup, isLoading }) => {
           {/* Product Column */}
           <div className="flex flex-col gap-3">
             <span className="font-outfit font-bold text-xs tracking-[0.2em] uppercase text-gray-500 mb-2">Product</span>
+            <span onClick={() => setIsPricingModalOpen(true)} className="text-gray-400 text-sm font-inter hover:text-white cursor-pointer transition-colors">Pricing</span>
             {['Architecture', 'Multi-Agent Loop', 'Pipeline Explorer', 'Changelog'].map(l => (
               <span key={l} className="text-gray-400 text-sm font-inter hover:text-white cursor-pointer transition-colors">{l}</span>
             ))}
@@ -439,10 +447,10 @@ const Home = ({ onStartSetup, isLoading }) => {
           {/* Legal & Contact Column */}
           <div className="flex flex-col gap-3">
             <span className="font-outfit font-bold text-xs tracking-[0.2em] uppercase text-gray-500 mb-2">Contact</span>
-            <a href="mailto:hello@humanink.ai" className="text-ink-primary text-sm font-inter hover:text-white transition-colors cursor-pointer">hello@humanink.ai</a>
-            {['Privacy Policy', 'Security', 'Terms of Use'].map(l => (
-              <span key={l} className="text-gray-400 text-sm font-inter hover:text-white cursor-pointer transition-colors">{l}</span>
-            ))}
+            <a href="mailto:humanink@gmail.com" className="text-ink-primary text-sm font-inter hover:text-white transition-colors cursor-pointer">humanink@gmail.com</a>
+            <span onClick={() => openLegal('privacy')} className="text-gray-400 text-sm font-inter hover:text-white cursor-pointer transition-colors">Privacy Policy</span>
+            <span onClick={() => openLegal('security')} className="text-gray-400 text-sm font-inter hover:text-white cursor-pointer transition-colors">Security</span>
+            <span onClick={() => openLegal('terms')} className="text-gray-400 text-sm font-inter hover:text-white cursor-pointer transition-colors">Terms of Use</span>
           </div>
 
         </div>
@@ -455,9 +463,10 @@ const Home = ({ onStartSetup, isLoading }) => {
             <span className="text-gray-600 text-xs font-mono tracking-wider">Agent Pipeline Operational</span>
           </div>
         </div>
-
       </footer>
 
+      {isPricingModalOpen && <PricingModal onClose={() => setIsPricingModalOpen(false)} />}
+      {legalModalState.isOpen && <LegalModal onClose={() => setLegalModalState({ isOpen: false, tab: 'privacy' })} initialTab={legalModalState.tab} />}
     </div>
   );
 };

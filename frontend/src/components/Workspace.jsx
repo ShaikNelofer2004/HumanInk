@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Zap, CheckCircle2, Copy } from 'lucide-react';
 import { useAuth } from '@clerk/clerk-react';
 import StatsPanel from './StatsPanel';
+import PricingModal from './PricingModal';
 
 const THINKING_PHRASES = [
   "Examining semantic density...",
@@ -35,6 +36,7 @@ const HorizontalNode = ({ id, activeId, title, isComplete }) => {
 const Workspace = ({ userProfile, userProfileData, setUserProfileData, onGoHome, onOpenProfile, workspaceState, setWorkspaceState }) => {
   const { getToken } = useAuth();
   const credits = userProfileData?.credits ?? 0;
+  const [isPricingModalOpen, setIsPricingModalOpen] = useState(false);
   
   const {
     inputText,
@@ -222,6 +224,12 @@ const Workspace = ({ userProfile, userProfileData, setUserProfileData, onGoHome,
              <Zap size={10} className={credits > 0 ? "text-sky-400" : "text-gray-500"} />
              {credits} Credits
            </span>
+           <button 
+             onClick={() => setIsPricingModalOpen(true)}
+             className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-[0.2em] shadow-[0_0_15px_rgba(245,158,11,0.3)] hover:scale-105 transition-transform"
+           >
+             Upgrade
+           </button>
            <span className="bg-white/5 border border-white/10 px-4 py-1.5 rounded-full text-[10px] font-mono text-gray-400 uppercase tracking-[0.2em]">
              Pitch: {userProfile?.tone || 'Balanced'}
            </span>
@@ -399,6 +407,7 @@ const Workspace = ({ userProfile, userProfileData, setUserProfileData, onGoHome,
 
       </div>
 
+      {isPricingModalOpen && <PricingModal onClose={() => setIsPricingModalOpen(false)} />}
     </div>
   );
 };
