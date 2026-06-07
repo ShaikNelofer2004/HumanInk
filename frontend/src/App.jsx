@@ -59,10 +59,14 @@ function App() {
           });
           if (response.ok) {
             const data = await response.json();
-            if (data.profileData && data.profileData.profiles && data.profileData.profiles.length > 0) {
+            if (data.profileData) {
               setUserProfileData(data.profileData);
-              // Only override route if we are stuck on HOME or EXTRACTION.
-              setCurrentView(prev => (prev === 'HOME' || prev === 'EXTRACTION') ? 'WORKSPACE' : prev);
+              if (data.profileData.profiles && data.profileData.profiles.length > 0) {
+                // Only override route if we are stuck on HOME or EXTRACTION.
+                setCurrentView(prev => (prev === 'HOME' || prev === 'EXTRACTION') ? 'WORKSPACE' : prev);
+              } else {
+                setCurrentView('EXTRACTION');
+              }
             } else {
               setCurrentView('EXTRACTION');
             }
@@ -100,9 +104,10 @@ function App() {
 
   const skipSetup = () => {
     setUserProfileData(prev => ({
+      ...prev,
       version: 2,
-      activeProfileId: "guest",
-      profiles: [{ id: "guest", name: "Guest", archetype: 'Guest', tone: 'Neutral' }],
+      activeProfileId: "default",
+      profiles: [{ id: "default", name: "Default Profile", archetype: 'Default', tone: 'Neutral', style_instructions: 'Sentence Rhythm: Medium\nVocabulary: Standard\nTone: Neutral' }],
       credits: prev?.credits ?? 10
     })); 
     setCurrentView('WORKSPACE');
