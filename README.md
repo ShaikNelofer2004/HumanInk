@@ -1,6 +1,6 @@
 <div align="center">
-  <img src="assets/humanink.png" alt="HumanInk Logo" width="400"/>
-  <h1>HumanInk</h1>
+  <img src="frontend/public/logo_wordmark.png" alt="HumanInk Logo" width="500"/>
+  <br/><br/>
   <p><strong>The AI Text Humanizer that doesn't just "rewrite" — it clones your digital DNA.</strong></p>
 </div>
 
@@ -14,7 +14,9 @@
   <img src="https://img.shields.io/badge/Database-Supabase-3ecf8e" alt="Supabase DB"/>
 </p>
 
-**HumanInk** is a multi-agent AI pipeline that rewrites LLM-generated text to authentically match a user's unique human neural rhythm. Unlike generic rewriters that simply synonym-swap, HumanInk uses an adversarial **Reflexion Loop** — an iterative Draft → Critique → Refine pipeline powered by LangGraph. It now ships with a full-featured **Premium React SaaS frontend**, **Clerk Authentication**, **Supabase cloud storage**, **Multiple DNA Profiles**, and a **real-time SSE streaming** command center.
+**HumanInk** is a multi-agent AI pipeline that rewrites LLM-generated text to authentically match a user's unique human neural rhythm. Unlike generic rewriters that simply synonym-swap, HumanInk uses an adversarial **Reflexion Loop** — an iterative Draft → Critique → Refine pipeline powered by LangGraph. 
+
+It now ships with a full-featured **Premium React SaaS frontend**, **Clerk Authentication**, **Supabase cloud database**, **Credit Systems**, **Multiple DNA Profiles**, and a **real-time SSE streaming** command center.
 
 ---
 
@@ -31,25 +33,30 @@ We took a standardized **ChatGPT-generated bio** and processed it through leadin
 
 ---
 
-## ✨ What's New
+## ✨ What's New (Latest Updates)
 
-### 🧬 Multiple DNA Profiles (New!)
+### ☁️ True Cloud SaaS Architecture
+- **Supabase Integration:** Replaced local JSON files with a highly scalable Supabase PostgreSQL database. Your profiles, credits, and settings are fully synced to the cloud.
+- **Clerk Authentication:** Enterprise-grade security. Only authenticated users can process text, completely stopping unauthorized API abuse.
+- **Credit & Tier System:** Built-in credit tracking with a beautifully redesigned "Top Notch" SaaS pricing modal showcasing Free (10 credits) and Premium (150 credits, 800 words) tiers.
+
+### 🧬 Multiple DNA Profiles
 - **Profile Dashboard:** Extract, save, and manage multiple unique writing styles. Switch between them instantly.
+- **Smart Setup Skipping:** Users who just want to write can skip DNA extraction. The system automatically provisions and saves a "Default Profile" to their database row seamlessly.
 - **Strict Quirk Enforcement:** The system doesn't just copy your tone; it mathematically enforces your specific punctuation habits (like em-dashes or Oxford commas).
-- **Cloud Sync:** Fully authenticated via Clerk and backed by Supabase PostgreSQL. Your DNA goes where you go.
 
-### 🎚️ Paraphrase Depth Control (New!)
+### 🎚️ Paraphrase Depth Control
 - **Light Touch:** Fixes robotic phrasing while strictly maintaining original length and structure.
 - **Balanced:** Restructures sentences and maps vocabulary to your DNA, strictly enforcing a ±5% word count margin.
 - **Full Reconstruction:** Complete narrative freedom to break up paragraphs, add storytelling hooks, and expand length dynamically (capped at 125%).
 
 ### 🎓 Academic Mode & LaTeX Support
 - **Discipline-Specific Baseline:** Calibrated profiles for Computer Science, Medicine, Humanities, etc.
-- **Smart Section Detection:** Automatically adjusts tone based on the paper section (e.g., *Results* vs. *Discussion*).
 - **100% LaTeX-Safe:** Math environments, citations, and formulas are fully preserved and re-injected automatically.
 
 ### 🖥️ Premium UX & Command Center
-- **Cinematic Frontend:** Fully glassmorphic design featuring kinetic typography, smooth CSS transitions, and an interactive agent pipeline rail.
+- **Cinematic Frontend:** Fully glassmorphic design featuring kinetic typography, legal modals, immersive glow effects, and an interactive agent pipeline rail.
+- **Cold-Start Handling:** Intelligent frontend loading states that inform users if the backend is waking up from a sleep state.
 - **Live SSE Streaming:** Watch the agents "think" and process in real-time with near-zero latency.
 
 ---
@@ -58,7 +65,7 @@ We took a standardized **ChatGPT-generated bio** and processed it through leadin
 
 ### 1. The Profiler Agent 🕵️
 Before rewriting anything, the **Profiler Agent** processes your writing samples to extract a **Style Fingerprint** covering:
-- **Sentence Rhythm** (Short punchy cadences vs. long compound academic sentences)
+- **Sentence Rhythm** (Short punchy cadences vs. long compound sentences)
 - **Vocabulary** (Formal elevated language vs. everyday casual terminology)
 - **Quirks & Habits** (Em-dash frequency, conjunction openers, Oxford comma usage)
 
@@ -81,12 +88,11 @@ Multi-stage screening before entering the loop:
 
 | Layer | Technology |
 |---|---|
-| **Frontend** | React 18, Vite, Tailwind CSS v3.4, Clerk |
-| **Backend** | Python, FastAPI, Uvicorn, Supabase |
+| **Frontend** | React 18, Vite, Tailwind CSS, Clerk |
+| **Backend** | Python, FastAPI, Uvicorn, Supabase (PostgreSQL) |
 | **AI Orchestration** | LangGraph (cyclic StateGraph) |
 | **Writer / Profiler** | Gemini Flash Preview (high creativity) |
 | **Critic / Gatekeeper** | Llama 3.3 70B / Llama 3.1 8B via Groq |
-| **Analysis Tools** | `nltk`, `textstat`, `numpy` |
 
 ---
 
@@ -148,45 +154,15 @@ Multi-stage screening before entering the loop:
 
 ---
 
-## 📁 Project Structure
-
-```
-HumanInk/
-├── backend/
-│   ├── agents/
-│   │   ├── writer.py          # Writer Agent (academic + normal mode, length/quirk enforcement)
-│   │   ├── critic.py          # Critic Agent (dual-brain evaluation)
-│   │   ├── gatekeeper.py      # Gatekeeper Agent (math + semantic)
-│   │   └── profiler.py        # Profiler Agent (DNA extraction)
-│   ├── graph.py               # LangGraph StateGraph pipeline
-│   ├── database.py            # Supabase interactions
-│   ├── latex_utils.py         # LaTeX pre/post processor + field profiles
-│   ├── main.py                # FastAPI routes, SSE streaming, Auth
-│   ├── utils.py               # Burstiness calculation utilities
-│   └── .env                   # API keys (not committed)
-├── frontend/
-│   └── src/
-│       ├── components/
-│       │   ├── Home.jsx             # Landing page
-│       │   ├── Extraction.jsx       # DNA setup + Academic Mode flow
-│       │   ├── Workspace.jsx        # 50/50 split command center
-│       │   ├── ProfileDashboard.jsx # Multi-profile management
-│       │   └── StatsPanel.jsx       # Telemetry strip
-│       ├── App.jsx             # Routing state machine & top-level state
-│       └── index.css           # Tailwind + custom animations
-└── README.md
-```
-
----
-
 ## 🗺️ Roadmap
 
 See [`PRODUCT_ROADMAP.md`](PRODUCT_ROADMAP.md) for the full technical roadmap. Key upcoming features:
 
 | Priority | Feature | Status |
 |---|---|---|
-| ✅ | Multiple DNA Profile Slots | **Done** |
 | ✅ | Cloud DB & Authentication | **Done** |
+| ✅ | Credit & Premium Tier UI | **Done** |
+| ✅ | Multiple DNA Profile Slots | **Done** |
 | 🔴 P0 | Deliberate Imperfection Agent | Pending |
 | 🔴 P0 | Token-by-token streaming output | Pending |
 | 🟡 P1 | Syntactic Reconstructor Agent | Pending |
