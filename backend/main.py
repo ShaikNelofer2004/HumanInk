@@ -75,8 +75,11 @@ class ActiveProfileRequest(BaseModel):
 
 def migrate_to_v2(profile_data):
     if not profile_data:
-        return {"version": 2, "activeProfileId": None, "profiles": []}
+        return {"version": 2, "activeProfileId": None, "profiles": [], "credits": 10}
+    
     if profile_data.get("version") == 2:
+        if "credits" not in profile_data:
+            profile_data["credits"] = 10
         return profile_data
     
     # Legacy migration
@@ -89,7 +92,8 @@ def migrate_to_v2(profile_data):
     return {
         "version": 2,
         "activeProfileId": default_id,
-        "profiles": [profile_data]
+        "profiles": [profile_data],
+        "credits": 10
     }
 
 @app.get("/api/profiles")
@@ -167,9 +171,26 @@ async def delete_profile(profile_id: str, user: dict = Depends(verify_token)):
 @app.post("/api/humanize/stream")
 async def humanize_stream(req: HumanizeRequest, user: dict = Depends(verify_token)):
     """Runs the LangGraph Reflexion Loop and streams events using SSE."""
-    
-    # ── Academic Mode: Pre-Processing ────────────────────────────────────────
+    clerk_id = user.get("sub")
+    if not clerk_id:
+        raise HTTPException(status_code=401, detail="Unauthorized. Please sign in.")
+        
+    # Check Credits
+    current_data = migrate_to_v2(get_user_profiles(clerk_id))
+    credits_remaining = current_data.get("credits", 0)
+    if credits_remaining <= 0:
+        raise HTTPException(status_code=402, detail="No credits remaining. Please upgrade to Pro.")
+
     raw_input = req.input_text
+    word_count = len(raw_input.split())
+    if word_count > 300:
+        raise HTTPException(status_code=400, detail="Text exceeds the 300 word limit for free accounts.")
+
+    # Deduct Credit and Save
+    current_data["credits"] = credits_remaining - 1
+    upsert_user_profile(clerk_id, current_data)
+
+    # ── Academic Mode: Pre-Processing ────────────────────────────────────────
     token_map = {}
     effective_profile = req.style_profile or {}
     detected_section = None

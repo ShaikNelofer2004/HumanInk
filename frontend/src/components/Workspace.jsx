@@ -32,8 +32,9 @@ const HorizontalNode = ({ id, activeId, title, isComplete }) => {
   );
 };
 
-const Workspace = ({ userProfile, onGoHome, onOpenProfile, workspaceState, setWorkspaceState }) => {
+const Workspace = ({ userProfile, userProfileData, setUserProfileData, onGoHome, onOpenProfile, workspaceState, setWorkspaceState }) => {
   const { getToken } = useAuth();
+  const credits = userProfileData?.credits ?? 0;
   
   const {
     inputText,
@@ -97,8 +98,10 @@ const Workspace = ({ userProfile, onGoHome, onOpenProfile, workspaceState, setWo
     }
   }, [isProcessing, outputText]);
 
+  const wordCount = inputText.trim() ? inputText.trim().split(/\s+/).length : 0;
+
   const handleProcess = async () => {
-    if (!inputText.trim()) return;
+    if (!inputText.trim() || wordCount > 300 || credits <= 0) return;
     
     setIsProcessing(true);
     setScore(0);
@@ -126,7 +129,10 @@ const Workspace = ({ userProfile, onGoHome, onOpenProfile, workspaceState, setWo
         })
       });
 
-      if (!response.ok) throw new Error("Backend connection failed.");
+      if (!response.ok) {
+        const err = await response.json().catch(()=>({}));
+        throw new Error(err.detail || "Backend connection failed.");
+      }
 
       const reader = response.body.getReader();
       const decoder = new TextDecoder("utf-8");
@@ -170,6 +176,9 @@ const Workspace = ({ userProfile, onGoHome, onOpenProfile, workspaceState, setWo
                 setStatus('Extraction Complete');
                 setActiveNode('complete');
                 setIsProcessing(false);
+                if (setUserProfileData) {
+                  setUserProfileData(prev => ({ ...prev, credits: Math.max(0, (prev.credits || 0) - 1) }));
+                }
                 break;
               }
             } catch(e) {}
@@ -177,35 +186,11 @@ const Workspace = ({ userProfile, onGoHome, onOpenProfile, workspaceState, setWo
         }
       }
     } catch (e) {
-      console.warn("Using offline mock response due to fetch error:", e);
-      setStatus("Offline Mode: Mocking Agents...");
-      
-      setActiveNode('pre_critic');
-      setStatus("Gatekeeper: Rejecting corporate jargon...");
-      await new Promise(r => setTimeout(r, 1500));
-      
-      setActiveNode('writer');
-      setStatus("Writer: Re-synthesizing based on DNA...");
-      await new Promise(r => setTimeout(r, 1500));
-      
-      setActiveNode('critic');
-      setScore(62);
-      setStatus("Critic: Failed (Too Robotic). Restarting loop...");
-      await new Promise(r => setTimeout(r, 1500));
-      
-      setActiveNode('writer');
-      setStatus("Writer: Increasing rhythmic variance...");
-      await new Promise(r => setTimeout(r, 1500));
-      
-      setActiveNode('critic');
-      setScore(94);
-      setStatus("Critic: Passed. Final logic check...");
-      await new Promise(r => setTimeout(r, 1000));
-      
-      setOutputText("Here is the mock output. If the backend was running, the true generated text would stream here.");
-      setStatus('Sequence Complete');
-      setActiveNode('complete');
+      console.error("Extraction error:", e);
+      setStatus(`Error: ${e.message}`);
+      setScore(0);
       setIsProcessing(false);
+      setActiveNode('pre_critic');
     }
   };
 
@@ -232,6 +217,10 @@ const Workspace = ({ userProfile, onGoHome, onOpenProfile, workspaceState, setWo
            )}
            <span className="bg-ink-primary/10 border border-ink-primary/30 px-4 py-1.5 rounded-full text-[10px] font-mono text-ink-primary uppercase tracking-[0.2em] shadow-[0_0_15px_rgba(142,45,226,0.15)]">
              DNA: {userProfile?.archetype || 'Default Agent'}
+           </span>
+           <span className="bg-sky-500/10 border border-sky-500/30 px-4 py-1.5 rounded-full text-[10px] font-mono text-sky-400 uppercase tracking-[0.2em] shadow-[0_0_15px_rgba(14,165,233,0.15)] flex items-center gap-1.5">
+             <Zap size={10} className={credits > 0 ? "text-sky-400" : "text-gray-500"} />
+             {credits} Credits
            </span>
            <span className="bg-white/5 border border-white/10 px-4 py-1.5 rounded-full text-[10px] font-mono text-gray-400 uppercase tracking-[0.2em]">
              Pitch: {userProfile?.tone || 'Balanced'}
@@ -323,8 +312,11 @@ const Workspace = ({ userProfile, onGoHome, onOpenProfile, workspaceState, setWo
               ? "Paste your academic section here. Section type will be auto-detected, or select manually above..."
               : "Paste the robotic, AI-generated text you want to break down and refine here..."
             }
-            className="flex-1 w-full resize-none bg-transparent text-gray-300 p-8 font-inter text-lg leading-relaxed outline-none placeholder:text-gray-700 custom-scrollbar"
+            className={`flex-1 w-full resize-none bg-transparent p-8 font-inter text-lg leading-relaxed outline-none placeholder:text-gray-700 custom-scrollbar ${wordCount > 300 ? 'text-rose-500' : 'text-gray-300'}`}
           />
+          <div className="absolute bottom-4 right-6 text-[10px] font-mono tracking-widest uppercase">
+             <span className={wordCount > 300 ? 'text-rose-500 font-bold' : 'text-gray-500'}>{wordCount} / 300 Words</span>
+          </div>
         </div>
 
         {/* RIGHT COLUMN: OUTPUT & TELEMETRY */}
@@ -388,15 +380,17 @@ const Workspace = ({ userProfile, onGoHome, onOpenProfile, workspaceState, setWo
                <div className="ml-auto">
                  <button
                    onClick={handleProcess}
-                   disabled={!inputText.trim() || isProcessing}
+                   disabled={!inputText.trim() || isProcessing || wordCount > 300 || credits <= 0}
                    className={`px-8 py-2.5 rounded-full flex items-center gap-3 font-outfit text-xs font-bold tracking-[0.2em] uppercase transition-all duration-500 ease-out
                      ${isProcessing
                        ? 'bg-transparent border border-ink-primary/50 text-ink-primary opacity-70 cursor-wait'
+                       : (wordCount > 300 || credits <= 0)
+                       ? 'bg-rose-500/10 border border-rose-500/50 text-rose-500 opacity-50 cursor-not-allowed'
                        : 'bg-ink-primary/20 border border-ink-primary/50 text-ink-primary hover:bg-ink-primary hover:text-white hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(142,45,226,0.3)] hover:shadow-[0_0_50px_rgba(142,45,226,0.6)]'}
-                     ${!inputText.trim() ? 'opacity-30 cursor-not-allowed hover:bg-ink-primary/20 hover:text-ink-primary hover:scale-100 hover:shadow-none' : ''}`}
+                     ${(!inputText.trim() && wordCount <= 300 && credits > 0) ? 'opacity-30 cursor-not-allowed hover:bg-ink-primary/20 hover:text-ink-primary hover:scale-100 hover:shadow-none' : ''}`}
                  >
                    {isProcessing ? <Zap size={14} className="animate-pulse" /> : <Zap size={14} />}
-                   {isProcessing ? 'Sequence Active' : 'Execute Translation'}
+                   {isProcessing ? 'Sequence Active' : credits <= 0 ? 'Out of Credits' : wordCount > 300 ? 'Word Limit Exceeded' : 'Execute Translation'}
                  </button>
                </div>
              </StatsPanel>

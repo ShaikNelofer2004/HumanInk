@@ -148,7 +148,7 @@ function App() {
       )}
 
       {currentView === 'WORKSPACE' && (
-        <Workspace userProfile={activeProfile} onGoHome={goHome} onOpenProfile={goProfile} workspaceState={workspaceState} setWorkspaceState={setWorkspaceState} />
+        <Workspace userProfile={activeProfile} userProfileData={userProfileData} setUserProfileData={setUserProfileData} onGoHome={goHome} onOpenProfile={goProfile} workspaceState={workspaceState} setWorkspaceState={setWorkspaceState} />
       )}
       
       {currentView === 'PROFILE' && (
