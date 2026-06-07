@@ -99,11 +99,12 @@ function App() {
   }
 
   const skipSetup = () => {
-    setUserProfileData({
+    setUserProfileData(prev => ({
       version: 2,
       activeProfileId: "guest",
-      profiles: [{ id: "guest", name: "Guest", archetype: 'Guest', tone: 'Neutral' }]
-    }); 
+      profiles: [{ id: "guest", name: "Guest", archetype: 'Guest', tone: 'Neutral' }],
+      credits: prev?.credits ?? 10
+    })); 
     setCurrentView('WORKSPACE');
   };
 
@@ -128,11 +129,12 @@ function App() {
       }
     } else {
       // Mock for guests
-      setUserProfileData({
+      setUserProfileData(prev => ({
         version: 2,
         activeProfileId: "guest",
-        profiles: [{ ...profile, id: "guest", name: profile.archetype }]
-      });
+        profiles: [{ ...profile, id: "guest", name: profile.archetype }],
+        credits: prev?.credits ?? 10
+      }));
     }
     setCurrentView('WORKSPACE');
   };
