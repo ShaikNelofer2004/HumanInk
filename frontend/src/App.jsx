@@ -103,14 +103,12 @@ function App() {
   }
 
   const skipSetup = () => {
-    setUserProfileData(prev => ({
-      ...prev,
-      version: 2,
-      activeProfileId: "default",
-      profiles: [{ id: "default", name: "Default Profile", archetype: 'Default', tone: 'Neutral', style_instructions: 'Sentence Rhythm: Medium\nVocabulary: Standard\nTone: Neutral' }],
-      credits: prev?.credits ?? 10
-    })); 
-    setCurrentView('WORKSPACE');
+    handleProfileComplete({ 
+      id: "default", 
+      archetype: 'Default Profile', 
+      tone: 'Neutral', 
+      style_instructions: 'Sentence Rhythm: Medium\nVocabulary: Standard\nTone: Neutral' 
+    });
   };
 
   const handleProfileComplete = async (profile) => {
