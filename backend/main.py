@@ -188,7 +188,10 @@ async def humanize_stream(req: HumanizeRequest, user: dict = Depends(verify_toke
 
     # Deduct Credit and Save
     current_data["credits"] = credits_remaining - 1
-    upsert_user_profile(clerk_id, current_data)
+    try:
+        upsert_user_profile(clerk_id, current_data)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to save credits to database: {str(e)}")
 
     # ── Academic Mode: Pre-Processing ────────────────────────────────────────
     token_map = {}

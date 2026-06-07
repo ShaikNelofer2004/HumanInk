@@ -59,4 +59,4 @@ def upsert_user_profile(clerk_user_id: str, profile_data: Dict[str, Any]) -> boo
         return True
     except Exception as e:
         print(f"Error saving profile to Supabase: {e}")
-        return False
+        raise Exception(f"Database save failed: {str(e)}")
