@@ -179,9 +179,9 @@ const MetricsSection = () => {
     <section className="w-full max-w-7xl mx-auto px-6 py-20 z-10 relative">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full border-y border-white/5 py-12 bg-[#050505]/50 backdrop-blur-sm">
         <div className="flex flex-col items-center text-center px-4 border-b md:border-b-0 md:border-r border-white/5 pb-8 md:pb-0">
-          <span className="font-outfit text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-emerald-400 to-emerald-600 mb-2">0%</span>
-          <h3 className="font-outfit font-bold text-white text-xl mb-2">AI Detection Rate</h3>
-          <p className="text-gray-400 font-light text-sm">Flawlessly bypasses Turnitin, GPTZero, and Winston AI with natural rhythm.</p>
+          <span className="font-outfit text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-emerald-400 to-emerald-600 mb-2">99.9%</span>
+          <h3 className="font-outfit font-bold text-white text-xl mb-2">Tone Accuracy</h3>
+          <p className="text-gray-400 font-light text-sm">Maintains exact emotional resonance and stylistic pacing across infinite generations.</p>
         </div>
         <div className="flex flex-col items-center text-center px-4 border-b md:border-b-0 md:border-r border-white/5 pb-8 md:pb-0">
           <span className="font-outfit text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-ink-primary to-ink-secondary mb-2">3.2x</span>
