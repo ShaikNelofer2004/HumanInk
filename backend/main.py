@@ -183,8 +183,8 @@ async def humanize_stream(req: HumanizeRequest, user: dict = Depends(verify_toke
 
     raw_input = req.input_text
     word_count = len(raw_input.split())
-    if word_count > 300:
-        raise HTTPException(status_code=400, detail="Text exceeds the 300 word limit for free accounts.")
+    if word_count > 100:
+        raise HTTPException(status_code=400, detail="Text exceeds the 100 word limit for free accounts.")
 
     # Deduct Credit and Save
     current_data["credits"] = credits_remaining - 1

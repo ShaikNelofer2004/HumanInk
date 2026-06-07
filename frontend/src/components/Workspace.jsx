@@ -101,7 +101,7 @@ const Workspace = ({ userProfile, userProfileData, setUserProfileData, onGoHome,
   const wordCount = inputText.trim() ? inputText.trim().split(/\s+/).length : 0;
 
   const handleProcess = async () => {
-    if (!inputText.trim() || wordCount > 300 || credits <= 0) return;
+    if (!inputText.trim() || wordCount > 100 || credits <= 0) return;
     
     setIsProcessing(true);
     setScore(0);
@@ -312,10 +312,10 @@ const Workspace = ({ userProfile, userProfileData, setUserProfileData, onGoHome,
               ? "Paste your academic section here. Section type will be auto-detected, or select manually above..."
               : "Paste the robotic, AI-generated text you want to break down and refine here..."
             }
-            className={`flex-1 w-full resize-none bg-transparent p-8 font-inter text-lg leading-relaxed outline-none placeholder:text-gray-700 custom-scrollbar ${wordCount > 300 ? 'text-rose-500' : 'text-gray-300'}`}
+            className={`flex-1 w-full resize-none bg-transparent p-8 font-inter text-lg leading-relaxed outline-none placeholder:text-gray-700 custom-scrollbar ${wordCount > 100 ? 'text-rose-500' : 'text-gray-300'}`}
           />
           <div className="absolute bottom-4 right-6 text-[10px] font-mono tracking-widest uppercase">
-             <span className={wordCount > 300 ? 'text-rose-500 font-bold' : 'text-gray-500'}>{wordCount} / 300 Words</span>
+             <span className={wordCount > 100 ? 'text-rose-500 font-bold' : 'text-gray-500'}>{wordCount} / 100 Words</span>
           </div>
         </div>
 
@@ -380,17 +380,17 @@ const Workspace = ({ userProfile, userProfileData, setUserProfileData, onGoHome,
                <div className="ml-auto">
                  <button
                    onClick={handleProcess}
-                   disabled={!inputText.trim() || isProcessing || wordCount > 300 || credits <= 0}
+                   disabled={!inputText.trim() || isProcessing || wordCount > 100 || credits <= 0}
                    className={`px-8 py-2.5 rounded-full flex items-center gap-3 font-outfit text-xs font-bold tracking-[0.2em] uppercase transition-all duration-500 ease-out
                      ${isProcessing
                        ? 'bg-transparent border border-ink-primary/50 text-ink-primary opacity-70 cursor-wait'
-                       : (wordCount > 300 || credits <= 0)
+                       : (wordCount > 100 || credits <= 0)
                        ? 'bg-rose-500/10 border border-rose-500/50 text-rose-500 opacity-50 cursor-not-allowed'
                        : 'bg-ink-primary/20 border border-ink-primary/50 text-ink-primary hover:bg-ink-primary hover:text-white hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(142,45,226,0.3)] hover:shadow-[0_0_50px_rgba(142,45,226,0.6)]'}
-                     ${(!inputText.trim() && wordCount <= 300 && credits > 0) ? 'opacity-30 cursor-not-allowed hover:bg-ink-primary/20 hover:text-ink-primary hover:scale-100 hover:shadow-none' : ''}`}
+                     ${(!inputText.trim() && wordCount <= 100 && credits > 0) ? 'opacity-30 cursor-not-allowed hover:bg-ink-primary/20 hover:text-ink-primary hover:scale-100 hover:shadow-none' : ''}`}
                  >
                    {isProcessing ? <Zap size={14} className="animate-pulse" /> : <Zap size={14} />}
-                   {isProcessing ? 'Sequence Active' : credits <= 0 ? 'Out of Credits' : wordCount > 300 ? 'Word Limit Exceeded' : 'Execute Translation'}
+                   {isProcessing ? 'Sequence Active' : credits <= 0 ? 'Out of Credits' : wordCount > 100 ? 'Word Limit Exceeded' : 'Execute Translation'}
                  </button>
                </div>
              </StatsPanel>
