@@ -625,24 +625,37 @@ const PipelineExplorer = () => {
           
           {/* Terminal Body with glowing scanline effect */}
           <div className="p-8 font-mono text-sm md:text-[15px] leading-loose text-gray-300 min-h-[280px] relative overflow-hidden group">
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/[0.01] to-transparent h-[200%] w-full -top-[100%] animate-[scan_4s_ease-in-out_infinite] pointer-events-none" />
+            {(activeNode !== 'input' && activeNode !== 'output') && (
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/[0.01] to-transparent h-[200%] w-full -top-[100%] animate-[scan_4s_ease-in-out_infinite] pointer-events-none" />
+            )}
             
-            {nodes.find(n => n.id === activeNode)?.log.split('\n').map((line, i) => (
-              <div key={i} className="mb-2 flex items-start opacity-0 animate-[fade-in-up_0.3s_ease-out_forwards]" style={{ animationDelay: `${i * 0.1}s` }}>
-                <span className="text-gray-600 mr-6 select-none shrink-0">{(i+1).toString().padStart(2, '0')}</span>
-                <span className={`
-                  ${(line.startsWith('{') || line.startsWith('}') || line.includes('":')) ? 'text-emerald-400' : ''}
-                  ${line.includes('[FAIL]') ? 'text-red-400 font-bold' : ''}
-                  ${(line.includes('SUCCESS') || line.includes('[OK]') || line.includes('GRANTED')) ? 'text-green-400 font-bold' : ''}
-                  ${line.startsWith('>') ? 'text-gray-400' : ''}
-                `}>
-                  {line}
-                </span>
-              </div>
-            ))}
+            {nodes.find(n => n.id === activeNode)?.log.split('\n').map((line, i) => {
+              const isAnimated = activeNode !== 'input' && activeNode !== 'output';
+              return (
+                <div 
+                  key={`${activeNode}-${i}`} 
+                  className={`mb-2 flex items-start ${isAnimated ? 'opacity-0 animate-[fade-in-up_0.3s_ease-out_forwards]' : 'opacity-100'}`} 
+                  style={isAnimated ? { animationDelay: `${i * 0.1}s` } : {}}
+                >
+                  <span className="text-gray-600 mr-6 select-none shrink-0">{(i+1).toString().padStart(2, '0')}</span>
+                  <span className={`
+                    ${(line.startsWith('{') || line.startsWith('}') || line.includes('":')) ? 'text-emerald-400' : ''}
+                    ${line.includes('[FAIL]') ? 'text-red-400 font-bold' : ''}
+                    ${(line.includes('SUCCESS') || line.includes('[OK]') || line.includes('GRANTED')) ? 'text-green-400 font-bold' : ''}
+                    ${line.startsWith('>') ? 'text-gray-400' : ''}
+                  `}>
+                    {line}
+                  </span>
+                </div>
+              );
+            })}
             
             {/* Blinking Cursor */}
-            <div className="flex items-start mt-4 opacity-0 animate-[fade-in-up_0.3s_ease-out_forwards]" style={{ animationDelay: `${nodes.find(n => n.id === activeNode)?.log.split('\n').length * 0.1}s` }}>
+            <div 
+              key={`cursor-${activeNode}`}
+              className={`flex items-start mt-4 ${activeNode !== 'input' && activeNode !== 'output' ? 'opacity-0 animate-[fade-in-up_0.3s_ease-out_forwards]' : 'opacity-100'}`} 
+              style={activeNode !== 'input' && activeNode !== 'output' ? { animationDelay: `${nodes.find(n => n.id === activeNode)?.log.split('\n').length * 0.1 || 0.5}s` } : {}}
+            >
               <span className="text-gray-600 mr-6 select-none">{(nodes.find(n => n.id === activeNode)?.log.split('\n').length + 1).toString().padStart(2, '0')}</span>
               <span className="w-2 h-5 bg-white/40 animate-pulse"></span>
             </div>
