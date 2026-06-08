@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="frontend/public/logo_wordmark.png" alt="HumanInk Logo" width="500"/>
+  <img src="frontend/public/logo_wordmark.png" alt="HumanInk Logo" width="300"/>
   <br/><br/>
   <p><strong>The AI Text Humanizer that doesn't just "rewrite" — it clones your digital DNA.</strong></p>
 </div>
