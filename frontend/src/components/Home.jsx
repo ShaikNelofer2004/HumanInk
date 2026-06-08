@@ -394,6 +394,11 @@ const Home = ({ onStartSetup, isLoading, hasProfiles }) => {
       </section>
 
       {/* =========================================
+          SECTION 2.5: WHY HUMANINK
+          ========================================= */}
+      <WhyHumanInkSection />
+
+      {/* =========================================
           SECTION 2.5: METRICS
           ========================================= */}
       <MetricsSection />
@@ -407,11 +412,6 @@ const Home = ({ onStartSetup, isLoading, hasProfiles }) => {
           SECTION 4: THE PROOF (Split Screen Typewriter)
           ========================================= */}
       <TypewriterComparison />
-
-      {/* =========================================
-          SECTION 5: WHY HUMANINK
-          ========================================= */}
-      <WhyHumanInkSection />
 
       {/* =========================================
           SECTION 6: DNA CAROUSEL
