@@ -539,12 +539,12 @@ const PipelineExplorer = () => {
     {
       id: 'gatekeeper',
       label: 'GATEKEEPER_AGENT',
-      log: '> INITIATING SECURITY SCAN...\n[OK] Semantic integrity verified.\n[OK] No AI hallucinations detected.\n[OK] Burstiness threshold met.\n> PERMISSION GRANTED.',
+      log: '> INITIATING AUTHENTICITY SCAN...\n[ANALYSIS] AI Probability: 84%\n[ANALYSIS] Human Burstiness: Low\n[RESULT] Input requires humanization.\n> ROUTING TO WRITER_AGENT...',
       color: 'text-red-400',
       bg: 'bg-red-500/10',
       border: 'border-red-500/40',
       shadow: 'shadow-[0_0_30px_rgba(239,68,68,0.2)]',
-      description: 'A strict dual-gate firewall that instantly rejects text that feels robotic, hallucinated, or mathematically predictable.'
+      description: 'Evaluates the input. If the text is already highly authentic and human-like, it skips the Writer entirely and outputs directly to save compute.'
     },
     {
       id: 'writer',
