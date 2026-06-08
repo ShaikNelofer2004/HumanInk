@@ -523,7 +523,8 @@ const PipelineExplorer = () => {
       color: 'text-gray-400',
       bg: 'bg-white/5',
       border: 'border-white/20',
-      shadow: 'shadow-none'
+      shadow: 'shadow-none',
+      description: 'The raw text payload submitted by the user before processing.'
     },
     {
       id: 'profiler',
@@ -532,7 +533,8 @@ const PipelineExplorer = () => {
       color: 'text-ink-primary',
       bg: 'bg-ink-primary/10',
       border: 'border-ink-primary/40',
-      shadow: 'shadow-[0_0_30px_rgba(139,92,246,0.2)]'
+      shadow: 'shadow-[0_0_30px_rgba(139,92,246,0.2)]',
+      description: 'Analyzes your writing samples to map vocabulary distribution, sentence length variance, and stylistic quirks.'
     },
     {
       id: 'gatekeeper',
@@ -541,7 +543,8 @@ const PipelineExplorer = () => {
       color: 'text-red-400',
       bg: 'bg-red-500/10',
       border: 'border-red-500/40',
-      shadow: 'shadow-[0_0_30px_rgba(239,68,68,0.2)]'
+      shadow: 'shadow-[0_0_30px_rgba(239,68,68,0.2)]',
+      description: 'A strict dual-gate firewall that instantly rejects text that feels robotic, hallucinated, or mathematically predictable.'
     },
     {
       id: 'writer',
@@ -550,7 +553,8 @@ const PipelineExplorer = () => {
       color: 'text-emerald-400',
       bg: 'bg-emerald-500/10',
       border: 'border-emerald-500/40',
-      shadow: 'shadow-[0_0_30px_rgba(16,185,129,0.2)]'
+      shadow: 'shadow-[0_0_30px_rgba(16,185,129,0.2)]',
+      description: 'Uses Chain-of-Thought reasoning to surgically inject exact rhythmic variations defined by your Profile.'
     },
     {
       id: 'critic',
@@ -559,7 +563,8 @@ const PipelineExplorer = () => {
       color: 'text-ink-secondary',
       bg: 'bg-ink-secondary/10',
       border: 'border-ink-secondary/40',
-      shadow: 'shadow-[0_0_30px_rgba(217,70,239,0.2)]'
+      shadow: 'shadow-[0_0_30px_rgba(217,70,239,0.2)]',
+      description: 'Adversarially evaluates the final draft. If the Human Score falls below 85%, it forces the Writer to immediately restart.'
     },
     {
       id: 'output',
@@ -568,7 +573,8 @@ const PipelineExplorer = () => {
       color: 'text-blue-400',
       bg: 'bg-blue-500/10',
       border: 'border-blue-500/40',
-      shadow: 'shadow-[0_0_30px_rgba(59,130,246,0.2)]'
+      shadow: 'shadow-[0_0_30px_rgba(59,130,246,0.2)]',
+      description: 'The final, fully authenticated text ready for deployment.'
     }
   ];
 
@@ -606,6 +612,13 @@ const PipelineExplorer = () => {
               )}
             </React.Fragment>
           ))}
+        </div>
+
+        {/* Active Node Description */}
+        <div className="text-center mb-10 h-16 flex items-center justify-center">
+          <p className="text-gray-400 font-inter text-[15px] md:text-base max-w-2xl mx-auto animate-[fade-in-up_0.3s_ease-out_forwards]" key={`desc-${activeNode}`}>
+            {nodes.find(n => n.id === activeNode)?.description}
+          </p>
         </div>
 
         {/* Studio Terminal UI */}
