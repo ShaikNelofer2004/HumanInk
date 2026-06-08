@@ -518,110 +518,134 @@ const PipelineExplorer = () => {
   const nodes = [
     {
       id: 'input',
-      label: 'Input Sample',
-      icon: '📝',
-      log: 'User submitted text for processing.\nWord Count: 482\nStatus: Pending...',
-      color: 'text-gray-400'
+      label: 'RAW_INPUT',
+      log: '> Receiving payload...\n> Size: 482 words\n> Status: Awaiting processing...',
+      color: 'text-gray-400',
+      bg: 'bg-white/5',
+      border: 'border-white/20',
+      shadow: 'shadow-none'
     },
     {
       id: 'profiler',
-      label: 'Profiler Agent',
-      icon: '🔍',
-      log: '{\n  "burstiness_score": 0.82,\n  "tone": "academic",\n  "em_dash_freq": "high",\n  "vocabulary_complexity": 0.94,\n  "sentence_length_variance": 14.5\n}',
-      color: 'text-ink-primary'
-    },
-    {
-      id: 'writer',
-      label: 'Writer Agent',
-      icon: '✍️',
-      log: '[WRITER] Injecting DNA...\nApplying constraint: Increase sentence length variance.\nApplying constraint: Remove LLM vocabulary (delve, tapestry).\n[DRAFT 1] Generation complete.',
-      color: 'text-emerald-400'
+      label: 'PROFILER_AGENT',
+      log: '{\n  "status": "extracting_dna",\n  "burstiness_score": 0.82,\n  "tone": "academic",\n  "vocabulary_complexity": 0.94,\n  "sentence_length_variance": 14.5\n}',
+      color: 'text-ink-primary',
+      bg: 'bg-ink-primary/10',
+      border: 'border-ink-primary/40',
+      shadow: 'shadow-[0_0_30px_rgba(139,92,246,0.2)]'
     },
     {
       id: 'gatekeeper',
-      label: 'Gatekeeper Agent',
-      icon: '🛡️',
-      log: '[GATEKEEPER] Analyzing Draft 1...\n[OK] Semantic integrity passed.\n[OK] No hallucinations detected.\n[PASS] Draft allowed to proceed to Critic.',
-      color: 'text-red-400'
+      label: 'GATEKEEPER_AGENT',
+      log: '> INITIATING SECURITY SCAN...\n[OK] Semantic integrity verified.\n[OK] No AI hallucinations detected.\n[OK] Burstiness threshold met.\n> PERMISSION GRANTED.',
+      color: 'text-red-400',
+      bg: 'bg-red-500/10',
+      border: 'border-red-500/40',
+      shadow: 'shadow-[0_0_30px_rgba(239,68,68,0.2)]'
+    },
+    {
+      id: 'writer',
+      label: 'WRITER_AGENT',
+      log: '> INJECTING DNA PROFILE...\n> Applying constraint: [Sentence Variance +12%]\n> Banning tokens: ["delve", "tapestry", "crucial"]\n> DRAFT_01 GENERATED.',
+      color: 'text-emerald-400',
+      bg: 'bg-emerald-500/10',
+      border: 'border-emerald-500/40',
+      shadow: 'shadow-[0_0_30px_rgba(16,185,129,0.2)]'
     },
     {
       id: 'critic',
-      label: 'Critic Agent',
-      icon: '⚖️',
-      log: '[CRITIC] Evaluating Draft 1...\nCalculated Human Score: 68/100.\n[FAIL] Output too robotic. Pacing is flat.\nFeedback: Break up compound sentences.\nSending back to Writer...',
-      color: 'text-ink-secondary'
+      label: 'CRITIC_AGENT',
+      log: '> ADVERSARIAL REVIEW ENGAGED.\n> Target Score: 85/100\n> Current Score: 68/100\n[FAIL] Output too robotic. Pacing is flat.\n> FEEDBACK_GENERATED: Break up compound sentences.\n> INITIATING LOOP: Sending back to WRITER_AGENT.',
+      color: 'text-ink-secondary',
+      bg: 'bg-ink-secondary/10',
+      border: 'border-ink-secondary/40',
+      shadow: 'shadow-[0_0_30px_rgba(217,70,239,0.2)]'
     },
     {
       id: 'output',
-      label: 'Final Output',
-      icon: '✨',
-      log: '[SUCCESS] Draft 3 achieved Human Score 92/100.\nOutput locked.\nReady for user review.',
-      color: 'text-blue-400'
+      label: 'HUMANINK_OUT',
+      log: '> DRAFT_03 APPROVED.\n> Final Score: 92/100\n> Payload locked and ready for deployment.\n> [PROCESS_COMPLETE]',
+      color: 'text-blue-400',
+      bg: 'bg-blue-500/10',
+      border: 'border-blue-500/40',
+      shadow: 'shadow-[0_0_30px_rgba(59,130,246,0.2)]'
     }
   ];
 
   return (
     <section className="w-full max-w-7xl mx-auto px-6 py-32 z-10 relative">
-      <div className="text-center mb-20">
-        <h2 className="font-outfit text-4xl md:text-5xl font-black text-white mb-6">Pipeline Explorer</h2>
-        <p className="text-gray-400 text-lg md:text-xl font-light max-w-2xl mx-auto">
-          See exactly how the agents interact to reconstruct your text. Click a node to view its terminal output.
+      <div className="text-center mb-16">
+        <h2 className="font-outfit text-4xl md:text-5xl font-black text-white mb-6 tracking-tight">The Neural Pipeline</h2>
+        <p className="text-gray-400 text-lg font-light max-w-2xl mx-auto">
+          Discard the standard LLM prompt wrapper. Explore the strict, programmatic microservices that rebuild your text.
         </p>
       </div>
 
-      <div className="bg-[#0a0a0c]/80 backdrop-blur-2xl border border-white/10 rounded-3xl p-6 md:p-12 shadow-[0_0_50px_rgba(0,0,0,0.5)] max-w-5xl mx-auto">
+      <div className="w-full max-w-5xl mx-auto">
         
-        {/* Horizontal Pipeline Graph */}
-        <div className="flex flex-col md:flex-row items-center justify-between mb-16 relative">
-          {/* Connecting Line */}
-          <div className="hidden md:block absolute top-7 left-[5%] w-[90%] h-[2px] bg-white/10 -z-10"></div>
-          
-          {nodes.map((node) => (
-            <div key={node.id} className="relative flex flex-col items-center mb-8 md:mb-0 cursor-pointer group" onClick={() => setActiveNode(node.id)}>
-              <div className={`w-14 h-14 rounded-full flex items-center justify-center text-2xl transition-all duration-300 ${activeNode === node.id ? 'bg-white/10 border-2 border-white/30 scale-110 shadow-[0_0_20px_rgba(255,255,255,0.2)]' : 'bg-[#050505] border border-white/5 group-hover:border-white/20 hover:scale-105'}`}>
-                {node.icon}
-              </div>
-              <span className={`mt-4 font-outfit text-sm font-semibold transition-colors duration-300 ${activeNode === node.id ? node.color : 'text-gray-500 group-hover:text-gray-300'}`}>
+        {/* Microservice Chip Layout */}
+        <div className="flex flex-wrap justify-center items-center gap-3 mb-10 relative z-20">
+          {nodes.map((node, index) => (
+            <React.Fragment key={node.id}>
+              <button 
+                onClick={() => setActiveNode(node.id)}
+                className={`px-5 py-3 font-mono text-[11px] md:text-xs font-semibold tracking-widest uppercase transition-all duration-300 border backdrop-blur-md rounded-md
+                  ${activeNode === node.id 
+                    ? `${node.color} ${node.bg} ${node.border} ${node.shadow} scale-105` 
+                    : 'text-gray-500 bg-transparent border-white/5 hover:border-white/20 hover:text-gray-300'
+                  }`}
+              >
                 {node.label}
-              </span>
+              </button>
               
-              {/* Active Indicator Arrow */}
-              {activeNode === node.id && (
-                <div className="absolute -bottom-6 text-white/50 animate-bounce">
-                  ↓
+              {/* Connector */}
+              {index < nodes.length - 1 && (
+                <div className="text-white/20 font-light hidden md:block">
+                  —
                 </div>
               )}
-            </div>
+            </React.Fragment>
           ))}
         </div>
 
-        {/* Terminal Window */}
-        <div className="bg-[#050505] rounded-xl border border-white/10 overflow-hidden relative">
-          <div className="flex items-center px-4 py-3 border-b border-white/5 bg-white/[0.02]">
-            <div className="flex gap-2 mr-4">
-              <div className="w-3 h-3 rounded-full bg-red-500/50"></div>
-              <div className="w-3 h-3 rounded-full bg-yellow-500/50"></div>
-              <div className="w-3 h-3 rounded-full bg-green-500/50"></div>
+        {/* Studio Terminal UI */}
+        <div className="bg-[#030303] rounded-xl border border-white/10 overflow-hidden relative shadow-2xl">
+          {/* Top Bar */}
+          <div className="flex items-center justify-between px-6 py-4 border-b border-white/5 bg-[#080808]">
+            <div className="flex gap-2">
+              <div className="w-3 h-3 rounded-full bg-white/10"></div>
+              <div className="w-3 h-3 rounded-full bg-white/10"></div>
+              <div className="w-3 h-3 rounded-full bg-white/10"></div>
             </div>
-            <span className="text-xs font-mono text-gray-500">agent_terminal.log</span>
+            <span className="text-[10px] uppercase tracking-widest font-mono text-gray-500">System Logs // {activeNode.toUpperCase()}</span>
+            <div className="w-4 h-4 opacity-50 flex items-center justify-center">
+              <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_10px_#10b981]"></div>
+            </div>
           </div>
-          <div className="p-6 font-mono text-sm md:text-base leading-relaxed text-gray-300 overflow-x-auto min-h-[200px]">
+          
+          {/* Terminal Body with glowing scanline effect */}
+          <div className="p-8 font-mono text-sm md:text-[15px] leading-loose text-gray-300 min-h-[280px] relative overflow-hidden group">
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/[0.01] to-transparent h-[200%] w-full -top-[100%] animate-[scan_4s_ease-in-out_infinite] pointer-events-none" />
+            
             {nodes.find(n => n.id === activeNode)?.log.split('\n').map((line, i) => (
-              <div key={i} className="mb-1">
-                <span className="text-gray-600 mr-4">{(i+1).toString().padStart(2, '0')}</span>
-                {line.startsWith('{') || line.startsWith('}') || line.includes('":') ? (
-                  <span className="text-emerald-400">{line}</span>
-                ) : line.includes('[FAIL]') ? (
-                  <span className="text-red-400">{line}</span>
-                ) : line.includes('[SUCCESS]') || line.includes('[PASS]') || line.includes('[OK]') ? (
-                  <span className="text-green-400">{line}</span>
-                ) : line.includes('[') ? (
-                  <span className="text-blue-400">{line}</span>
-                ) : (
-                  <span>{line}</span>
-                )}
+              <div key={i} className="mb-2 flex items-start opacity-0 animate-[fade-in-up_0.3s_ease-out_forwards]" style={{ animationDelay: `${i * 0.1}s` }}>
+                <span className="text-gray-600 mr-6 select-none shrink-0">{(i+1).toString().padStart(2, '0')}</span>
+                <span className={`
+                  ${(line.startsWith('{') || line.startsWith('}') || line.includes('":')) ? 'text-emerald-400' : ''}
+                  ${line.includes('[FAIL]') ? 'text-red-400 font-bold' : ''}
+                  ${(line.includes('SUCCESS') || line.includes('[OK]') || line.includes('GRANTED')) ? 'text-green-400 font-bold' : ''}
+                  ${line.startsWith('>') ? 'text-gray-400' : ''}
+                `}>
+                  {line}
+                </span>
               </div>
             ))}
+            
+            {/* Blinking Cursor */}
+            <div className="flex items-start mt-4 opacity-0 animate-[fade-in-up_0.3s_ease-out_forwards]" style={{ animationDelay: `${nodes.find(n => n.id === activeNode)?.log.split('\n').length * 0.1}s` }}>
+              <span className="text-gray-600 mr-6 select-none">{(nodes.find(n => n.id === activeNode)?.log.split('\n').length + 1).toString().padStart(2, '0')}</span>
+              <span className="w-2 h-5 bg-white/40 animate-pulse"></span>
+            </div>
           </div>
         </div>
 
