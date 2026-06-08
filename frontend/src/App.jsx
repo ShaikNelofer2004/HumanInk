@@ -62,20 +62,18 @@ function App() {
             if (data.profileData) {
               setUserProfileData(data.profileData);
               if (data.profileData.profiles && data.profileData.profiles.length > 0) {
-                // Only override route if we are stuck on HOME or EXTRACTION.
+                // Override route if we are stuck on HOME or EXTRACTION.
                 setCurrentView(prev => (prev === 'HOME' || prev === 'EXTRACTION') ? 'WORKSPACE' : prev);
               } else {
-                setCurrentView('EXTRACTION');
+                // They definitely have 0 profiles
+                setCurrentView(prev => prev === 'HOME' || prev === 'WORKSPACE' ? 'EXTRACTION' : prev);
               }
-            } else {
-              setCurrentView('EXTRACTION');
             }
           } else {
-             setCurrentView('EXTRACTION');
+             console.error("Failed to fetch profiles, status:", response.status);
           }
         } catch (e) {
           console.error("Error fetching saved profile:", e);
-          setCurrentView('EXTRACTION');
         } finally {
           setIsLoadingProfile(false);
           setHasFetchedProfile(true);
