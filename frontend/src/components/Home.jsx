@@ -230,7 +230,7 @@ const DNACarousel = () => {
   );
 };
 
-const Home = ({ onStartSetup, isLoading }) => {
+const Home = ({ onStartSetup, isLoading, hasProfiles }) => {
   const [isPricingModalOpen, setIsPricingModalOpen] = useState(false);
   const [legalModalState, setLegalModalState] = useState({ isOpen: false, tab: 'privacy' });
   const [isTakingLong, setIsTakingLong] = useState(false);
@@ -305,7 +305,7 @@ const Home = ({ onStartSetup, isLoading }) => {
                   disabled={isLoading}
                   className={`px-8 py-4 rounded-full ${isLoading ? 'bg-white/50 cursor-not-allowed' : 'bg-white hover:scale-105 active:scale-95 shadow-[0_0_40px_rgba(255,255,255,0.15)] hover:shadow-[0_0_60px_rgba(255,255,255,0.3)]'} text-black font-semibold tracking-wide transition-all flex items-center gap-3`}
                 >
-                  {isLoading ? (isTakingLong ? 'Waking up backend (~50s)...' : 'Checking DNA Profile...') : 'Begin Extraction Setup'} <ArrowRight size={18} />
+                  {isLoading ? (isTakingLong ? 'Waking up backend (~50s)...' : 'Checking DNA Profile...') : (hasProfiles ? 'Enter Workspace' : 'Begin Extraction Setup')} <ArrowRight size={18} />
                 </button>
               </SignedIn>
               

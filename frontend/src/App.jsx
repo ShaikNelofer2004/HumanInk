@@ -146,7 +146,7 @@ function App() {
 
   return (
     <div className="relative w-full min-h-screen text-white overflow-hidden bg-[#0a0a0c]">
-      {currentView === 'HOME' && <Home onStartSetup={startSetup} isLoading={isLoadingProfile} />}
+      {currentView === 'HOME' && <Home onStartSetup={startSetup} isLoading={isLoadingProfile} hasProfiles={userProfileData && userProfileData.profiles?.length > 0} />}
       
       {currentView === 'EXTRACTION' && (
         <Extraction onComplete={handleProfileComplete} onGoHome={goHome} onSkip={skipSetup} />

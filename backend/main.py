@@ -135,7 +135,13 @@ async def save_profile(req: ProfileSaveRequest, user: dict = Depends(verify_toke
     if "id" not in new_profile:
         new_profile["id"] = str(uuid.uuid4())
         
-    current_data["profiles"].append(new_profile)
+    # Upsert the profile: update if id exists, else append
+    existing_idx = next((i for i, p in enumerate(current_data["profiles"]) if p["id"] == new_profile["id"]), None)
+    if existing_idx is not None:
+        current_data["profiles"][existing_idx] = new_profile
+    else:
+        current_data["profiles"].append(new_profile)
+        
     current_data["activeProfileId"] = new_profile["id"]
     
     upsert_user_profile(clerk_id, current_data)
