@@ -409,7 +409,12 @@ const Home = ({ onStartSetup, isLoading, hasProfiles }) => {
       <TypewriterComparison />
 
       {/* =========================================
-          SECTION 5: DNA CAROUSEL
+          SECTION 5: WHY HUMANINK
+          ========================================= */}
+      <WhyHumanInkSection />
+
+      {/* =========================================
+          SECTION 6: DNA CAROUSEL
           ========================================= */}
       <DNACarousel />
 
@@ -481,6 +486,88 @@ const Home = ({ onStartSetup, isLoading, hasProfiles }) => {
       {isPricingModalOpen && <PricingModal onClose={() => setIsPricingModalOpen(false)} />}
       {legalModalState.isOpen && <LegalModal onClose={() => setLegalModalState({ isOpen: false, tab: 'privacy' })} initialTab={legalModalState.tab} />}
     </div>
+  );
+};
+
+const WhyHumanInkSection = () => {
+  return (
+    <section className="w-full max-w-7xl mx-auto px-6 py-32 z-10 relative">
+      <div className="text-center mb-16">
+        <h2 className="font-outfit text-4xl md:text-5xl font-black text-white mb-6">Why HumanInk?</h2>
+        <p className="text-gray-400 text-lg md:text-xl font-light max-w-2xl mx-auto">
+          Generic AI sounds like everyone else. HumanInk sounds exactly like <span className="text-white font-medium">you</span>.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* The Problem (ChatGPT/Claude/Gemini) */}
+        <div className="rounded-3xl bg-[#0a0a0c]/80 backdrop-blur-2xl border border-red-500/20 p-8 md:p-12 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-red-500/5 rounded-full blur-[80px]" />
+          <h3 className="font-outfit text-2xl font-bold text-white mb-8 flex items-center gap-3">
+            <span className="w-8 h-8 rounded-full bg-red-500/10 flex items-center justify-center text-red-500 text-sm">✕</span>
+            ChatGPT / Claude / Gemini
+          </h3>
+          
+          <ul className="space-y-8">
+            <li className="flex items-start gap-4">
+              <span className="text-red-500/70 mt-1">→</span>
+              <div>
+                <p className="text-white font-bold text-lg mb-1">Generic "AI Voice"</p>
+                <p className="text-gray-400 text-base leading-relaxed">Uses predictable vocabulary (delve, tapestry, testament) that instantly signals it was machine-written.</p>
+              </div>
+            </li>
+            <li className="flex items-start gap-4">
+              <span className="text-red-500/70 mt-1">→</span>
+              <div>
+                <p className="text-white font-bold text-lg mb-1">Flat Sentence Rhythm</p>
+                <p className="text-gray-400 text-base leading-relaxed">Every sentence is exactly 15-20 words long, lacking the natural "burstiness" of human thought.</p>
+              </div>
+            </li>
+            <li className="flex items-start gap-4">
+              <span className="text-red-500/70 mt-1">→</span>
+              <div>
+                <p className="text-white font-bold text-lg mb-1">One-Size-Fits-All</p>
+                <p className="text-gray-400 text-base leading-relaxed">A prompt like "write in my style" just defaults to a generic enthusiastic tone.</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        {/* The Solution (HumanInk) */}
+        <div className="rounded-3xl bg-gradient-to-br from-ink-primary/10 to-ink-secondary/10 backdrop-blur-2xl border border-ink-secondary/30 p-8 md:p-12 relative overflow-hidden shadow-[0_0_50px_rgba(217,70,239,0.1)]">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-ink-secondary/20 rounded-full blur-[80px]" />
+          <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
+          <h3 className="font-outfit text-2xl font-bold text-white mb-8 flex items-center gap-3 relative z-10">
+            <span className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 text-sm">✓</span>
+            HumanInk Neural Engine
+          </h3>
+          
+          <ul className="space-y-8 relative z-10">
+            <li className="flex items-start gap-4">
+              <span className="text-emerald-400 mt-1">→</span>
+              <div>
+                <p className="text-white font-bold text-lg mb-1">Exact Vocabulary Mapping</p>
+                <p className="text-gray-300 text-base leading-relaxed">Strictly enforces your specific vocabulary distribution, completely banning generic LLM filler words.</p>
+              </div>
+            </li>
+            <li className="flex items-start gap-4">
+              <span className="text-emerald-400 mt-1">→</span>
+              <div>
+                <p className="text-white font-bold text-lg mb-1">High-Variance Burstiness</p>
+                <p className="text-gray-300 text-base leading-relaxed">The Gatekeeper agent mathematically measures sentence lengths to ensure natural, human-like pacing.</p>
+              </div>
+            </li>
+            <li className="flex items-start gap-4">
+              <span className="text-emerald-400 mt-1">→</span>
+              <div>
+                <p className="text-white font-bold text-lg mb-1">True Stylistic Cloning</p>
+                <p className="text-gray-300 text-base leading-relaxed">Uses adversarial Reflexion Loops to analyze and replicate your exact punctuation quirks, not just "tone."</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
   );
 };
 
