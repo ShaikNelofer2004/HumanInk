@@ -330,68 +330,9 @@ const Home = ({ onStartSetup, isLoading, hasProfiles }) => {
       </section>
 
       {/* =========================================
-          SECTION 2: PROFILER PIPELINE (Neon Layout)
+          SECTION 2: PIPELINE EXPLORER
           ========================================= */}
-      <section className="min-h-screen py-20 px-6 relative z-10 max-w-7xl mx-auto w-full flex flex-col md:flex-row items-start gap-20">
-
-        <div className="w-full md:w-1/3 sticky top-40">
-          <h2 className="font-outfit text-5xl md:text-6xl font-extrabold tracking-tight mb-6">
-            The multi-agent <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-br from-ink-primary to-ink-secondary">pipeline.</span>
-          </h2>
-          <p className="text-lg text-gray-400 font-light leading-relaxed">
-            HumanInk completely discards standard prompt wrapping. Instead, we use a rigid, adversarial agent loop that structurally forces the LLM to output sentences matching your exact neural rhythm.
-          </p>
-        </div>
-
-        <div className="w-full md:w-2/3 relative pl-8 md:pl-16">
-          <div className="absolute left-0 top-0 bottom-0 w-px bg-white/10 overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-[150px] bg-gradient-to-b from-transparent via-white to-transparent animate-pipeline shadow-[0_0_15px_#fff]" />
-          </div>
-
-          <div className="flex flex-col gap-24">
-            <div className="relative group">
-              <div className="absolute -left-[2.1rem] md:-left-[4.1rem] top-1 w-[5px] h-[5px] rounded-full bg-white/30 group-hover:bg-ink-primary group-hover:shadow-[0_0_20px_#8b5cf6] transition-all duration-300" />
-              <div className="flex items-start gap-6">
-                <div>
-                  <h3 className="font-outfit text-3xl font-bold mb-4 text-white group-hover:text-ink-primary transition-colors">01. The Profiler</h3>
-                  <p className="text-gray-400 text-lg leading-relaxed font-light">Analyzes your writing samples to map vocabulary distribution, sentence length variance, and stylistic quirks into a massive, multi-dimensional JSON fingerprint.</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="relative group">
-              <div className="absolute -left-[2.1rem] md:-left-[4.1rem] top-1 w-[5px] h-[5px] rounded-full bg-white/30 group-hover:bg-red-500 group-hover:shadow-[0_0_20px_#ef4444] transition-all duration-300" />
-              <div className="flex items-start gap-6">
-                <div>
-                  <h3 className="font-outfit text-3xl font-bold mb-4 text-white group-hover:text-red-400 transition-colors">02. The Gatekeeper</h3>
-                  <p className="text-gray-400 text-lg leading-relaxed font-light">A strict dual-gate system (Math + Semantic). It instantly rejects text that feels robotic, hallucinated, or mathematically predictable, acting as an absolute firewall.</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="relative group">
-              <div className="absolute -left-[2.1rem] md:-left-[4.1rem] top-1 w-[5px] h-[5px] rounded-full bg-white/30 group-hover:bg-emerald-500 group-hover:shadow-[0_0_20px_#10b981] transition-all duration-300" />
-              <div className="flex items-start gap-6">
-                <div>
-                  <h3 className="font-outfit text-3xl font-bold mb-4 text-white group-hover:text-emerald-400 transition-colors">03. The Writer</h3>
-                  <p className="text-gray-400 text-lg leading-relaxed font-light">Uses Chain-of-Thought (CoT) reasoning to intelligently draft text. It doesn't guess; it surgically injects the exact rhythmic variations defined by your Profile.</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="relative group">
-              <div className="absolute -left-[2.1rem] md:-left-[4.1rem] top-1 w-[5px] h-[5px] rounded-full bg-white/30 group-hover:bg-ink-secondary group-hover:shadow-[0_0_20px_#d946ef] transition-all duration-300" />
-              <div className="flex items-start gap-6">
-                <div>
-                  <h3 className="font-outfit text-3xl font-bold mb-4 text-white group-hover:text-ink-secondary transition-colors">04. The Critic</h3>
-                  <p className="text-gray-400 text-lg leading-relaxed font-light">Adversarially evaluates the final draft against your profile. If the "Simulated Human Score" falls below 75%, it forces the Writer agent to immediately restart the loop.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <PipelineExplorer />
 
       {/* =========================================
           SECTION 2.5: WHY HUMANINK
@@ -566,6 +507,124 @@ const WhyHumanInkSection = () => {
             </li>
           </ul>
         </div>
+      </div>
+    </section>
+  );
+};
+
+const PipelineExplorer = () => {
+  const [activeNode, setActiveNode] = useState('profiler');
+
+  const nodes = [
+    {
+      id: 'input',
+      label: 'Input Sample',
+      icon: '📝',
+      log: 'User submitted text for processing.\nWord Count: 482\nStatus: Pending...',
+      color: 'text-gray-400'
+    },
+    {
+      id: 'profiler',
+      label: 'Profiler Agent',
+      icon: '🔍',
+      log: '{\n  "burstiness_score": 0.82,\n  "tone": "academic",\n  "em_dash_freq": "high",\n  "vocabulary_complexity": 0.94,\n  "sentence_length_variance": 14.5\n}',
+      color: 'text-ink-primary'
+    },
+    {
+      id: 'writer',
+      label: 'Writer Agent',
+      icon: '✍️',
+      log: '[WRITER] Injecting DNA...\nApplying constraint: Increase sentence length variance.\nApplying constraint: Remove LLM vocabulary (delve, tapestry).\n[DRAFT 1] Generation complete.',
+      color: 'text-emerald-400'
+    },
+    {
+      id: 'gatekeeper',
+      label: 'Gatekeeper Agent',
+      icon: '🛡️',
+      log: '[GATEKEEPER] Analyzing Draft 1...\n[OK] Semantic integrity passed.\n[OK] No hallucinations detected.\n[PASS] Draft allowed to proceed to Critic.',
+      color: 'text-red-400'
+    },
+    {
+      id: 'critic',
+      label: 'Critic Agent',
+      icon: '⚖️',
+      log: '[CRITIC] Evaluating Draft 1...\nCalculated Human Score: 68/100.\n[FAIL] Output too robotic. Pacing is flat.\nFeedback: Break up compound sentences.\nSending back to Writer...',
+      color: 'text-ink-secondary'
+    },
+    {
+      id: 'output',
+      label: 'Final Output',
+      icon: '✨',
+      log: '[SUCCESS] Draft 3 achieved Human Score 92/100.\nOutput locked.\nReady for user review.',
+      color: 'text-blue-400'
+    }
+  ];
+
+  return (
+    <section className="w-full max-w-7xl mx-auto px-6 py-32 z-10 relative">
+      <div className="text-center mb-20">
+        <h2 className="font-outfit text-4xl md:text-5xl font-black text-white mb-6">Pipeline Explorer</h2>
+        <p className="text-gray-400 text-lg md:text-xl font-light max-w-2xl mx-auto">
+          See exactly how the agents interact to reconstruct your text. Click a node to view its terminal output.
+        </p>
+      </div>
+
+      <div className="bg-[#0a0a0c]/80 backdrop-blur-2xl border border-white/10 rounded-3xl p-6 md:p-12 shadow-[0_0_50px_rgba(0,0,0,0.5)] max-w-5xl mx-auto">
+        
+        {/* Horizontal Pipeline Graph */}
+        <div className="flex flex-col md:flex-row items-center justify-between mb-16 relative">
+          {/* Connecting Line */}
+          <div className="hidden md:block absolute top-7 left-[5%] w-[90%] h-[2px] bg-white/10 -z-10"></div>
+          
+          {nodes.map((node) => (
+            <div key={node.id} className="relative flex flex-col items-center mb-8 md:mb-0 cursor-pointer group" onClick={() => setActiveNode(node.id)}>
+              <div className={`w-14 h-14 rounded-full flex items-center justify-center text-2xl transition-all duration-300 ${activeNode === node.id ? 'bg-white/10 border-2 border-white/30 scale-110 shadow-[0_0_20px_rgba(255,255,255,0.2)]' : 'bg-[#050505] border border-white/5 group-hover:border-white/20 hover:scale-105'}`}>
+                {node.icon}
+              </div>
+              <span className={`mt-4 font-outfit text-sm font-semibold transition-colors duration-300 ${activeNode === node.id ? node.color : 'text-gray-500 group-hover:text-gray-300'}`}>
+                {node.label}
+              </span>
+              
+              {/* Active Indicator Arrow */}
+              {activeNode === node.id && (
+                <div className="absolute -bottom-6 text-white/50 animate-bounce">
+                  ↓
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {/* Terminal Window */}
+        <div className="bg-[#050505] rounded-xl border border-white/10 overflow-hidden relative">
+          <div className="flex items-center px-4 py-3 border-b border-white/5 bg-white/[0.02]">
+            <div className="flex gap-2 mr-4">
+              <div className="w-3 h-3 rounded-full bg-red-500/50"></div>
+              <div className="w-3 h-3 rounded-full bg-yellow-500/50"></div>
+              <div className="w-3 h-3 rounded-full bg-green-500/50"></div>
+            </div>
+            <span className="text-xs font-mono text-gray-500">agent_terminal.log</span>
+          </div>
+          <div className="p-6 font-mono text-sm md:text-base leading-relaxed text-gray-300 overflow-x-auto min-h-[200px]">
+            {nodes.find(n => n.id === activeNode)?.log.split('\n').map((line, i) => (
+              <div key={i} className="mb-1">
+                <span className="text-gray-600 mr-4">{(i+1).toString().padStart(2, '0')}</span>
+                {line.startsWith('{') || line.startsWith('}') || line.includes('":') ? (
+                  <span className="text-emerald-400">{line}</span>
+                ) : line.includes('[FAIL]') ? (
+                  <span className="text-red-400">{line}</span>
+                ) : line.includes('[SUCCESS]') || line.includes('[PASS]') || line.includes('[OK]') ? (
+                  <span className="text-green-400">{line}</span>
+                ) : line.includes('[') ? (
+                  <span className="text-blue-400">{line}</span>
+                ) : (
+                  <span>{line}</span>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
       </div>
     </section>
   );
