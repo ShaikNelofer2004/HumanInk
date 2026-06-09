@@ -359,6 +359,11 @@ const Home = ({ onStartSetup, isLoading, hasProfiles }) => {
           ========================================= */}
       <DNACarousel />
 
+      {/* =========================================
+          SECTION 7: ROADMAP
+          ========================================= */}
+      <RoadmapSection />
+
       {/* Footer */}
       <footer className="w-full border-t border-white/5 relative z-10 bg-[#050505] mt-24">
 
@@ -539,12 +544,12 @@ const PipelineExplorer = () => {
     {
       id: 'gatekeeper',
       label: 'GATEKEEPER_AGENT',
-      log: '> INITIATING AUTHENTICITY SCAN...\n[ANALYSIS] AI Probability: 84%\n[ANALYSIS] Human Burstiness: Low\n[RESULT] Input requires humanization.\n> ROUTING TO WRITER_AGENT...',
+      log: '> INITIATING DUAL-GATE SCAN...\n[MATH_GATE] Burstiness Score: 3.2 (Fail)\n[SEMANTIC] AI Watermark detected.\n[RESULT] Input requires humanization.\n> ROUTING TO WRITER_AGENT...',
       color: 'text-red-400',
       bg: 'bg-red-500/10',
       border: 'border-red-500/40',
       shadow: 'shadow-[0_0_30px_rgba(239,68,68,0.2)]',
-      description: 'Evaluates the input. If the text is already highly authentic and human-like, it skips the Writer entirely and outputs directly to save compute.'
+      description: 'A dual-gate firewall. First, the Math Gate measures sentence variance. Then, Semantic Intelligence checks for AI watermarks. If it passes both, it bypasses the Writer entirely.'
     },
     {
       id: 'writer',
@@ -675,6 +680,53 @@ const PipelineExplorer = () => {
           </div>
         </div>
 
+      </div>
+    </section>
+  );
+};
+
+const RoadmapSection = () => {
+  return (
+    <section className="w-full max-w-7xl mx-auto px-6 py-24 z-10 relative">
+      <div className="text-center mb-16">
+        <h2 className="font-outfit text-3xl md:text-4xl font-black text-white mb-4">The Horizon</h2>
+        <p className="text-gray-400 text-base md:text-lg font-light max-w-2xl mx-auto">
+          We are constantly pushing the boundaries of stylistic cloning. Here is what's coming next.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Highlighted Feature */}
+        <div className="md:col-span-3 rounded-2xl bg-[#0a0a0c]/80 backdrop-blur-xl border border-ink-primary/30 p-8 relative overflow-hidden group">
+          <div className="absolute inset-0 bg-gradient-to-r from-ink-primary/10 to-transparent opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
+          <div className="relative z-10">
+            <div className="flex items-center gap-3 mb-4">
+              <span className="px-3 py-1 rounded-full bg-ink-primary/20 text-ink-primary text-xs font-bold tracking-widest uppercase border border-ink-primary/30">In Development</span>
+              <h3 className="font-outfit text-2xl font-bold text-white">Dynamic Gatekeeper Calibration</h3>
+            </div>
+            <p className="text-gray-300 text-sm md:text-base leading-relaxed mb-6 max-w-3xl">
+              Currently, our Math Gate uses global baseline thresholds to detect if text is human enough to bypass the pipeline. 
+              Soon, the Gatekeeper will ingest your <strong>specific DNA profile</strong> first, using your exact mathematical variance targets 
+              as its bypass threshold. This completely eliminates false-positives for users with highly unique, low-variance writing styles.
+            </p>
+          </div>
+        </div>
+
+        {/* Standard Features */}
+        <div className="rounded-xl border border-white/10 bg-[#050505] p-6 hover:border-white/20 transition-colors">
+          <h4 className="font-outfit font-bold text-white mb-2">Team & Enterprise DNAs</h4>
+          <p className="text-gray-400 text-sm">Allow organizations to extract a unified "Brand DNA" and apply it to their entire team's workspace.</p>
+        </div>
+        
+        <div className="rounded-xl border border-white/10 bg-[#050505] p-6 hover:border-white/20 transition-colors">
+          <h4 className="font-outfit font-bold text-white mb-2">Deep Workspace Integration</h4>
+          <p className="text-gray-400 text-sm">A seamless browser extension for real-time humanization inside Google Docs and Notion.</p>
+        </div>
+
+        <div className="rounded-xl border border-white/10 bg-[#050505] p-6 hover:border-white/20 transition-colors">
+          <h4 className="font-outfit font-bold text-white mb-2">Enhanced Profiler</h4>
+          <p className="text-gray-400 text-sm">Allow users to upload PDFs or scrape entire blog domains to extract highly robust style profiles.</p>
+        </div>
       </div>
     </section>
   );
