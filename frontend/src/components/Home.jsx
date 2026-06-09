@@ -495,7 +495,7 @@ const WhyHumanInkSection = () => {
               <span className="text-emerald-400 mt-1">→</span>
               <div>
                 <p className="text-white font-bold text-lg mb-1">High-Variance Burstiness</p>
-                <p className="text-gray-300 text-base leading-relaxed">The Gatekeeper agent mathematically measures sentence lengths to ensure natural, human-like pacing.</p>
+                <p className="text-gray-300 text-base leading-relaxed">The Critic agent mathematically measures sentence lengths to ensure natural, human-like pacing.</p>
               </div>
             </li>
             <li className="flex items-start gap-4">
