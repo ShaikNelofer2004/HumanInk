@@ -64,9 +64,6 @@ function App() {
               if (data.profileData.profiles && data.profileData.profiles.length > 0) {
                 // Override route if we are stuck on HOME or EXTRACTION.
                 setCurrentView(prev => (prev === 'HOME' || prev === 'EXTRACTION') ? 'WORKSPACE' : prev);
-              } else {
-                // They definitely have 0 profiles
-                setCurrentView(prev => prev === 'HOME' || prev === 'WORKSPACE' ? 'EXTRACTION' : prev);
               }
             }
           } else {
@@ -85,11 +82,7 @@ function App() {
   }, [isSignedIn, getToken, hasFetchedProfile]);
 
   const startSetup = () => {
-    if (userProfileData && userProfileData.profiles.length > 0) {
-      setCurrentView('WORKSPACE');
-    } else {
-      setCurrentView('EXTRACTION');
-    }
+    setCurrentView('WORKSPACE');
   };
 
   const goHome = () => {

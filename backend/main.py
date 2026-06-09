@@ -74,12 +74,24 @@ class ActiveProfileRequest(BaseModel):
     activeProfileId: Optional[str] = None
 
 def migrate_to_v2(profile_data):
-    if not profile_data:
-        return {"version": 2, "activeProfileId": None, "profiles": [], "credits": 10}
+    default_profile = {
+        "id": "default",
+        "name": "Default Profile",
+        "archetype": "Default Profile",
+        "style_instructions": "Sentence Rhythm: Medium Vocabulary: Standard Tone: Neutral"
+    }
+
+    if not profile_data or "profiles" not in profile_data or len(profile_data.get("profiles", [])) == 0:
+        return {"version": 2, "activeProfileId": "default", "profiles": [default_profile], "credits": 10}
     
     if profile_data.get("version") == 2:
         if "credits" not in profile_data:
             profile_data["credits"] = 10
+        # Ensure default profile exists if somehow deleted
+        if not any(p.get("id") == "default" for p in profile_data.get("profiles", [])):
+            profile_data["profiles"].insert(0, default_profile)
+            if not profile_data.get("activeProfileId"):
+                profile_data["activeProfileId"] = "default"
         return profile_data
     
     # Legacy migration

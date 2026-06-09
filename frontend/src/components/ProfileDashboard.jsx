@@ -199,14 +199,16 @@ const ProfileDashboard = ({ userProfileData, setUserProfileData, onBackToWorkspa
                         </button>
                       )}
                       
-                      <button 
-                        onClick={() => initiateDelete(profile.id)}
-                        disabled={isDeleting === profile.id}
-                        className="text-red-400/50 hover:text-red-400 bg-red-500/5 hover:bg-red-500/10 border border-transparent hover:border-red-500/20 p-1.5 rounded-full transition-colors disabled:opacity-50"
-                        title="Delete Profile"
-                      >
-                        <Trash2 size={16} />
-                      </button>
+                      {profile.id !== 'default' && (
+                        <button 
+                          onClick={() => initiateDelete(profile.id)}
+                          disabled={isDeleting === profile.id}
+                          className="text-red-400/50 hover:text-red-400 bg-red-500/5 hover:bg-red-500/10 border border-transparent hover:border-red-500/20 p-1.5 rounded-full transition-colors disabled:opacity-50"
+                          title="Delete Profile"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      )}
                     </div>
                   </div>
 

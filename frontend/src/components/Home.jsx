@@ -305,14 +305,14 @@ const Home = ({ onStartSetup, isLoading, hasProfiles }) => {
                   disabled={isLoading}
                   className={`px-8 py-4 rounded-full ${isLoading ? 'bg-white/50 cursor-not-allowed' : 'bg-white hover:scale-105 active:scale-95 shadow-[0_0_40px_rgba(255,255,255,0.15)] hover:shadow-[0_0_60px_rgba(255,255,255,0.3)]'} text-black font-semibold tracking-wide transition-all flex items-center gap-3`}
                 >
-                  {isLoading ? (isTakingLong ? 'Waking up backend (~50s)...' : 'Checking DNA Profile...') : (hasProfiles ? 'Enter Workspace' : 'Begin Extraction Setup')} <ArrowRight size={18} />
+                  {isLoading ? (isTakingLong ? 'Waking up backend (~50s)...' : 'Checking DNA Profile...') : 'Enter Workspace'} <ArrowRight size={18} />
                 </button>
               </SignedIn>
               
               <SignedOut>
                 <SignInButton mode="modal">
                   <button className="px-8 py-4 rounded-full bg-white text-black font-semibold tracking-wide hover:scale-105 active:scale-95 transition-all flex items-center gap-3 shadow-[0_0_40px_rgba(255,255,255,0.15)] hover:shadow-[0_0_60px_rgba(255,255,255,0.3)]">
-                    Begin Extraction Setup <ArrowRight size={18} />
+                    Enter Workspace <ArrowRight size={18} />
                   </button>
                 </SignInButton>
               </SignedOut>
