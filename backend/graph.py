@@ -23,15 +23,11 @@ gatekeeper = GatekeeperAgent()
 
 def pre_critic_node(state: AgentState):
     """
-    Step 0: Pre-Critic Analysis.
-    Check if the input text is ALREADY human enough.
+    Step 0: Pre-Critic Analysis (Gatekeeper).
+    Runs compulsorily for ALL inputs - Custom DNA or Default.
+    If the text is already human enough, bypass the Writer/Critic loop entirely.
     """
-    existing_profile = state.get("style_profile", {})
-    if existing_profile.get("style_instructions"):
-        print("--- Node: Pre-Critic (Skipping - Active DNA Provided) ---")
-        return {"skip_rewriting": False}
-
-    print("--- Node: Pre-Critic (Early Analysis) ---")
+    print("--- Node: Gatekeeper (Mandatory Authenticity Scan) ---")
     
     evaluation = gatekeeper.evaluate(state["input_text"])
     

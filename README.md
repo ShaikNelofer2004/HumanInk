@@ -163,11 +163,54 @@ See [`PRODUCT_ROADMAP.md`](PRODUCT_ROADMAP.md) for the full technical roadmap. K
 | ✅ | Cloud DB & Authentication | **Done** |
 | ✅ | Credit & Premium Tier UI | **Done** |
 | ✅ | Multiple DNA Profile Slots | **Done** |
+| 🔴 P0 | Dynamic Gatekeeper Calibration (Custom DNA Thresholding) | In Development |
+| 🔴 P0 | Field DNA Retriever — Domain-Aware Academic Writing | In Development |
 | 🔴 P0 | Deliberate Imperfection Agent | Pending |
 | 🔴 P0 | Token-by-token streaming output | Pending |
 | 🟡 P1 | Syntactic Reconstructor Agent | Pending |
 | 🟢 P2 | Chrome Extension | Pending |
 | 🔵 P3 | API-First B2B Tier | Pending |
+
+---
+
+## 🔬 Future Vision — Field DNA Retriever
+
+A planned agent node that fundamentally upgrades Academic Mode from a generic rewriter into a **domain-aware research writing assistant**.
+
+### The Problem
+Current Academic Mode uses a fixed field baseline prompt (e.g., "write in a formal academic style"). But a **NeurIPS ML paper** sounds nothing like a **NEJM medical paper**, which sounds nothing like a **Nature physics paper**. A generic prompt produces generic academic writing.
+
+### The Solution
+The **Field DNA Retriever** is a new agent in the LangGraph pipeline that:
+1. Takes the user's research topic/domain as input
+2. Searches **arXiv** and trusted scholarly sources for recent papers in that exact field
+3. Extracts structured **style signals** — not content — from those papers:
+   - Average sentence length & variance per section
+   - Technical vocabulary density
+   - Citation rhythm and density
+   - Transitional phrase patterns
+   - Passive vs. active voice ratio
+4. Packages these signals into a **Field DNA profile** (same structure as Personal DNA)
+5. Passes the Field DNA to the Writer Agent, which merges it with any existing Personal DNA
+
+### Key Enhancements Planned
+
+| Enhancement | Description |
+|---|---|
+| **Venue Targeting** | User specifies the target journal/conference (NeurIPS, NEJM, Nature) for laser-precise style — not just a broad topic |
+| **Section-Aware Extraction** | Extracts different style signals per section — Abstract, Introduction, Methodology, and Discussion each have distinct conventions |
+| **Temporal Freshness Filter** | Only retrieves papers from the last 2 years — writing conventions evolve and stale papers produce outdated voice |
+| **High-Impact Weighting** | Papers from top-tier venues (Nature, Science, NeurIPS) carry more style weight than low-quality sources |
+| **Blend Mode** | Writing at the intersection of two fields? Select two venues and blend their Field DNAs proportionally |
+| **Smart Caching** | Field DNA for "NeurIPS CS" is cached and reused across sessions — no redundant fetches |
+
+### Architecture Position
+```
+Profiler → [FIELD_DNA_RETRIEVER] → Gatekeeper → Writer → Critic → Output
+               ↑ New Agent Node
+               Uses: arXiv Search Tool + Web Scraper Tool
+               Outputs: Field DNA Profile (merged into Writer context)
+```
 
 ---
 

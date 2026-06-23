@@ -696,7 +696,7 @@ const RoadmapSection = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Highlighted Feature */}
+        {/* Highlighted Feature 1 */}
         <div className="md:col-span-3 rounded-2xl bg-[#0a0a0c]/80 backdrop-blur-xl border border-ink-primary/30 p-8 relative overflow-hidden group">
           <div className="absolute inset-0 bg-gradient-to-r from-ink-primary/10 to-transparent opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
           <div className="relative z-10">
@@ -704,11 +704,46 @@ const RoadmapSection = () => {
               <span className="px-3 py-1 rounded-full bg-ink-primary/20 text-ink-primary text-xs font-bold tracking-widest uppercase border border-ink-primary/30">In Development</span>
               <h3 className="font-outfit text-2xl font-bold text-white">Dynamic Gatekeeper Calibration</h3>
             </div>
-            <p className="text-gray-300 text-sm md:text-base leading-relaxed mb-6 max-w-3xl">
+            <p className="text-gray-300 text-sm md:text-base leading-relaxed max-w-3xl">
               Currently, our Math Gate uses global baseline thresholds to detect if text is human enough to bypass the pipeline. 
               Soon, the Gatekeeper will ingest your <strong>specific DNA profile</strong> first, using your exact mathematical variance targets 
               as its bypass threshold. This completely eliminates false-positives for users with highly unique, low-variance writing styles.
             </p>
+          </div>
+        </div>
+
+        {/* Highlighted Feature 2 */}
+        <div className="md:col-span-3 rounded-2xl bg-[#0a0a0c]/80 backdrop-blur-xl border border-emerald-500/30 p-8 relative overflow-hidden group">
+          <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 to-transparent opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
+          <div className="relative z-10">
+            <div className="flex items-center gap-3 mb-4">
+              <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-bold tracking-widest uppercase border border-emerald-500/30">Coming Soon</span>
+              <h3 className="font-outfit text-2xl font-bold text-white">Field DNA Retriever — Domain-Aware Academic Writing</h3>
+            </div>
+            <p className="text-gray-300 text-sm md:text-base leading-relaxed mb-6 max-w-4xl">
+              A new agent node that supercharges Academic Mode. Instead of using a generic "academic writing" prompt, the <strong>Field DNA Retriever</strong> searches 
+              arXiv and trusted scholarly sources based on your target research domain. It extracts real writing patterns — technical vocabulary density, 
+              citation rhythm, sentence structure conventions — from recent papers in your <em>exact</em> field. The result: your text is rewritten to 
+              match how researchers in that community actually write, not how a generic AI thinks academics write.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+                <p className="text-emerald-400 font-mono text-xs tracking-widest uppercase mb-1">Venue Targeting</p>
+                <p className="text-gray-400 text-xs">Specify NeurIPS, NEJM, or Nature — not just a broad topic — for laser-precise style retrieval.</p>
+              </div>
+              <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+                <p className="text-emerald-400 font-mono text-xs tracking-widest uppercase mb-1">Section-Aware Style</p>
+                <p className="text-gray-400 text-xs">Extracts different style signals per section — Abstract, Methodology, and Discussion write completely differently.</p>
+              </div>
+              <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+                <p className="text-emerald-400 font-mono text-xs tracking-widest uppercase mb-1">Temporal Freshness</p>
+                <p className="text-gray-400 text-xs">Only uses papers from the last 2 years. Writing conventions evolve — stale style means an outdated voice.</p>
+              </div>
+              <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+                <p className="text-emerald-400 font-mono text-xs tracking-widest uppercase mb-1">Blend Mode</p>
+                <p className="text-gray-400 text-xs">Writing at the intersection of two fields? Pick two venues and blend their Field DNAs together.</p>
+              </div>
+            </div>
           </div>
         </div>
 
