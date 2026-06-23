@@ -717,14 +717,16 @@ const RoadmapSection = () => {
           <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 to-transparent opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
           <div className="relative z-10">
             <div className="flex items-center gap-3 mb-4">
-              <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-bold tracking-widest uppercase border border-emerald-500/30">Coming Soon</span>
+              <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-bold tracking-widest uppercase border border-emerald-500/30">HumanInk Labs</span>
               <h3 className="font-outfit text-2xl font-bold text-white">Field DNA Retriever — Domain-Aware Academic Writing</h3>
             </div>
-            <p className="text-gray-300 text-sm md:text-base leading-relaxed mb-6 max-w-4xl">
-              A new agent node that supercharges Academic Mode. Instead of using a generic "academic writing" prompt, the <strong>Field DNA Retriever</strong> searches 
-              arXiv and trusted scholarly sources based on your target research domain. It extracts real writing patterns — technical vocabulary density, 
-              citation rhythm, sentence structure conventions — from recent papers in your <em>exact</em> field. The result: your text is rewritten to 
-              match how researchers in that community actually write, not how a generic AI thinks academics write.
+            <p className="text-gray-300 text-sm md:text-base leading-relaxed mb-3 max-w-4xl">
+              A retrieval-powered agent that learns how researchers in your field actually write. The <strong>Field DNA Retriever</strong> searches 
+              arXiv and trusted scholarly sources based on your target venue — extracting real writing patterns, technical vocabulary density, 
+              citation rhythm, and sentence structure conventions from recent papers in your <em>exact</em> research community.
+            </p>
+            <p className="text-emerald-400 text-sm font-medium italic mb-6 max-w-4xl">
+              Instead of mimicking academic writing, HumanInk learns from the writing culture of your research community.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="bg-white/5 border border-white/10 rounded-xl p-4">
@@ -736,7 +738,7 @@ const RoadmapSection = () => {
                 <p className="text-gray-400 text-xs">Extracts different style signals per section — Abstract, Methodology, and Discussion write completely differently.</p>
               </div>
               <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-                <p className="text-emerald-400 font-mono text-xs tracking-widest uppercase mb-1">Temporal Freshness</p>
+                <p className="text-emerald-400 font-mono text-xs tracking-widest uppercase mb-1">Current Research Voice</p>
                 <p className="text-gray-400 text-xs">Only uses papers from the last 2 years. Writing conventions evolve — stale style means an outdated voice.</p>
               </div>
               <div className="bg-white/5 border border-white/10 rounded-xl p-4">
