@@ -411,7 +411,7 @@ const Home = ({ onStartSetup, isLoading, hasProfiles }) => {
           {/* Legal & Contact Column */}
           <div className="flex flex-col gap-3">
             <span className="font-outfit font-bold text-xs tracking-[0.2em] uppercase text-gray-500 mb-2">Contact</span>
-            <a href="mailto:humanink@gmail.com" className="text-ink-primary text-sm font-inter hover:text-white transition-colors cursor-pointer">humanink@gmail.com</a>
+            <a href="mailto:humanink.ai@gmail.com" className="text-ink-primary text-sm font-inter hover:text-white transition-colors cursor-pointer">humanink.ai@gmail.com</a>
             <span onClick={() => openLegal('privacy')} className="text-gray-400 text-sm font-inter hover:text-white cursor-pointer transition-colors">Privacy Policy</span>
             <span onClick={() => openLegal('security')} className="text-gray-400 text-sm font-inter hover:text-white cursor-pointer transition-colors">Security</span>
             <span onClick={() => openLegal('terms')} className="text-gray-400 text-sm font-inter hover:text-white cursor-pointer transition-colors">Terms of Use</span>
