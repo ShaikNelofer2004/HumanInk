@@ -729,7 +729,7 @@ const RoadmapSection = () => {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="bg-white/5 border border-white/10 rounded-xl p-4">
                 <p className="text-emerald-400 font-mono text-xs tracking-widest uppercase mb-1">Venue Targeting</p>
-                <p className="text-gray-400 text-xs">Specify NeurIPS, NEJM, or Nature — not just a broad topic — for laser-precise style retrieval.</p>
+                <p className="text-gray-400 text-xs">Specify NeurIPS, IEEE CVPR, NEJM, or Nature — not just a broad topic — for laser-precise style retrieval. IEEE papers are sourced via free arXiv preprints.</p>
               </div>
               <div className="bg-white/5 border border-white/10 rounded-xl p-4">
                 <p className="text-emerald-400 font-mono text-xs tracking-widest uppercase mb-1">Section-Aware Style</p>

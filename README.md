@@ -197,12 +197,21 @@ The **Field DNA Retriever** is a new agent in the LangGraph pipeline that:
 
 | Enhancement | Description |
 |---|---|
-| **Venue Targeting** | User specifies the target journal/conference (NeurIPS, NEJM, Nature) for laser-precise style — not just a broad topic |
+| **Venue Targeting** | User specifies the target journal/conference (NeurIPS, IEEE CVPR, ICCV, TPAMI, NEJM, Nature) for laser-precise style — not just a broad topic. IEEE papers are sourced via free arXiv preprints using the IEEE Xplore arXiv strategy |
 | **Section-Aware Extraction** | Extracts different style signals per section — Abstract, Introduction, Methodology, and Discussion each have distinct conventions |
 | **Temporal Freshness Filter** | Only retrieves papers from the last 2 years — writing conventions evolve and stale papers produce outdated voice |
-| **High-Impact Weighting** | Papers from top-tier venues (Nature, Science, NeurIPS) carry more style weight than low-quality sources |
+| **High-Impact Weighting** | Papers from top-tier venues (Nature, Science, NeurIPS, IEEE TPAMI) carry more style weight than low-quality sources |
 | **Blend Mode** | Writing at the intersection of two fields? Select two venues and blend their Field DNAs proportionally |
-| **Smart Caching** | Field DNA for "NeurIPS CS" is cached and reused across sessions — no redundant fetches |
+| **Smart Caching** | Field DNA for "NeurIPS CS" or "IEEE CVPR" is cached and reused across sessions — no redundant fetches |
+
+### Supported IEEE Venues (via arXiv preprints)
+| IEEE Venue | Domain |
+|---|---|
+| **CVPR / ICCV / ECCV** | Computer Vision |
+| **ICASSP** | Signal Processing & Audio |
+| **TPAMI** | Pattern Analysis & Machine Intelligence |
+| **IEEE Transactions on Neural Networks** | Deep Learning |
+| **IEEE Access** | Open Access — Broad Engineering |
 
 ### Architecture Position
 ```
