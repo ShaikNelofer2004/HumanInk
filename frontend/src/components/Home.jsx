@@ -693,6 +693,28 @@ const PipelineExplorer = () => {
 const AgentProtocolSection = () => {
   const protocols = [
     {
+      icon: <FileCode2 size={22} />,
+      tag: 'AGENTS.MD',
+      tagColor: 'text-pink-400 border-pink-500/30 bg-pink-500/10',
+      title: 'Agent Identity Standard',
+      by: 'open standard',
+      description: 'Every HumanInk agent publishes an AGENTS.md — a machine-readable identity card declaring its capabilities, input/output schema, and constraints. The entire AI ecosystem can discover and invoke your agents correctly.',
+      gain: 'HumanInk agents become first-class citizens of the global agent ecosystem.',
+      glow: 'group-hover:shadow-[0_0_40px_rgba(236,72,153,0.15)]',
+      border: 'border-pink-500/20 hover:border-pink-500/40',
+    },
+    {
+      icon: <Layers size={22} />,
+      tag: 'SKILLS',
+      tagColor: 'text-orange-400 border-orange-500/30 bg-orange-500/10',
+      title: 'Packaged Skill Marketplace',
+      by: 'open standard',
+      description: 'Each HumanInk capability — DNA extraction, humanization, authenticity scoring — is packaged as a reusable Skill. Any agent orchestrator (CrewAI, AutoGPT, LangGraph Cloud) can discover and import them.',
+      gain: 'HumanInk stops being a product and becomes a platform others build on.',
+      glow: 'group-hover:shadow-[0_0_40px_rgba(249,115,22,0.15)]',
+      border: 'border-orange-500/20 hover:border-orange-500/40',
+    },
+    {
       icon: <Globe size={22} />,
       tag: 'MCP',
       tagColor: 'text-violet-400 border-violet-500/30 bg-violet-500/10',
@@ -724,28 +746,6 @@ const AgentProtocolSection = () => {
       gain: '100-word limit gone. 500 words processed in the same time as 100 today.',
       glow: 'group-hover:shadow-[0_0_40px_rgba(16,185,129,0.15)]',
       border: 'border-emerald-500/20 hover:border-emerald-500/40',
-    },
-    {
-      icon: <Layers size={22} />,
-      tag: 'SKILLS',
-      tagColor: 'text-orange-400 border-orange-500/30 bg-orange-500/10',
-      title: 'Packaged Skill Marketplace',
-      by: 'open standard',
-      description: 'Each HumanInk capability — DNA extraction, humanization, authenticity scoring — is packaged as a reusable Skill. Any agent orchestrator (CrewAI, AutoGPT, LangGraph Cloud) can discover and import them.',
-      gain: 'HumanInk stops being a product and becomes a platform others build on.',
-      glow: 'group-hover:shadow-[0_0_40px_rgba(249,115,22,0.15)]',
-      border: 'border-orange-500/20 hover:border-orange-500/40',
-    },
-    {
-      icon: <FileCode2 size={22} />,
-      tag: 'AGENTS.MD',
-      tagColor: 'text-pink-400 border-pink-500/30 bg-pink-500/10',
-      title: 'Agent Identity Standard',
-      by: 'open standard',
-      description: 'Every HumanInk agent publishes an AGENTS.md — a machine-readable identity card declaring its capabilities, input/output schema, and constraints. The entire AI ecosystem can discover and invoke your agents correctly.',
-      gain: 'HumanInk agents become first-class citizens of the global agent ecosystem.',
-      glow: 'group-hover:shadow-[0_0_40px_rgba(236,72,153,0.15)]',
-      border: 'border-pink-500/20 hover:border-pink-500/40',
     },
   ];
 
