@@ -1,8 +1,10 @@
 import json
 import os
+import re
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from dotenv import load_dotenv
+from utils import calculate_burstiness
 
 load_dotenv()
 
@@ -38,26 +40,36 @@ class ProfilerAgent:
         ])
 
         chain = prompt | self.llm
+        profile = {}
         try:
-            import re
             response = chain.invoke({"text": combined_text})
             content = response.content.strip()
             # Try to find JSON block
             json_match = re.search(r"\{.*\}", content, re.DOTALL)
             if json_match:
                 json_str = json_match.group(0)
-                return json.loads(json_str)
+                profile = json.loads(json_str)
             else:
                 # If no brackets found, try raw (rare)
-                return json.loads(content)
+                profile = json.loads(content)
         except Exception as e:
             print(f"Profiler JSON Error: {e}")
-            print(f"Raw Output: {response.content}") # Debugging
             # Fallback profile
-            return {
+            profile = {
                 "Sentence_Length_Variance": "Medium",
                 "Tone": "Neutral",
                 "Common_Connectors": [],
                 "Quirks": ["Standard punctuation"],
                 "Vocabulary_Level": "Standard"
             }
+
+        # --- Q2 Implementation: Save numeric burstiness score from actual samples ---
+        # This gives the Gatekeeper a precise, numeric target instead of a vague string.
+        try:
+            burstiness_score = calculate_burstiness(combined_text)
+            profile["burstiness_score"] = round(burstiness_score, 3)
+            print(f"    [Profiler] Saved numeric burstiness_score: {burstiness_score:.3f}")
+        except Exception as e:
+            print(f"    [Profiler] Could not compute burstiness_score: {e}")
+
+        return profile

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { PenTool, ArrowRight, Shield, Zap, BrainCircuit, Terminal, Mail, BookOpen, MessageSquare, Search, Target } from 'lucide-react';
+import { PenTool, ArrowRight, Shield, Zap, BrainCircuit, Terminal, Mail, BookOpen, MessageSquare, Search, Target, Network, Cpu, Globe, Layers, FileCode2 } from 'lucide-react';
 import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton, ClerkLoading, ClerkLoaded } from '@clerk/clerk-react';
 import PricingModal from './PricingModal';
 import LegalModal from './LegalModal';
@@ -360,7 +360,12 @@ const Home = ({ onStartSetup, isLoading, hasProfiles }) => {
       <DNACarousel />
 
       {/* =========================================
-          SECTION 7: ROADMAP
+          SECTION 7: THE AGENTIC LAYER
+          ========================================= */}
+      <AgentProtocolSection />
+
+      {/* =========================================
+          SECTION 8: ROADMAP / THE HORIZON
           ========================================= */}
       <RoadmapSection />
 
@@ -544,12 +549,12 @@ const PipelineExplorer = () => {
     {
       id: 'gatekeeper',
       label: 'GATEKEEPER_AGENT',
-      log: '> INITIATING DUAL-GATE SCAN...\n[MATH_GATE] Burstiness Score: 3.2 (Fail)\n[SEMANTIC] AI Watermark detected.\n[RESULT] Input requires humanization.\n> ROUTING TO WRITER_AGENT...',
+      log: '> INITIATING DUAL-GATE SCAN...\n[MODE] DNA-Calibrated (Custom Profile Active)\n[DNA] burstiness_score=2.81 → threshold=1.69\n[MATH_GATE] Input Burstiness: 2.1 → PASSED\n[SEMANTIC] Checking quirks: [em-dashes, And/But openers]\n[SEMANTIC] No AI watermarks found. Natural flow confirmed.\n[RESULT] Text matches DNA profile. Bypassing Writer.\n> COMPUTE SAVED.',
       color: 'text-red-400',
       bg: 'bg-red-500/10',
       border: 'border-red-500/40',
       shadow: 'shadow-[0_0_30px_rgba(239,68,68,0.2)]',
-      description: 'A dual-gate firewall. First, the Math Gate measures sentence variance. Then, Semantic Intelligence checks for AI watermarks. If it passes both, it bypasses the Writer entirely.'
+      description: 'A dual-gate firewall with Dynamic Calibration. When a Custom DNA is active, the Math Gate uses your personal burstiness score as the threshold — not a global value. The Semantic Gate also reads your documented quirks so intentional stylistic choices are never flagged as errors.'
     },
     {
       id: 'writer',
@@ -685,6 +690,135 @@ const PipelineExplorer = () => {
   );
 };
 
+const AgentProtocolSection = () => {
+  const protocols = [
+    {
+      icon: <Globe size={22} />,
+      tag: 'MCP',
+      tagColor: 'text-violet-400 border-violet-500/30 bg-violet-500/10',
+      title: 'Model Context Protocol',
+      by: 'by Anthropic',
+      description: 'HumanInk becomes a universal tool plug-in. Any MCP-compatible model — Claude, GPT, Gemini — can call your humanization pipeline directly from their environment. Write in Notion, get humanized in real time.',
+      gain: 'Chrome Extension & Workspace integrations become trivial MCP calls.',
+      glow: 'group-hover:shadow-[0_0_40px_rgba(139,92,246,0.15)]',
+      border: 'border-violet-500/20 hover:border-violet-500/40',
+    },
+    {
+      icon: <Network size={22} />,
+      tag: 'A2A',
+      tagColor: 'text-blue-400 border-blue-500/30 bg-blue-500/10',
+      title: 'Agent-to-Agent Protocol',
+      by: 'by Google',
+      description: 'HumanInk agents publish capability cards. External AI pipelines discover and hire your Writer, Critic, or Gatekeeper as standalone services. No human needed in between.',
+      gain: 'B2B API tier — built automatically. External tools hire your agents directly.',
+      glow: 'group-hover:shadow-[0_0_40px_rgba(59,130,246,0.15)]',
+      border: 'border-blue-500/20 hover:border-blue-500/40',
+    },
+    {
+      icon: <Cpu size={22} />,
+      tag: 'SUBAGENTS',
+      tagColor: 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10',
+      title: 'Parallel Subagent Architecture',
+      by: 'internal upgrade',
+      description: 'The Writer spawns one subagent per paragraph and processes them all simultaneously. The Profiler runs four specialist subagents in parallel for vocabulary, rhythm, quirks, and burstiness.',
+      gain: '100-word limit gone. 500 words processed in the same time as 100 today.',
+      glow: 'group-hover:shadow-[0_0_40px_rgba(16,185,129,0.15)]',
+      border: 'border-emerald-500/20 hover:border-emerald-500/40',
+    },
+    {
+      icon: <Layers size={22} />,
+      tag: 'SKILLS',
+      tagColor: 'text-orange-400 border-orange-500/30 bg-orange-500/10',
+      title: 'Packaged Skill Marketplace',
+      by: 'open standard',
+      description: 'Each HumanInk capability — DNA extraction, humanization, authenticity scoring — is packaged as a reusable Skill. Any agent orchestrator (CrewAI, AutoGPT, LangGraph Cloud) can discover and import them.',
+      gain: 'HumanInk stops being a product and becomes a platform others build on.',
+      glow: 'group-hover:shadow-[0_0_40px_rgba(249,115,22,0.15)]',
+      border: 'border-orange-500/20 hover:border-orange-500/40',
+    },
+    {
+      icon: <FileCode2 size={22} />,
+      tag: 'AGENTS.MD',
+      tagColor: 'text-pink-400 border-pink-500/30 bg-pink-500/10',
+      title: 'Agent Identity Standard',
+      by: 'open standard',
+      description: 'Every HumanInk agent publishes an AGENTS.md — a machine-readable identity card declaring its capabilities, input/output schema, and constraints. The entire AI ecosystem can discover and invoke your agents correctly.',
+      gain: 'HumanInk agents become first-class citizens of the global agent ecosystem.',
+      glow: 'group-hover:shadow-[0_0_40px_rgba(236,72,153,0.15)]',
+      border: 'border-pink-500/20 hover:border-pink-500/40',
+    },
+  ];
+
+  return (
+    <section className="w-full max-w-7xl mx-auto px-6 py-24 z-10 relative">
+      {/* Section Header */}
+      <div className="text-center mb-16">
+        <span className="inline-block px-4 py-1.5 rounded-full border border-white/10 bg-white/5 text-gray-400 text-xs font-mono tracking-widest uppercase mb-6">Protocol Layer</span>
+        <h2 className="font-outfit text-3xl md:text-4xl font-black text-white mb-4">The Agentic Layer</h2>
+        <p className="text-gray-400 text-base md:text-lg font-light max-w-2xl mx-auto">
+          HumanInk is being rebuilt from a product into an agent. These open protocols define how it will talk to — and be used by — the entire AI ecosystem.
+        </p>
+      </div>
+
+      {/* Protocol Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-5">
+        {protocols.slice(0, 3).map((p, i) => (
+          <div key={i} className={`group relative rounded-2xl bg-[#050507] border ${p.border} p-6 transition-all duration-500 ${p.glow} cursor-default`}>
+            {/* Top line accent */}
+            <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+            
+            <div className="flex items-start justify-between mb-5">
+              <span className={`px-2.5 py-1 rounded-md border text-xs font-mono font-bold tracking-widest ${p.tagColor}`}>{p.tag}</span>
+              <span className="text-gray-600 text-xs font-mono">{p.by}</span>
+            </div>
+
+            <div className="flex items-center gap-3 mb-3">
+              <span className="text-gray-500 group-hover:text-white transition-colors duration-300">{p.icon}</span>
+              <h3 className="font-outfit font-bold text-white text-base">{p.title}</h3>
+            </div>
+
+            <p className="text-gray-400 text-sm leading-relaxed mb-5">{p.description}</p>
+
+            {/* Gain line */}
+            <div className="border-t border-white/5 pt-4">
+              <p className="text-gray-500 text-xs font-mono leading-relaxed">
+                <span className="text-gray-600 mr-2">→</span>{p.gain}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Bottom row — 2 cards centered */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-4xl mx-auto">
+        {protocols.slice(3).map((p, i) => (
+          <div key={i} className={`group relative rounded-2xl bg-[#050507] border ${p.border} p-6 transition-all duration-500 ${p.glow} cursor-default`}>
+            <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+            
+            <div className="flex items-start justify-between mb-5">
+              <span className={`px-2.5 py-1 rounded-md border text-xs font-mono font-bold tracking-widest ${p.tagColor}`}>{p.tag}</span>
+              <span className="text-gray-600 text-xs font-mono">{p.by}</span>
+            </div>
+
+            <div className="flex items-center gap-3 mb-3">
+              <span className="text-gray-500 group-hover:text-white transition-colors duration-300">{p.icon}</span>
+              <h3 className="font-outfit font-bold text-white text-base">{p.title}</h3>
+            </div>
+
+            <p className="text-gray-400 text-sm leading-relaxed mb-5">{p.description}</p>
+
+            <div className="border-t border-white/5 pt-4">
+              <p className="text-gray-500 text-xs font-mono leading-relaxed">
+                <span className="text-gray-600 mr-2">→</span>{p.gain}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+};
+
 const RoadmapSection = () => {
   return (
     <section className="w-full max-w-7xl mx-auto px-6 py-24 z-10 relative">
@@ -696,18 +830,19 @@ const RoadmapSection = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Highlighted Feature 1 */}
-        <div className="md:col-span-3 rounded-2xl bg-[#0a0a0c]/80 backdrop-blur-xl border border-ink-primary/30 p-8 relative overflow-hidden group">
-          <div className="absolute inset-0 bg-gradient-to-r from-ink-primary/10 to-transparent opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
+        {/* Highlighted Feature 1 - SHIPPED */}
+        <div className="md:col-span-3 rounded-2xl bg-[#0a0a0c]/80 backdrop-blur-xl border border-blue-500/30 p-8 relative overflow-hidden group">
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-transparent opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
           <div className="relative z-10">
             <div className="flex items-center gap-3 mb-4">
-              <span className="px-3 py-1 rounded-full bg-ink-primary/20 text-ink-primary text-xs font-bold tracking-widest uppercase border border-ink-primary/30">In Development</span>
+              <span className="px-3 py-1 rounded-full bg-blue-500/20 text-blue-400 text-xs font-bold tracking-widest uppercase border border-blue-500/30">✦ Shipped</span>
               <h3 className="font-outfit text-2xl font-bold text-white">Dynamic Gatekeeper Calibration</h3>
             </div>
             <p className="text-gray-300 text-sm md:text-base leading-relaxed max-w-3xl">
-              Currently, our Math Gate uses global baseline thresholds to detect if text is human enough to bypass the pipeline. 
-              Soon, the Gatekeeper will ingest your <strong>specific DNA profile</strong> first, using your exact mathematical variance targets 
-              as its bypass threshold. This completely eliminates false-positives for users with highly unique, low-variance writing styles.
+              The Gatekeeper no longer uses one-size-fits-all thresholds. When a Custom DNA is active, it reads your 
+              <strong> personal burstiness score</strong> — saved at extraction time — and uses 60% of that as the bypass threshold. 
+              A Hemingway-style writer with natural variance of 2.8 gets a threshold of 1.68, not the global 4.0 that would have wrongly forced a rewrite. 
+              The Semantic Gate is also DNA-aware: your documented quirks are injected into the LLM prompt so intentional stylistic choices are never flagged as errors.
             </p>
           </div>
         </div>

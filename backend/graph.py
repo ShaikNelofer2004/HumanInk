@@ -25,11 +25,14 @@ def pre_critic_node(state: AgentState):
     """
     Step 0: Pre-Critic Analysis (Gatekeeper).
     Runs compulsorily for ALL inputs - Custom DNA or Default.
-    If the text is already human enough, bypass the Writer/Critic loop entirely.
+    When a Custom DNA is active, the Gatekeeper dynamically calibrates its Math Gate
+    threshold using the user's personal burstiness_score and Sentence_Length_Variance.
     """
     print("--- Node: Gatekeeper (Mandatory Authenticity Scan) ---")
     
-    evaluation = gatekeeper.evaluate(state["input_text"])
+    # Pass the active DNA profile so the Gatekeeper can calibrate its thresholds
+    style_profile = state.get("style_profile", {})
+    evaluation = gatekeeper.evaluate(state["input_text"], dna_profile=style_profile)
     
     if evaluation.get("skip_rewriting"):
         return {

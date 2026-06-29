@@ -163,12 +163,16 @@ See [`PRODUCT_ROADMAP.md`](PRODUCT_ROADMAP.md) for the full technical roadmap. K
 | ✅ | Cloud DB & Authentication | **Done** |
 | ✅ | Credit & Premium Tier UI | **Done** |
 | ✅ | Multiple DNA Profile Slots | **Done** |
-| 🔴 P0 | Dynamic Gatekeeper Calibration (Custom DNA Thresholding) | In Development |
+| ✅ | Dynamic Gatekeeper Calibration | **Done** |
 | 🔴 P0 | Field DNA Retriever — Domain-Aware Academic Writing | In Development |
 | 🔴 P0 | Deliberate Imperfection Agent | Pending |
 | 🔴 P0 | Token-by-token streaming output | Pending |
+| 🟡 P1 | Parallel Subagent Architecture (remove word limit) | Pending |
 | 🟡 P1 | Syntactic Reconstructor Agent | Pending |
+| 🟢 P2 | MCP Server — Universal Tool Integration | Pending |
 | 🟢 P2 | Chrome Extension | Pending |
+| 🔵 P3 | A2A Protocol — Agent-to-Agent Delegation | Pending |
+| 🔵 P3 | Skills Marketplace + AGENTS.MD | Pending |
 | 🔵 P3 | API-First B2B Tier | Pending |
 
 ---
@@ -220,6 +224,101 @@ Profiler → [FIELD_DNA_RETRIEVER] → Gatekeeper → Writer → Critic → Outp
                Uses: arXiv Search Tool + Web Scraper Tool
                Outputs: Field DNA Profile (merged into Writer context)
 ```
+
+---
+
+## 🤖 The Agentic Layer
+
+HumanInk is being rebuilt from a product into an agent. These open protocols define how it will talk to — and be used by — the entire AI ecosystem.
+
+### 🔌 MCP — Model Context Protocol *(by Anthropic)*
+HumanInk becomes a universal tool plug-in. Any MCP-compatible model — Claude, GPT, Gemini — can call the humanization pipeline directly from their own environment. Write in Notion, get humanized in real time. The Field DNA Retriever also becomes an MCP client, plugging directly into arXiv and IEEE Xplore as live data sources.
+
+**What's unlocked:** Chrome Extension and Workspace integrations (Notion, Google Docs) become trivial MCP calls with zero extra backend work.
+
+---
+
+### 🤝 A2A — Agent-to-Agent Protocol *(by Google)*
+Each HumanInk agent publishes a capability card. External AI pipelines discover and hire your Writer, Critic, or Gatekeeper as standalone services — no human in between.
+
+```
+External Content Pipeline
+  └── discovers WRITER_AGENT via A2A
+  └── delegates: "rewrite this paragraph in Nelofer's DNA"
+  └── WRITER_AGENT returns humanized text
+  └── no HumanInk UI touched
+```
+
+**What's unlocked:** The B2B API tier is built automatically. External tools hire your agents directly without you building a separate API product.
+
+---
+
+### ⚡ Subagents — Parallel Processing Architecture *(internal upgrade)*
+The current pipeline is linear and sequential. With subagents, each agent spawns specialist children that run simultaneously.
+
+```
+Today (Sequential):
+Gatekeeper → Profiler → Writer → Critic    [100 word limit]
+
+With Subagents (Parallel):
+Orchestrator
+  ├── Writer Subagent → Paragraph 1
+  ├── Writer Subagent → Paragraph 2
+  ├── Writer Subagent → Paragraph 3
+  └── Writer Subagent → Paragraph 4     [No word limit]
+```
+
+| Component | Today | With Subagents |
+|---|---|---|
+| **Word limit** | 100 words | Unlimited |
+| **Processing** | Sequential | Parallel (3–5× faster) |
+| **Profiler** | 1 combined call | 4 specialist subagents |
+| **Critic** | 1 combined check | 3 parallel checks |
+
+---
+
+### 🧰 Skills Marketplace *(open standard)*
+Each HumanInk capability — DNA extraction, humanization, authenticity scoring — is packaged as a reusable Skill with a standard interface.
+
+```yaml
+name: humanize_text
+description: Rewrites AI-generated text to match a user's writing DNA
+input:
+  text: string
+  dna_profile: object
+output:
+  humanized_text: string
+  human_score: float
+```
+
+Any agent orchestrator (CrewAI, AutoGPT, LangGraph Cloud) can discover and import HumanInk skills. **HumanInk stops being a product and becomes a platform others build on.**
+
+---
+
+### 📄 AGENTS.MD — Agent Identity Standard *(open standard)*
+Every HumanInk agent publishes a machine-readable identity card declaring its capabilities, input/output schema, and constraints. The entire AI ecosystem can discover and invoke agents correctly without custom integration code.
+
+```markdown
+# WRITER_AGENT
+description: Rewrites input text to match a provided style DNA profile
+input_schema: { text: string, dna_profile: object, feedback: string? }
+output_schema: { draft: string }
+constraints: [max_tokens: 2000, temperature: 0.9]
+```
+
+**What's unlocked:** HumanInk agents become first-class citizens of the global agent ecosystem — discoverable by any compatible orchestrator.
+
+---
+
+### Protocol Stack Overview
+
+| Protocol | Direction | What It Enables |
+|---|---|---|
+| **Subagents** | Internal | Parallel processing, no word limit |
+| **MCP** | HumanInk → World | Connect to any tool or data source |
+| **A2A** | World → HumanInk | External agents hire HumanInk agents |
+| **Skills** | HumanInk → World | Capabilities published to orchestrators |
+| **AGENTS.MD** | HumanInk → World | Machine-readable agent identity cards |
 
 ---
 
