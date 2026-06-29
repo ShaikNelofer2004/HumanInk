@@ -330,42 +330,42 @@ const Home = ({ onStartSetup, isLoading, hasProfiles }) => {
       </section>
 
       {/* =========================================
-          SECTION 2: PIPELINE EXPLORER
-          ========================================= */}
-      <PipelineExplorer />
-
-      {/* =========================================
-          SECTION 2.5: WHY HUMANINK
+          SECTION 2: WHY HUMANINK — establish the problem first
           ========================================= */}
       <WhyHumanInkSection />
 
       {/* =========================================
-          SECTION 2.5: METRICS
-          ========================================= */}
-      <MetricsSection />
-
-      {/* =========================================
-          SECTION 3: USE CASES BENTO BOX
-          ========================================= */}
-      <UseCases />
-
-      {/* =========================================
-          SECTION 4: THE PROOF (Split Screen Typewriter)
+          SECTION 3: THE PROOF — immediately show it works
           ========================================= */}
       <TypewriterComparison />
 
       {/* =========================================
-          SECTION 6: DNA CAROUSEL
+          SECTION 4: METRICS — back the proof with numbers
+          ========================================= */}
+      <MetricsSection />
+
+      {/* =========================================
+          SECTION 5: USE CASES — show who it's for
+          ========================================= */}
+      <UseCases />
+
+      {/* =========================================
+          SECTION 6: DNA CAROUSEL — the key differentiator
           ========================================= */}
       <DNACarousel />
 
       {/* =========================================
-          SECTION 7: THE AGENTIC LAYER
+          SECTION 7: PIPELINE EXPLORER — now they're invested, show how
+          ========================================= */}
+      <PipelineExplorer />
+
+      {/* =========================================
+          SECTION 8: THE AGENTIC LAYER — future vision
           ========================================= */}
       <AgentProtocolSection />
 
       {/* =========================================
-          SECTION 8: ROADMAP / THE HORIZON
+          SECTION 9: THE HORIZON — roadmap last
           ========================================= */}
       <RoadmapSection />
 
